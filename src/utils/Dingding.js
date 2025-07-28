@@ -10,13 +10,15 @@ const systemConfigure = {
   isDebugMode: false,
   // serverrUrl: "https://api-v1.sensor-smart.cn:28023",
   serverr802: "https://api-v2.sensor-smart.cn:22027/ding/pack",
-  serverrUrl: "https://api-v2.sensor-smart.cn:29028/ss-proxy/p29001"
+  // serverrUrl: "https://api-v2.sensor-smart.cn:29028/ss-proxy/p29001"
+  serverrUrl: "https://api-v2.sensor-smart.cn:22027/ss-proxy/p35001"
 }
 
 
 // 设置 Axios 库的默认请求基础路径为 "/ding"，这意味着所有的请求会发送到以 "/ding" 开头的路径下
-axios.defaults.baseURL = "/ding"
+// axios.defaults.baseURL = "/ding"
 // axios.defaults.baseURL = "/"
+const baseURL = process.env.VUE_APP_API_URL || '/ding/pack';
 
 // 定义了两个常量，分别用于存储钉钉用户令牌和时间戳在本地存储中的键名。
 export const key_DingTokenJWT = "sensor_DingTokenJWT"
@@ -25,6 +27,36 @@ export const key_DingName = "sensor_DingName"
 export const key_DingUserIndex = "key_DingUserIndex"
 export const key_DingUserPhone = "key_DingUserPhone"
 export const key_DingScannedResult = "key_DingScannedResult"
+export const key_DingResponseStored = "key_DingResponseStored"
+export const key_DingResponseUsed = "key_DingResponseUsed"
+
+// 定义全局变量
+export let cachedProductId = '晟思'; // 默认值
+export let cachedProductPerson = '晟思'; // 默认值
+export let cachedPersonIndex = 333; // 默认值
+export let cachedResponseUsed = "未领用1"; // 默认值
+export let cachedResponseStored = "未入库1"; // 默认值
+
+export function updateCachedProductId(newId) {
+  cachedProductId = newId;
+}
+
+export function updateCachedProductPerson(newPerson) {
+  cachedProductPerson = newPerson;
+}
+
+export function updateCachedPersonIndex(personIndex) {
+  cachedPersonIndex = personIndex;
+}
+export function updateCachedResponseStored(responseStored) {
+  cachedResponseStored = responseStored;
+  console.log("cachedResponseStored 是： ",cachedResponseStored)
+}
+export function updateCachedResponseUsed(responseUsed) {
+  cachedResponseUsed = responseUsed;
+  console.log("cachedResponseUsed 是： ",cachedResponseUsed)
+}
+
 
 
 // 定义了两个变量，分别用于存储请求ID和目标URL，默认值分别为1和null。
@@ -62,10 +94,10 @@ export function PostData(method, data, callSuccess, callFail) {
     reqData: data
   }
 
-  let urlSend = "/pack" //systemConfigure.serverrUrl + postURL    systemConfigure.serverr802
+  // let urlSend = "/pack" //systemConfigure.serverrUrl + postURL    systemConfigure.serverr802
   // let urlSend = systemConfigure.serverrUrl
 
-  axios.post(urlSend, JSON.stringify(postPack), {
+  axios.post(baseURL, JSON.stringify(postPack), {
     headers: {
       "content-type": "application/json"
     }
@@ -111,20 +143,20 @@ export function PostDataUrl(postUrlName, data, isJson, callSuccess, callFail) {
   } else {
     dataType = "multipart/form-data"
   }
-  let urlSend = "/pack" //systemConfigure.serverrUrl + postURL
+  // let urlSend = "/pack" //systemConfigure.serverrUrl + postURL
   // let urlSend = systemConfigure.serverrUrl
 
   // let urlSend = "/"+postUrlName;
   // let urlSend = postUrlName;
 
   let postJson = JSON.stringify(postPack)
-  if (systemConfigure.isDebugMode) {
-    alert('urlSend: ' + urlSend);
-    alert('postJson: ' + postJson);
-  }
+  // if (systemConfigure.isDebugMode) {
+  //   alert('urlSend: ' + urlSend);
+  //   alert('postJson: ' + postJson);
+  // }
 
   //    axios.post(urlSend, postJson, {
-  axios.post(urlSend, postJson, {
+  axios.post(baseURL, postJson, {
     headers: {
       "content-type": dataType
     }
@@ -135,6 +167,7 @@ export function PostDataUrl(postUrlName, data, isJson, callSuccess, callFail) {
       }
       if (response.data.result == 1) {
         // alert('responseJson  1 : ' + JSON.stringify(response.data.respData));
+        // alert('responseJson  2: ' + JSON.stringify(response.data.msg));
         console.log('responseJson  1 : ' + JSON.stringify(response.data.respData));
         callSuccess(response.data.respData)
 
@@ -170,7 +203,7 @@ export function GetDingCode(callSuccess, callFail) {
     })
   } else {
     //callFail("notInDingTalk")
-    router.push({path: '/login'})
+    router.push({path: '/sensor_ddingWork/Debug/login'})
   }
 }
 

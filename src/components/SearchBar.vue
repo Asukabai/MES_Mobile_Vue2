@@ -27,16 +27,11 @@
 </template>
 
 <script>
-import { Button, Search, Icon } from 'vant'
+
 import { Toast } from 'vant'
 
 export default {
   name: 'SearchBar',
-  components: {
-    VanButton: Button,
-    VanSearch: Search,
-    VanIcon: Icon
-  },
   props: {
     value: {
       type: String,

@@ -1,6 +1,7 @@
 <template>
   <footer class="footer">
-    <p>&copy; {{ currentYear }} 晟思智能工作助手小程序 V1.0.1</p>
+<!--    <p>&copy; {{ currentYear }} 晟思智能工作助手小程序 V1.0.1-开发版</p>-->
+    <p>&copy; {{ currentYear }} 晟思智能工作助手小程序 V1.0.1-稳定版</p>
   </footer>
 </template>
 

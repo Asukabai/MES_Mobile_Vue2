@@ -1,29 +1,41 @@
 <template>
   <div>
+    <van-cell
+        title="用户信息"
+        icon="user-o"
+        :title-style="{ fontWeight: 'bold', fontSize: '16px' }"
+    />
     <!-- 用户信息卡片 -->
     <van-cell-group class="user-card">
-      <van-cell
-          title="用户信息"
-          icon="user-o"
-          :title-style="{ fontWeight: 'bold', fontSize: '16px' }"
-      />
       <van-cell>
         <div style="display: flex; align-items: center;">
           <div class="user-avatar">
-            <van-image round width="50px" height="50px" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+            <van-image
+                round
+                width="50px"
+                height="50px"
+                :src="require('@/assets/企业头像.png')"
+            />
           </div>
           <div class="user-details">
             <p v-if="!userInfo.name">正在加载用户信息...</p>
             <p v-else><strong>姓名：</strong>{{ userInfo.name }}</p>
             <p><strong>手机号：</strong>{{ userInfo.phone }}</p>
+            <p><strong>企业：</strong>陕西晟思智能测控有限公司 </p>
           </div>
         </div>
       </van-cell>
+      <!-- 下部分：验证码区域 -->
+      <div class="footer-section">
+        <VerificationCode />
+      </div>
     </van-cell-group>
+
+
     <!-- 其他功能入口 -->
     <van-cell-group style="margin-top: 15px;">
-      <van-cell title="个人资料" is-link @click="$router.push('/profile')" />
-      <van-cell title="邀请成员" is-link @click="handleInviteClick" />
+      <van-cell title="个人资料" is-link @click="$router.push('/sensor_ddingWork/Release/profile')" />
+      <van-cell title="缓存清理" is-link @click="handleInviteClick" />
       <van-cell title="推送通知" is-link @click="handlePushNotification" />
       <van-cell title="在线支持" is-link @click="handleOnlineSupport" />
 <!--      <van-cell title="问题反馈" is-link @click="handleFeedback" />-->
@@ -34,12 +46,15 @@
 </template>
 
 <script>
+import * as dd from 'dingtalk-jsapi'
 import { Cell, CellGroup, Image,Toast } from 'vant'
 import MainTabBar from '@/components/MainTabBar.vue'
+import VerificationCode from "@/components/VerificationCode.vue";
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "MyUser",
   components: {
+    VerificationCode,
     VanCell: Cell,
     VanCellGroup: CellGroup,
     VanImage: Image,
@@ -67,7 +82,42 @@ export default {
       };
     },
     handleInviteClick() {
-      Toast.success('功能开发中：邀请成员');
+      this.$dialog.confirm({
+        title: '提示',
+        message: '确定要清除所有本地缓存吗？',
+      }).then(() => {
+
+        // 判断是否在钉钉客户端环境中
+        if (typeof dd === 'undefined') {
+          console.warn('当前环境不支持 dd API，dd 未定义');
+          this.$toast.fail('请在钉钉客户端中操作');
+          return;
+        }
+
+        try {
+          // 调用钉钉同步清除缓存方法
+          const result = dd.clearStorage;
+
+          // 打印结果
+          console.log("清理结果:", result);
+          console.log("result.errMsg:", result.errMsg);
+
+          if (result && result.errMsg === 'clearStorageSync:ok') {
+            this.$toast.success('缓存已清除');
+            this.loadUserInfo(); // 可选：重新加载用户信息
+          } else {
+            this.$toast.fail('清除缓存失败');
+            console.warn('清除缓存返回:', result);
+          }
+        } catch (e) {
+          console.error('调用 clearStorageSync 出错:', e);
+          this.$toast.fail('清除缓存失败，请稍后再试');
+        }
+
+      }).catch(() => {
+        // 用户点击取消
+        console.log('用户取消清除操作');
+      });
     },
     handlePushNotification() {
       Toast.success('推送通知已开启');
@@ -83,7 +133,7 @@ export default {
       Toast.success('感谢您的反馈！');
     },
     handleSettings() {
-      this.$router.push('/settings'); // 跳转到设置页面
+      this.$router.push('/sensor_ddingWork/Release/settings'); // 跳转到设置页面
     }
   }
 };
@@ -91,6 +141,12 @@ export default {
 
 
 <style scoped>
+.user-card {
+  margin: 15px;
+  border-radius: 12px; /* 圆角 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 阴影 */
+  overflow: hidden; /* 确保内部元素也应用圆角 */
+}
 .user-card .van-cell__value {
   display: flex;
   align-items: center;

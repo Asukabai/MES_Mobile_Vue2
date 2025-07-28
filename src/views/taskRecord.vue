@@ -5,33 +5,27 @@
 
     <!-- 表单内容 -->
     <van-form @submit="onSubmit" class="record-form">
+
       <!-- 对应项目 -->
-      <van-field name="project" label="对应项目" rules="[{ required: true, message: '请选择项目' }]">
+      <van-field name="project" label="对应项目" :rules="[{ required: true, message: '请选择项目' }]">
         <template #input>
-          <van-select v-model="formData.project" placeholder="请选择项目">
-            <van-option
-                v-for="item in projectOptions"
-                :key="item.id"
-                :label="item.title"
-                :value="item.title"
-            />
-          </van-select>
+          <van-dropdown-menu>
+            <van-dropdown-item v-model="formData.project" :options="dropdownProjectOptions" />
+          </van-dropdown-menu>
         </template>
       </van-field>
 
       <!-- 任务完成情况 -->
-      <van-field name="status" label="任务完成情况" rules="[{ required: true, message: '请选择完成情况' }]">
+      <van-field name="status" label="任务完成情况" :rules="[{ required: true, message: '请选择完成情况' }]">
         <template #input>
-          <van-select v-model="formData.status" placeholder="请选择状态">
-            <van-option label="已完成" value="已完成" />
-            <van-option label="进行中" value="进行中" />
-            <van-option label="延期" value="延期" />
-          </van-select>
+          <van-dropdown-menu>
+            <van-dropdown-item v-model="formData.status" :options="statusOptions" />
+          </van-dropdown-menu>
         </template>
       </van-field>
 
       <!-- 是否遇到异常 -->
-      <van-field name="abnormal" label="是否遇到异常" rules="[{ required: true, message: '请选择是否有异常' }]">
+      <van-field name="abnormal" label="是否遇到异常" :rules="[{ required: true, message: '请选择是否有异常' }]">
         <template #input>
           <van-radio-group v-model="formData.abnormal">
             <van-cell-group inset>
@@ -73,13 +67,13 @@
 </template>
 
 <script>
-import { Toast} from 'vant'
+import { Toast } from 'vant'
 
 export default {
   name: 'taskRecord',
   data() {
     return {
-      // 假设这是从 cartList 获取的项目列表
+      // 原始项目数据
       projectOptions: [
         { id: 1, title: '多路输出项目新需求.docx' },
         { id: 2, title: 'AGV小车软件更新维护.pdf' },
@@ -94,8 +88,22 @@ export default {
       }
     }
   },
+  computed: {
+    dropdownProjectOptions() {
+      return this.projectOptions.map(item => ({
+        text: item.title,
+        value: item.title
+      }))
+    },
+    statusOptions() {
+      return [
+        { text: '已完成', value: '已完成' },
+        { text: '进行中', value: '进行中' },
+        { text: '延期', value: '延期' }
+      ]
+    }
+  },
   methods: {
-    // 页面加载时可以接收参数
     initFormData() {
       const title = this.$route.query.title
       if (title) {
@@ -115,9 +123,7 @@ export default {
       this.$router.back()
     },
     afterRead(file) {
-      // file 是上传的文件对象
       console.log('上传的照片:', file)
-      // 可在此处调用接口上传
     }
   },
   mounted() {
