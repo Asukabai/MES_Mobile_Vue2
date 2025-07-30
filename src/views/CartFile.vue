@@ -152,6 +152,7 @@ export default {
           JSON.stringify(param),
           (respData) => {
             let JSON_Data =  JSON.parse(respData)
+            console.log("加载收到的分享文件数据 JSON_Data : "+respData)
             // 成功回调
             this.receivedList = JSON_Data || [];
             this.receivedLoading = false;
@@ -181,6 +182,7 @@ export default {
           JSON.stringify(param),
           (respData) => {
             let JSON_Data =  JSON.parse(respData)
+            console.log("加载发送的分享文件数据 JSON_Data : "+respData)
             // 成功回调
             this.sentList = JSON_Data || [];
             this.sentLoading = false;
@@ -215,16 +217,40 @@ export default {
     },
 
     formatDesc(item) {
-      return `来自: ${item.Sender || '未知'}  ${item.Create_Time || ''}`;
+      return `来自: ${item.Person_Name || '未知'} -  ${item.Shared_Time || ''}`;
     },
 
     formatSentDesc(item) {
-      return `发送给: ${item.Receiver || '未知'}  ${item.Create_Time || ''}`;
+      // 获取接收人信息
+      let receiver = '未知';
+      if (item.Shared_Filebelonginfo && item.Shared_Filebelonginfo.length > 0) {
+        // 如果有多个接收人，显示第一个并标明数量
+        if (item.Shared_Filebelonginfo.length === 1) {
+          receiver = item.Shared_Filebelonginfo[0].Person_Name || item.Shared_Filebelonginfo[0].BelongPerson_Phone || '未知';
+        } else {
+          receiver = `${item.Shared_Filebelonginfo[0].Person_Name || item.Shared_Filebelonginfo[0].BelongPerson_Phone || '未知'} 等${item.Shared_Filebelonginfo.length}人`;
+        }
+      } else if (item.Shared_Type === 1) {
+        // 公开文件没有特定接收人
+        receiver = '所有人';
+      }
+
+      let desc = `发送给: ${receiver} -  ${item.Shared_Time || ''}`;
+
+      // 添加文件有效性的描述
+      // if (item.Shared_Valid === 1) {
+      //   desc += ' (永久有效)';
+      // } else if (item.Expire_Time) {
+      //   desc += ` (有效期至: ${item.Expire_Time})`;
+      // }
+
+      return desc;
     },
 
     formatSharedType(type) {
       const types = {
-        1: '文件',
+        0: '非公开文件',
+        1: '公开文件',
         2: '文件夹',
         // 可以根据需要添加更多类型
       };
@@ -236,17 +262,13 @@ export default {
       if (!item || !item.File_Name) {
         return require('@/assets/sensor.png');
       }
-
       // 获取文件扩展名
       const fileName = item.File_Name;
       const lastDotIndex = fileName.lastIndexOf('.');
-
       if (lastDotIndex === -1) {
         return require('@/assets/sensor.png');
       }
-
       const extension = fileName.substring(lastDotIndex + 1).toLowerCase();
-
       // 根据扩展名返回对应的图标
       const iconMap = {
         'doc': 'word.png',
@@ -258,12 +280,20 @@ export default {
         'pdf': 'PDF.png',
         'txt': 'txt.png'
       };
-
       const iconFile = iconMap[extension];
       if (iconFile) {
         return require(`@/assets/${iconFile}`);
       }
-
+      // 图片类型扩展名
+      const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
+      if (imageExtensions.includes(extension)) {
+        return require('@/assets/image.png');
+      }
+      // 视频类型扩展名
+      const videoExtensions = ['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm'];
+      if (videoExtensions.includes(extension)) {
+        return require('@/assets/video.png');
+      }
       // 默认返回 sensor.png 图标
       return require('@/assets/sensor.png');
     }
