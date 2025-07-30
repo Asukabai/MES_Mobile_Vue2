@@ -139,15 +139,133 @@ export default {
     this.loadSentData(); // 页面加载时也请求发送的数据
   },
   methods: {
-    handleDownload(file) {
-      console.log('下载文件:', file);
-      // 实现文件下载逻辑，例如通过后端接口获取文件流
-      alert('正在下载文件...');
+    // 加载收到的分享文件数据
+    loadReceivedData() {
+      this.receivedLoading = true;
+
+      const userInfo = getLocalUserInfo();
+      const param = {
+        Person_Phone: userInfo.phone
+      };
+
+      SensorRequest.GetSharedFileWithMeFun(
+          JSON.stringify(param),
+          (respData) => {
+            let JSON_Data =  JSON.parse(respData)
+            // 成功回调
+            this.receivedList = JSON_Data || [];
+            this.receivedLoading = false;
+            this.receivedFinished = true;
+            this.isLoading = false;
+          },
+          (error) => {
+            // 失败回调
+            console.error('获取收到的分享文件失败:', error);
+            this.receivedLoading = false;
+            this.receivedFinished = true;
+            this.isLoading = false;
+          }
+      );
     },
+
+    // 加载发送的分享文件数据
+    loadSentData() {
+      this.sentLoading = true;
+
+      const userInfo = getLocalUserInfo();
+      const param = {
+        Person_Phone: userInfo.phone
+      };
+
+      SensorRequest.GetPersonSharedFileFun(
+          JSON.stringify(param),
+          (respData) => {
+            let JSON_Data =  JSON.parse(respData)
+            // 成功回调
+            this.sentList = JSON_Data || [];
+            this.sentLoading = false;
+            this.sentFinished = true;
+            this.isLoading = false;
+          },
+          (error) => {
+            // 失败回调
+            console.error('获取发送的分享文件失败:', error);
+            this.sentLoading = false;
+            this.sentFinished = true;
+            this.isLoading = false;
+          }
+      );
+    },
+
+    // 下拉刷新
+    onRefresh() {
+      if (this.activeTab === 0) {
+        this.loadReceivedData();
+      } else {
+        this.loadSentData();
+      }
+    },
+
+    handleDownload(file) {
+      utilsDownloadFile(file);
+    },
+
     handlePreview(file) {
-      console.log('预览文件:', file);
-      // 实现文件预览逻辑，例如跳转到预览页面或调用预览接口
-      alert('正在预览文件...');
+      utilsPreviewFile(file);
+    },
+
+    formatDesc(item) {
+      return `来自: ${item.Sender || '未知'}  ${item.Create_Time || ''}`;
+    },
+
+    formatSentDesc(item) {
+      return `发送给: ${item.Receiver || '未知'}  ${item.Create_Time || ''}`;
+    },
+
+    formatSharedType(type) {
+      const types = {
+        1: '文件',
+        2: '文件夹',
+        // 可以根据需要添加更多类型
+      };
+      return types[type] || '未知';
+    },
+
+    getLocalImage(item) {
+      // 根据文件类型返回相应的图标
+      if (!item || !item.File_Name) {
+        return require('@/assets/sensor.png');
+      }
+
+      // 获取文件扩展名
+      const fileName = item.File_Name;
+      const lastDotIndex = fileName.lastIndexOf('.');
+
+      if (lastDotIndex === -1) {
+        return require('@/assets/sensor.png');
+      }
+
+      const extension = fileName.substring(lastDotIndex + 1).toLowerCase();
+
+      // 根据扩展名返回对应的图标
+      const iconMap = {
+        'doc': 'word.png',
+        'docx': 'word.png',
+        'xls': 'excel.png',
+        'xlsx': 'excel.png',
+        'ppt': 'ppt.png',
+        'pptx': 'pptx.png',
+        'pdf': 'PDF.png',
+        'txt': 'txt.png'
+      };
+
+      const iconFile = iconMap[extension];
+      if (iconFile) {
+        return require(`@/assets/${iconFile}`);
+      }
+
+      // 默认返回 sensor.png 图标
+      return require('@/assets/sensor.png');
     }
   }
 };
