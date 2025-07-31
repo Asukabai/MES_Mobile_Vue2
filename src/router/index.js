@@ -13,6 +13,7 @@ import Login from "@/views/Login.vue";
 import StatisticalReport from "@/views/StatisticalReport.vue";
 import UploadSummary from "@/views/UploadSummary.vue";
 import ChatCategory from "@/views/ChatCategory.vue";
+import CreatePost from "@/views/CreatePost.vue";
 
 Vue.use(Router)
 
@@ -41,6 +42,11 @@ export default new Router({
       path: `${basePath}chat_category`,
       name: 'ChatCategory',
       component: ChatCategory
+    },
+    {
+      path: `${basePath}create_post`,
+      name: 'CreatePost',
+      component: CreatePost
     },
     {
       path: `${basePath}cart`,

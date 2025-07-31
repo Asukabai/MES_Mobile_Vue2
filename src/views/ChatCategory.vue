@@ -21,7 +21,6 @@
           @click="viewPostDetail(post)"
       />
     </van-list>
-
     <!-- 底部导航栏 -->
     <main-tab-bar />
 
@@ -32,9 +31,10 @@
         @touchstart="onTouchStart"
         @touchmove="onTouchMove"
         @touchend="onTouchEnd"
+        @click="goToCreatePost"
     >
-      <van-icon name="plus" size="20px" color="#fff" />
-    </div>
+    <van-icon name="plus" size="20px" color="#fff" />
+  </div>
   </div>
 </template>
 
@@ -98,10 +98,10 @@ export default {
   },
   methods: {
     goToCreatePost() {
-      this.$router.push('/create-post')
+      this.$router.push('/sensor_ddingWork/Release/create_post') // 跳转到创建页面
     },
     viewPostDetail(post) {
-      this.$router.push(`/post-detail/${post.id}`)
+      this.$router.push(`/sensor_ddingWork/Release/post-detail/${post.id}`)
     },
     onLoad() {
       // 模拟加载更多数据
@@ -169,8 +169,8 @@ export default {
 /* 悬浮按钮样式 */
 .floating-button {
   position: fixed;
-  width: 46px; /* 缩小按钮宽度 */
-  height: 46px; /* 缩小按钮高度 */
+  width: 40px; /* 缩小按钮宽度 */
+  height: 40px; /* 缩小按钮高度 */
   background-color: #1989fa;
   border-radius: 50%;
   display: flex;
