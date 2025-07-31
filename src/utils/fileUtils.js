@@ -24,6 +24,31 @@ export async function downloadFile(file) {
 export async function previewFile(file) {
   console.log('预览文件:', file);
 
+  // 检查是否为移动端
+  const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  if (!isMobile) {
+    alert('暂不支持PC端预览 !');
+    return;
+  }
+
+  // 获取文件后缀名
+  const fileName = file.File_Name;
+  const fileExt = fileName.split('.').pop().toLowerCase();
+
+  // 定义不支持预览的文件类型
+  const unsupportedExtensions = [
+    'mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm', // 视频格式
+    'zip', 'rar', '7z', 'tar', 'gz', 'bz2', // 压缩包格式
+    'exe', 'msi', 'apk', 'jar','dll',// 可执行文件
+    'iso', 'img', 'dmg' // 镜像文件
+  ];
+
+  if (unsupportedExtensions.includes(fileExt)) {
+    alert(`当前不支持预览 ${fileExt} 格式的文件 !`);
+    return;
+  }
+
   try {
     // 获取临时预览URL
     const url = await getTemporaryUrl(file.File_Name, file.File_Md5);
@@ -40,7 +65,6 @@ export async function previewFile(file) {
     alert('文件预览失败，请稍后重试');
   }
 }
-
 
 // 获取临时URL的函数
 function getTemporaryUrl(fileName, fileMd5) {
