@@ -51,7 +51,16 @@
       <div v-for="(stage, index) in stageList" :key="index" class="stage-card">
         <van-cell-group>
           <van-cell title="任务进度">
-            <div class="cell-content">{{ stage.TaskStageFile_Progress || '0' }}%</div>
+<!--            <div class="cell-content">{{ stage.TaskStageFile_Progress || '0' }}%</div>-->
+            <div class="progress-container">
+              <van-progress
+                  :percentage="parseFloat(stage.TaskStageFile_Progress) || 0"
+                  :show-pivot="true"
+                  :pivot-text="`${stage.TaskStageFile_Progress || '0'}%`"
+                  :stroke-width="10"
+                  color="#1989fa"
+              />
+            </div>
           </van-cell>
 
           <van-cell title="任务备注">
@@ -91,7 +100,16 @@
       <div class="stage-card" style="margin-top: 24px;">
         <van-cell-group>
           <van-cell title="任务进度">
-            <div class="cell-content">100%</div>
+<!--            <div class="cell-content">100%</div>-->
+            <div class="progress-container">
+              <van-progress
+                  :percentage="100"
+                  :show-pivot="true"
+                  pivot-text="100%"
+                  :stroke-width="10"
+                  color="#1989fa"
+              />
+            </div>
           </van-cell>
 
           <van-cell title="任务成员">
@@ -288,6 +306,12 @@ export default {
   flex-wrap: wrap;
   gap: 16px; /* 调整间距 */
 }
+
+.progress-container {
+  width: 100%;
+  padding: 5px 0;
+}
+
 
 .image-item {
   text-align: center; /* 居中对齐 */
