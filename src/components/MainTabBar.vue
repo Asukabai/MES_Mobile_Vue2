@@ -64,7 +64,7 @@ export default {
       return [
         {
           title: '知识库',
-          path: base + 'category',
+          path: base + 'chat_category',
           iconActive: this.icons.message.active,
           iconInactive: this.icons.message.inactive
         },

@@ -5,7 +5,6 @@ import Router from 'vue-router'
 
 // 导入视图组件...
 import Home from '../views/Home.vue'
-import Category from '../views/Category.vue'
 import CartFile from '../views/CartFile.vue'
 import User from '../views/User.vue'
 import Task from "@/views/Task.vue";
@@ -13,6 +12,7 @@ import IndexView from "@/views/IndexView.vue";
 import Login from "@/views/Login.vue";
 import StatisticalReport from "@/views/StatisticalReport.vue";
 import UploadSummary from "@/views/UploadSummary.vue";
+import ChatCategory from "@/views/ChatCategory.vue";
 
 Vue.use(Router)
 
@@ -38,9 +38,9 @@ export default new Router({
       component: Home
     },
     {
-      path: `${basePath}category`,
-      name: 'Category',
-      component: Category
+      path: `${basePath}chat_category`,
+      name: 'ChatCategory',
+      component: ChatCategory
     },
     {
       path: `${basePath}cart`,
