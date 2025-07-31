@@ -1,62 +1,80 @@
+import SensorRequest from './SensorRequest';
+import router from "@/router";
+
 // 文件工具
-export function downloadFile(file) {
+export async function downloadFile(file) {
   console.log('下载文件:', file);
-  
-  // 创建一个临时的a标签用于下载
-  const link = document.createElement('a');
-  link.href = file.url || file.preview;
-  
-  // 如果是文件对象，设置download属性
-  if (typeof file === 'object' && file.name) {
-    link.download = file.name;
+  try {
+    // 获取临时下载URL
+    const url = await getTemporaryUrl(file.File_Name, file.File_Md5);
+    // 跳转到预览页面，并传递URL和文件名作为参数
+    await router.push({
+      path: '/sensor_ddingWork/Release/download',
+      query: {
+        fileUrl: url,
+        fileName: file.File_Name
+      }
+    });
+  } catch (error) {
+    console.error('下载文件失败:', error);
+    alert('文件下载失败，请稍后重试');
   }
-  
-  // 将a标签添加到dom中并触发点击
-  document.body.appendChild(link);
-  link.click();
-  
-  // 移除a标签
-  document.body.removeChild(link);
 }
 
-export function previewFile(file) {
+export async function previewFile(file) {
   console.log('预览文件:', file);
-  
-  // 创建一个临时的iframe用于预览
-  const preview = document.createElement('iframe');
-  preview.src = typeof file === 'string' ? file : (file.url || file.preview);
-  preview.style.position = 'fixed';
-  preview.style.top = '0';
-  preview.style.left = '0';
-  preview.style.width = '100%';
-  preview.style.height = '100%';
-  preview.style.border = 'none';
-  preview.style.zIndex = '9999';
-  
-  // 添加关闭按钮
-  const closeBtn = document.createElement('button');
-  closeBtn.innerText = '关闭预览';
-  closeBtn.style.position = 'fixed';
-  closeBtn.style.top = '10px';
-  closeBtn.style.right = '10px';
-  closeBtn.style.zIndex = '10000';
-  closeBtn.style.padding = '8px 12px';
-  closeBtn.style.backgroundColor = '#ff4081';
-  closeBtn.style.color = 'white';
-  closeBtn.style.border = 'none';
-  closeBtn.style.borderRadius = '4px';
-  closeBtn.style.cursor = 'pointer';
-  
-  // 关闭预览的方法
-  const closePreview = () => {
-    document.body.removeChild(preview);
-    document.body.removeChild(closeBtn);
-  };
-  
-  // 绑定关闭事件
-  closeBtn.addEventListener('click', closePreview);
-  
-  // 添加元素到dom
-  document.body.appendChild(preview);
-  document.body.appendChild(closeBtn);
+
+  try {
+    // 获取临时预览URL
+    const url = await getTemporaryUrl(file.File_Name, file.File_Md5);
+    // 跳转到下载页面，并传递URL和文件名作为参数
+    await router.push({
+      path: '/sensor_ddingWork/Release/dd-preview',
+      query: {
+        fileUrl: url,
+        fileName: file.File_Name
+      }
+    });
+  } catch (error) {
+    console.error('预览文件失败:', error);
+    alert('文件预览失败，请稍后重试');
+  }
+}
+
+
+// 获取临时URL的函数
+function getTemporaryUrl(fileName, fileMd5) {
+  return new Promise((resolve, reject) => {
+    if (!fileName || !fileMd5) {
+      reject(new Error('文件名或MD5值缺失'));
+      return;
+    }
+
+    const param = {
+      remoteLocation: fileMd5
+    };
+    SensorRequest.Minio_PresignedDownloadUrl5B(
+        JSON.stringify(param),
+        (respData) => {
+          console.log("预览页面 respData :"+respData)
+          try {
+            if (respData) {
+              const modifiedUrl = respData.replace(
+                  // 将URL中的http://127.0.0.1:9000替换为https://api-v2.sensor-smart.cn:22027
+                  'http://127.0.0.1:9000',
+                  'https://api-v2.sensor-smart.cn:22027'
+              );
+              resolve(modifiedUrl);
+            } else {
+              reject(new Error('未能获取有效的文件URL'));
+            }
+          } catch (error) {
+            reject(new Error('解析响应数据失败'));
+          }
+        },
+        (error) => {
+          reject(new Error('请求临时URL失败: ' + error));
+        }
+    );
+  });
 }

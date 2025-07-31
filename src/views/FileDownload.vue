@@ -64,7 +64,7 @@ export default {
       return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
     },
     async initDownload() {
-      const encodedUrl = this.$route.query.url
+      const encodedUrl = this.$route.query.fileUrl
       const fileNameFromQuery = this.$route.query.fileName
 
       if (!encodedUrl) {

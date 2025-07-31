@@ -49,14 +49,16 @@ export default {
   
   mounted() {
     // 获取URL参数
-    const encodedUrl = this.$route.query.url;
+    const encodedUrl = this.$route.query.fileUrl;
+
+    console.log("encodedUrl: "+ encodedUrl)
     const fileName = this.$route.query.fileName;
+    console.log("fileName: "+ fileName)
     
     if (!encodedUrl || !fileName) {
       this.previewError = '缺少文件信息，无法预览';
       return;
     }
-    
     this.fileUrl = decodeURIComponent(encodedUrl);
     this.fileName = decodeURIComponent(fileName);
   },
