@@ -115,20 +115,20 @@
                 >
                   <span style="flex: 1;">{{ file.File_Name }}</span>
                   <van-button
-                      icon="down"
-                      size="mini"
-                      type="primary"
-                      style="margin-left: 8px;"
-                      @click="downloadFile(file)"
-                  >下载</van-button>
-                  <van-button
-                      icon="guide-o"
-                      size="mini"
-                      type="info"
-                      style="margin-left: 8px;"
-                      @click="previewFile(file)"
-                  >预览</van-button>
-                </div>
+                  icon="down"
+                  size="mini"
+                  type="primary"
+                  style="margin-left: 8px;"
+                  @click="downloadFile(file)"
+              >下载</van-button>
+                <van-button
+                    icon="guide-o"
+                    size="mini"
+                    type="info"
+                    style="margin-left: 8px;"
+                    @click="previewFile(file)"
+                >预览</van-button>
+              </div>
               </div>
             </div>
           </van-popup>
@@ -147,7 +147,7 @@
 
 <script>
 import EvidenceDetail from '@/views/EvidenceDetail.vue'
-
+import { downloadFile as utilsDownloadFile, previewFile as utilsPreviewFile } from '@/utils/fileUtils';
 export default {
   name: 'TaskDetail',
   components: {
@@ -297,12 +297,10 @@ export default {
       return clone
     },
     downloadFile(file) {
-      console.log('下载文件:', file);
-      this.$toast('正在下载文件...');
+      utilsDownloadFile(file);
     },
     previewFile(file) {
-      console.log('预览文件:', file);
-      this.$toast('正在预览文件...');
+      utilsPreviewFile(file);
     },
     showFilePopup() {
       this.filePopupVisible = true;

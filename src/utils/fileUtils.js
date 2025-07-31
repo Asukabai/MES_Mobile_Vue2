@@ -62,7 +62,7 @@ export async function previewFile(file) {
     });
   } catch (error) {
     console.error('预览文件失败:', error);
-    alert('文件预览失败，请稍后重试');
+    alert('文件预览失败，请稍后重试'+error);
   }
 }
 

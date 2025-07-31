@@ -1,28 +1,34 @@
 <template>
   <div class="preview-container">
-<!--    <van-nav-bar-->
-<!--        :title="fileName"-->
-<!--        left-text="返回"-->
-<!--        left-arrow-->
-<!--        @click-left="goBack"-->
-<!--    />-->
-    
+    <!--    <van-nav-bar-->
+    <!--        :title="fileName"-->
+    <!--        left-text="返回"-->
+    <!--        left-arrow-->
+    <!--        @click-left="goBack"-->
+    <!--    />-->
+
     <div class="preview-content">
       <div v-if="loading" class="loading-container">
         <van-loading size="24px" vertical>文件加载中...</van-loading>
       </div>
-      
+
       <div v-else-if="previewError" class="error-container">
         <van-icon name="warning-o" size="40" />
         <p class="error-text">{{ previewError }}</p>
         <van-button type="primary" @click="retryPreview">重试</van-button>
       </div>
-      
-      <div v-else-if="previewSuccess" class="success-container">
+
+      <div v-else-if="previewSuccess && !isTextView" class="success-container">
         <van-icon name="checked" size="40" color="#07c160" />
         <p class="success-text">文件已在钉钉中打开预览</p>
       </div>
-      
+
+      <div v-else-if="isTextView && textContent" class="text-preview-container">
+        <h3 class="text-title">{{ fileName }}</h3>
+        <div class="text-content">{{ textContent }}</div>
+        <van-button type="primary" @click="goBack">返回</van-button>
+      </div>
+
       <div v-else class="info-container">
         <van-icon name="info-o" size="40" />
         <p class="info-text">即将使用钉钉文档预览功能打开文件</p>
@@ -43,10 +49,12 @@ export default {
       fileUrl: '',
       loading: false,
       previewError: '',
-      previewSuccess: false
+      previewSuccess: false,
+      isTextView: false,
+      textContent: ''
     };
   },
-  
+
   mounted() {
     // 获取URL参数
     const encodedUrl = this.$route.query.fileUrl;
@@ -54,7 +62,7 @@ export default {
     console.log("encodedUrl: "+ encodedUrl)
     const fileName = this.$route.query.fileName;
     console.log("fileName: "+ fileName)
-    
+
     if (!encodedUrl || !fileName) {
       this.previewError = '缺少文件信息，无法预览';
       return;
@@ -62,34 +70,43 @@ export default {
     this.fileUrl = decodeURIComponent(encodedUrl);
     this.fileName = decodeURIComponent(fileName);
   },
-  
+
   methods: {
     goBack() {
       this.$router.go(-1);
     },
-    
+
     async previewFile() {
       this.loading = true;
       this.previewError = '';
       this.previewSuccess = false;
-      
+      this.isTextView = false;
+      this.textContent = '';
+
       try {
         // 判断是否为图片文件
         const fileExt = this.getFileExtension(this.fileName).toLowerCase();
         const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
-        
+        const textExtensions = ['txt'];
+
         if (imageExtensions.includes(fileExt)) {
           // 图片文件直接展示
           this.previewImage(this.fileUrl);
           return;
         }
-        
+
+        if (textExtensions.includes(fileExt)) {
+          // 文本文件直接展示内容
+          await this.previewTextFile(this.fileUrl);
+          return;
+        }
+
         // 使用钉钉API下载文件到临时路径
         const downloadRes = await dd.downloadFile({
           url: this.fileUrl,
           header: { 'Content-Type': 'application/octet-stream' }
         });
-        
+
         if (downloadRes && downloadRes.filePath) {
           // 调用钉钉API打开文档预览
           await dd.openDocument({
@@ -97,7 +114,7 @@ export default {
             fileType: fileExt,
             fileName: this.fileName
           });
-          
+
           this.previewSuccess = true;
         } else {
           throw new Error('文件下载失败');
@@ -109,7 +126,7 @@ export default {
         this.loading = false;
       }
     },
-    
+
     previewImage(imageUrl) {
       this.previewSuccess = true;
       this.$nextTick(() => {
@@ -120,28 +137,42 @@ export default {
         document.querySelector('.success-container').appendChild(imgPreview);
       });
     },
-    
+
+    async previewTextFile(fileUrl) {
+      try {
+        const response = await fetch(fileUrl);
+        if (!response.ok) {
+          throw new Error('获取文件失败');
+        }
+        this.textContent = await response.text();
+        this.isTextView = true;
+        this.previewSuccess = true;
+      } catch (err) {
+        throw new Error('文本文件加载失败: ' + err.message);
+      }
+    },
+
     retryPreview() {
       this.previewFile();
     },
-    
+
     getFileExtension(fileName) {
       return fileName.split('.').pop();
     },
-    
+
     formatErrorMessage(error) {
       if (typeof error === 'string') {
         return error;
       }
-      
+
       if (error.errMsg) {
         return error.errMsg;
       }
-      
+
       if (error.message) {
         return error.message;
       }
-      
+
       return '文件预览失败，请稍后重试';
     }
   }
@@ -162,7 +193,7 @@ export default {
   padding: 20px;
 }
 
-.loading-container, .error-container, .success-container, .info-container {
+.loading-container, .error-container, .success-container, .info-container, .text-preview-container {
   text-align: center;
   background: white;
   padding: 30px 20px;
@@ -187,5 +218,26 @@ export default {
 
 .info-text {
   color: #666;
+}
+
+.text-preview-container {
+  text-align: left;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.text-title {
+  margin-top: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+.text-content {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin-bottom: 20px;
+  color: #555;
+  line-height: 1.5;
 }
 </style>
