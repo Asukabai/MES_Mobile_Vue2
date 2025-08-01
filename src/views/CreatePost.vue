@@ -74,6 +74,7 @@
           :before-delete="beforeDelete"
           preview-size="80px"
           class="upload-section"
+          accept="*"
       >
         <template #default>
           <div class="upload-placeholder">
@@ -87,7 +88,7 @@
       <div class="action-buttons">
         <van-button
             type="info"
-            style=" border-radius: 20px; width: 40%;"
+            style=" border-radius: 20px; width: 40%;border: 1px solid #ccc;"
             native-type="submit"
         >
           提交
