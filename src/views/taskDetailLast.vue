@@ -1,39 +1,35 @@
 <template>
   <div>
-    <!-- 任务信息 -->
-    <van-cell-group style="margin-top: 0;">
-      <van-nav-bar title="任务完成提交表单" />
-      <van-cell title="任务名称" :value="taskName" />
-      <van-cell title="项目编号" :value="projectCode" />
-    </van-cell-group>
+    <!-- 固定标题 -->
+    <van-nav-bar title="任务完成提交表单" fixed />
 
-    <!-- 新增：任务描述 -->
-    <van-cell-group style="margin-top: 15px;">
-      <van-cell title="任务描述">
-        <template #default>
-          <div class="task-description" v-if="taskDescriptionLines.length">
-            <p v-for="(line, index) in taskDescriptionLines" :key="index">{{ line }}</p>
-          </div>
-          <div v-else style="color: #999;">暂无描述</div>
-        </template>
-      </van-cell>
-    </van-cell-group>
-
-    <!-- 图片上传区域 -->
-    <van-cell-group style="margin-top: 15px;">
-      <van-cell title="上传凭证（一次性上传不得超过5张图片，暂不支持上传动态照片和视频）" />
-      <van-uploader
-          v-model="fileList"
-          :after-read="onAfterRead"
-          multiple
-          :max-count="5"
-          upload-text="上传图片"
-          accept="image/*"
-      />
-    </van-cell-group>
+    <!-- 表单内容的卡片 -->
+    <div class="card-container" style="margin-top: 50px; padding-bottom: 20px;">
+      <!-- 任务信息 -->
+        <van-cell title="任务名称" :value="taskName" />
+        <van-cell title="项目编号" :value="projectCode" />
+        <van-cell title="任务描述">
+          <template #default>
+            <div class="task-description" v-if="taskDescriptionLines.length">
+              <p v-for="(line, index) in taskDescriptionLines" :key="index">{{ line }}</p>
+            </div>
+            <div v-else style="color: #999;">暂无描述</div>
+          </template>
+        </van-cell>
+      <!-- 图片上传区域 -->
+        <van-cell title="上传凭证（一次性上传不得超过5张图片，暂不支持上传动态照片和视频）" />
+        <van-uploader
+            v-model="fileList"
+            :after-read="onAfterRead"
+            multiple
+            :max-count="5"
+            upload-text="上传图片"
+            accept="image/*"
+        />
+    </div>
 
     <!-- 提交按钮组 -->
-    <div style="padding: 20px; display: flex; justify-content: space-between;">
+    <div style="padding: 20px; display: flex; justify-content: space-between; margin-top: 15px;">
       <van-button
           type="info"
           style="flex: 1; margin-right: 10px;"
@@ -46,10 +42,10 @@
       <van-button
           type="default"
           style="flex: 1; margin-left: 10px;"
-          @click="resetForm"
+          @click="cancelAndGoBack"
           :disabled="isSubmitting"
       >
-        取消
+        取消并返回
       </van-button>
     </div>
 
@@ -59,6 +55,7 @@
     </van-overlay>
   </div>
 </template>
+
 
 <script>
 import SensorRequest from "@/utils/SensorRequest";
@@ -216,6 +213,15 @@ export default {
       this.evidenceList = [];
       this.fileList = [];
     },
+    cancelAndGoBack() { // 新增方法：取消并返回到上一页
+      if (this.isSubmitting) {
+        this.$toast('请勿操作，当前正在提交中');
+        return;
+      }
+
+      this.resetForm(); // 调用原有重置表单逻辑
+      this.$router.go(-1); // 返回到上一页
+    },
 
     generateSimpleMd5(str) {
       let hash = 0;
@@ -229,6 +235,14 @@ export default {
 </script>
 
 <style scoped>
+.card-container {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  padding: 15px;
+}
+
 .loading-box {
   display: flex;
   align-items: center;
@@ -247,3 +261,4 @@ export default {
   border: 1px solid #e0e0e0;
 }
 </style>
+

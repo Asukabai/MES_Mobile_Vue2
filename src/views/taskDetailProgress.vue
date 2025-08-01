@@ -1,14 +1,12 @@
 <template>
   <div>
-    <!-- 任务信息 -->
-    <van-cell-group style="margin-top: 0;">
-      <van-nav-bar title="任务过程提交表单" />
+    <!-- 标题 -->
+    <van-nav-bar title="任务过程提交表单" fixed />
+
+    <!-- 所有表单内容的卡片 -->
+    <div class="card-container" style="margin-top: 50px; padding-bottom: 20px;">
       <van-cell title="任务名称" :value="taskName" />
       <van-cell title="项目编号" :value="projectCode" />
-    </van-cell-group>
-
-    <!-- 新增：任务描述 -->
-    <van-cell-group style="margin-top: 15px;">
       <van-cell title="任务描述">
         <template #default>
           <div class="task-description" v-if="taskDescriptionLines.length">
@@ -17,106 +15,42 @@
           <div v-else style="color: #999;">暂无描述</div>
         </template>
       </van-cell>
-    </van-cell-group>
 
-    <!-- 新增：任务进度 -->
-<!--    <van-cell title="任务进度">-->
-<!--      <template #default>-->
-<!--        <van-slider v-model="taskProgress" :min="0" :max="100" @change="onProgressChange" />-->
-<!--      </template>-->
-<!--    </van-cell>-->
-
-<!--     修改：任务进度，显示当前百分比 -->
-<!--    <van-cell title="任务进度">-->
-<!--      <template #default>-->
-<!--        <div style="display: flex; align-items: center;">-->
-<!--          <van-slider v-model="taskProgress" :min="0" :max="99" @change="onProgressChange" />-->
-<!--          <span style="margin-left: 10px;">{{ taskProgress }}%</span>-->
-<!--        </div>-->
-<!--      </template>-->
-<!--    </van-cell>-->
-
-<!--    <van-cell title="任务进度">-->
-<!--      <template #default>-->
-<!--        <div style="display: flex; align-items: center;">-->
-<!--          <div class="slider-wrapper">-->
-<!--            <van-slider v-model="taskProgress" :min="0" :max="99" :step="10" @change="onProgressChange" />-->
-<!--            <div class="slider-ticks">-->
-<!--              <span v-for="tick in 10" :key="tick" :style="{ left: `${(tick - 1) * 10}%` }">-->
-<!--                {{ (tick - 1) * 10 }}%-->
-<!--              </span>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <span style="margin-left: 10px;">{{ taskProgress }}%</span>-->
-<!--        </div>-->
-<!--      </template>-->
-<!--    </van-cell>-->
-
-<!--    <van-cell title="任务进度"></van-cell>-->
-
-<!--    <van-cell :border="false" style="padding: 0 16px;">-->
-<!--      <template #default>-->
-<!--        <div style="display: flex; flex-direction: column; align-items: stretch;">-->
-<!--          <van-slider-->
-<!--              v-model="taskProgress"-->
-<!--              :min="0"-->
-<!--              :max="99"-->
-<!--              :step="10"-->
-<!--              @change="onProgressChange"-->
-<!--              style="margin-top: 10px;"-->
-<!--          />-->
-<!--        </div>-->
-<!--        <span v-for="tick in 10" :key="tick" :style="{ left: `${(tick - 1) * 10}%` }">-->
-<!--      |-->
-<!--    </span>-->
-<!--      </template>-->
-<!--    </van-cell>-->
-<!--&lt;!&ndash;    <van-cell :border="false" style="text-align: right; padding-top: 8px;">&ndash;&gt;-->
-<!--&lt;!&ndash;      <span>{{ taskProgress }}%</span>&ndash;&gt;-->
-<!--&lt;!&ndash;    </van-cell>&ndash;&gt;-->
-
-
-    <van-cell title="任务进度"></van-cell>
-
-    <van-cell :border="false" style="padding: 0 16px;">
-      <template #default>
-        <div class="slider-wrapper">
-          <van-slider
-              v-model="taskProgress"
-              :min="0"
-              :max="99"
-              :step="10"
-              @change="onProgressChange"  style="transition: all 0.3s ease;"
-          />
-          <div class="slider-ticks">
-            <span v-for="tick in 10" :key="tick" :style="{ left: `${(tick - 1) * 10}%` }"></span>
+      <van-cell title="任务进度"></van-cell>
+      <van-cell :border="false" style="padding: 0 16px;">
+        <template #default>
+          <div class="slider-wrapper">
+            <van-slider
+                v-model="taskProgress"
+                :min="-10"
+                :max="99"
+                :step="10"
+                @change="onProgressChange"              style="transition: all 0.3s ease;"
+            />
+            <div class="slider-ticks">
+              <span v-for="tick in 10" :key="tick" :style="{ left: `${(tick - 1) * 10}%` }"></span>
+            </div>
           </div>
-        </div>
-      </template>
-    </van-cell>
+        </template>
+      </van-cell>
+      <van-cell :border="false" style="text-align: right; padding-top: 8px;">
+        <span>{{ taskProgress }}%</span>
+      </van-cell>
 
-    <van-cell :border="false" style="text-align: right; padding-top: 8px;">
-      <span>{{ taskProgress }}%</span>
-    </van-cell>
+      <van-cell title="任务备注">
+        <template #default>
+          <van-field
+              v-model="taskRemark"
+              rows="2"
+              autosize
+              type="textarea"
+              maxlength="50"
+              placeholder="请输入备注信息（最多50字，若无异常可仅上传凭证）"
+              show-word-limit
+          />
+        </template>
+      </van-cell>
 
-    <!-- 新增：任务备注 -->
-    <van-cell title="任务备注">
-      <template #default>
-        <van-field
-            v-model="taskRemark"
-            rows="2"
-            autosize
-            type="textarea"
-            maxlength="50"
-            placeholder="请输入备注信息（最多50字，若无异常可仅上传凭证）"
-            show-word-limit
-        />
-      </template>
-    </van-cell>
-
-
-    <!-- 图片上传区域 -->
-    <van-cell-group style="margin-top: 15px;">
       <van-cell title="上传凭证（一次性上传不得超过5张图片，暂不支持上传动态照片和视频）" />
       <van-uploader
           v-model="fileList"
@@ -126,13 +60,12 @@
           upload-text="上传图片"
           accept="image/*"
       />
-    </van-cell-group>
+    </div>
 
     <!-- 提交按钮组 -->
-    <div style="padding: 20px; display: flex; justify-content: space-between;">
+    <div style="padding: 20px; display: flex; justify-content: space-between; margin-top: 15px;">
       <van-button
-          type="info"
-          style="flex: 1; margin-right: 10px;"
+          type="info"        style="flex: 1; margin-right: 10px;"
           @click="submitEvidence"
           :disabled="isSubmitting"
       >
@@ -140,12 +73,11 @@
       </van-button>
 
       <van-button
-          type="default"
-          style="flex: 1; margin-left: 10px;"
-          @click="resetForm"
+          type="default"        style="flex: 1; margin-left: 10px;"
+          @click="cancelAndGoBack"
           :disabled="isSubmitting"
       >
-        取消
+        取消并返回
       </van-button>
     </div>
 
@@ -362,6 +294,15 @@ export default {
       this.evidenceList = [];
       this.fileList = [];
     },
+    cancelAndGoBack() { // 新增方法：取消并返回到上一页
+      if (this.isSubmitting) {
+        this.$toast('请勿操作，当前正在提交中');
+        return;
+      }
+
+      this.resetForm(); // 调用原有重置表单逻辑
+      this.$router.go(-1); // 返回到上一页
+    },
 
     generateSimpleMd5(str) {
       let hash = 0;
@@ -374,7 +315,14 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped>.card-container {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  padding: 10px;
+}
+
 .loading-box {
   display: flex;
   align-items: center;
@@ -442,5 +390,4 @@ export default {
   opacity: 0.6; /* 添加透明度，使刻度线更柔和 */
   transform: translateX(-50%);
 }
-
 </style>
