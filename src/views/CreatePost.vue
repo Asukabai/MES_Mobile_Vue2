@@ -38,6 +38,33 @@
           placeholder="请输入标签，用逗号分隔"
       />
 
+      <!-- 关联到项目的开关 -->
+      <van-cell title="是否关联到项目">
+        <template #right-icon>
+          <van-switch v-model="isAssociatedWithProject" size="30px" />
+        </template>
+      </van-cell>
+
+      <!-- 关联项目列表（动态显示） -->
+      <van-field
+          v-if="isAssociatedWithProject"
+          v-model="form.associatedProject"
+          name="associatedProject"
+          label="关联的项目"
+          placeholder="请选择要关联的项目"
+          readonly
+          clickable
+          @click="showProjectPicker = true"
+      />
+      <van-popup v-model="showProjectPicker" position="bottom">
+        <van-picker
+            show-toolbar
+            :columns="projectList"
+            @confirm="onProjectConfirm"
+            @cancel="showProjectPicker = false"
+        />
+      </van-popup>
+
       <!-- 文件上传 -->
       <van-uploader
           v-model="fileList"
@@ -59,15 +86,15 @@
       <!-- 操作按钮 -->
       <div class="action-buttons">
         <van-button
-            type="primary"
-            style="background-color: #1989fa; border-radius: 20px; width: 40%;"
+            type="info"
+            style=" border-radius: 20px; width: 40%;"
             native-type="submit"
         >
           提交
         </van-button>
         <div style="width: 10%;"></div> <!-- 中间间隙 -->
         <van-button
-            type="default"
+            type="info"
             style="border-radius: 20px; width: 40%; border: 1px solid #ccc;"
             @click="onCancel"
         >
@@ -79,7 +106,7 @@
 </template>
 
 <script>
-import { NavBar, Form, Field, Uploader, Button, Icon, Toast } from 'vant'
+import { NavBar, Form, Field, Uploader, Button, Icon, Toast, Cell, Switch, Popup, Picker } from 'vant'
 
 export default {
   name: 'CreatePostPage',
@@ -89,7 +116,11 @@ export default {
     VanField: Field,
     VanUploader: Uploader,
     VanButton: Button,
-    VanIcon: Icon
+    VanIcon: Icon,
+    VanCell: Cell,
+    VanSwitch: Switch,
+    VanPopup: Popup,
+    VanPicker: Picker
   },
   data() {
     return {
@@ -98,9 +129,13 @@ export default {
         author: '',
         content: '',
         tags: '',
-        attachments: []
+        attachments: [],
+        associatedProject: '' // 关联项目字段
       },
-      fileList: [] // 存储上传的文件列表
+      fileList: [], // 存储上传的文件列表
+      isAssociatedWithProject: false, // 是否关联到项目
+      showProjectPicker: false, // 是否显示项目选择器
+      projectList: ['项目A', '项目B', '项目C'] // 示例项目列表
     }
   },
   methods: {
@@ -153,6 +188,11 @@ export default {
 
       // 返回上一页
       this.goBack()
+    },
+    onProjectConfirm(value) {
+      this.form.associatedProject = value
+      this.showProjectPicker = false
+      Toast(`已选择项目: ${value}`)
     }
   }
 }
@@ -160,7 +200,7 @@ export default {
 
 <style scoped>
 .create-post-page {
-  padding: 16px;
+  padding: 0px;
 }
 
 .form-container {
