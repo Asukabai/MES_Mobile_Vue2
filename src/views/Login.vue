@@ -45,8 +45,11 @@ export default {
         let targetPath = '/sensor_ddingWork/Release/home'
 
         // 判断是否带有特定参数，跳转到任务页面
-        if (urlParams && urlParams.param1 === 'a') {
+        if (urlParams && urlParams.param1 === 'task') {
           targetPath = '/sensor_ddingWork/Release/task'
+        }
+        if (urlParams && urlParams.param1 === 'share') {
+          targetPath = '/sensor_ddingWork/Release/cart'
         }
 
         this.$router.push({path: targetPath, query: {name: reqData.Name}}).then(() => {
@@ -63,8 +66,11 @@ export default {
               let targetPath = '/sensor_ddingWork/Release/home'
 
               // 判断是否带有特定参数，跳转到任务页面
-              if (urlParams && urlParams.param1 === 'a') {
+              if (urlParams && urlParams.param1 === 'task') {
                 targetPath = '/sensor_ddingWork/Release/task'
+              }
+              if (urlParams && urlParams.param1 === 'share') {
+                targetPath = '/sensor_ddingWork/Release/cart'
               }
 
               this.$router.push({path: targetPath}).catch(err => {
