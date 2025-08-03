@@ -51,14 +51,14 @@
         </template>
       </van-cell>
 
-      <van-cell title="上传凭证（一次性上传不得超过5张图片，暂不支持上传动态照片和视频）" />
+      <van-cell title="上传凭证（支持上传任何格式文件，但总大小不得超过20M，总数不得超过5个）" />
       <van-uploader
           v-model="fileList"
           :after-read="onAfterRead"
           multiple
           :max-count="5"
-          upload-text="上传图片"
-          accept="image/*"
+          upload-text="上传文件"
+          accept="*"
       />
     </div>
 
@@ -133,15 +133,47 @@ export default {
       console.log('当前任务进度:', value + '%');
       // 可以在这里做额外处理，例如触发自动保存等
     },
+    // onAfterRead(files) {
+    //   console.log('【onAfterRead】开始处理文件:', files);
+    //
+    //   if (Array.isArray(files)) {
+    //     files.forEach(file => this.processSingleFile(file));
+    //     return;
+    //   }
+    //
+    //   this.processSingleFile(files);
+    // },
+
     onAfterRead(files) {
       console.log('【onAfterRead】开始处理文件:', files);
 
+      const MAX_TOTAL_SIZE = 20 * 1024 * 1024; // 20MB
+      let currentTotalSize = this.fileList.reduce((total, file) => total + (file.file.size || 0), 0);
+
       if (Array.isArray(files)) {
-        files.forEach(file => this.processSingleFile(file));
+        files.forEach(file => this.validateAndProcessFile(file, currentTotalSize, MAX_TOTAL_SIZE));
         return;
       }
+      this.validateAndProcessFile(files, currentTotalSize, MAX_TOTAL_SIZE);
+    },
 
-      this.processSingleFile(files);
+    validateAndProcessFile(file, currentTotalSize, maxTotalSize) {
+      if (!file || !file.file || !(file.file instanceof File)) {
+        console.warn('⚠️ 文件无效或不是 File 对象');
+        return;
+      }
+      // 检查单个文件大小是否超过限制
+      if (file.file.size > maxTotalSize) {
+        this.$toast.fail(`"${file.file.name}" 文件过大，总大小不能超过20MB`);
+        return;
+      }
+      // 检查总大小是否超过限制
+      if (currentTotalSize + file.file.size > maxTotalSize) {
+        this.$toast.fail('总文件大小不能超过20MB');
+        return;
+      }
+      // 处理文件
+      this.processSingleFile(file);
     },
 
 
