@@ -16,6 +16,7 @@
         </template>
       </van-cell>
 
+      <!--滑块的最大值为 90%-->
       <van-cell title="任务进度"></van-cell>
       <van-cell :border="false" style="padding: 0 16px;">
         <template #default>
@@ -23,7 +24,7 @@
             <van-slider
                 v-model="taskProgress"
                 :min="-10"
-                :max="99"
+                :max="90"
                 :step="10"
                 @change="onProgressChange"              style="transition: all 0.3s ease;"
             />
@@ -51,7 +52,11 @@
         </template>
       </van-cell>
 
-      <van-cell title="上传凭证（支持上传任何格式文件，但总大小不得超过20M，总数不得超过5个）" />
+      <van-cell title="上传凭证">
+        <template #label>
+          <span class="upload-note">支持点击图标上传任何格式文件，但总大小不得超过20M，文件总数不得超过5个</span>
+        </template>
+      </van-cell>
       <van-uploader
           v-model="fileList"
           :after-read="onAfterRead"
@@ -59,13 +64,20 @@
           :max-count="5"
           upload-text="上传文件"
           accept="*"
-      />
+      >
+        <!-- 自定义上传区域内容 -->
+        <div class="custom-upload-area">
+          <img src="@/assets/custom-upload-icon2.png" alt="上传图标" style="width: 88px; height: 88px;" />
+        </div>
+      </van-uploader>
+
     </div>
 
     <!-- 提交按钮组 -->
-    <div style="padding: 20px; display: flex; justify-content: space-between; margin-top: 15px;">
+    <div style="padding: 15px; display: flex;  gap: 25px; justify-content: center; margin-top: 5px;">
       <van-button
-          type="info"        style="flex: 1; margin-right: 10px;"
+          type="info"
+          style="width: 40%; font-size: 14px; padding: 8px 20px; margin-right: 5px;"
           @click="submitEvidence"
           :disabled="isSubmitting"
       >
@@ -73,7 +85,8 @@
       </van-button>
 
       <van-button
-          type="default"        style="flex: 1; margin-left: 10px;"
+          type="default"
+          style="width: 40%; font-size: 14px; padding: 8px 20px; margin-left: 5px;"
           @click="cancelAndGoBack"
           :disabled="isSubmitting"
       >
@@ -81,9 +94,10 @@
       </van-button>
     </div>
 
+
     <!-- 加载遮罩 -->
     <van-overlay :show="isSubmitting">
-      <div class="loading-box">正在处理图片，请稍候...</div>
+      <div class="loading-box">正在处理中，请稍候...</div>
     </van-overlay>
   </div>
 </template>
@@ -220,23 +234,23 @@ export default {
       }
 
       if (this.fileList.length === 0) {
-        this.$toast.fail('请至少上传一张图片');
+        this.$toast.fail('请至少上传一个文件');
         return;
       }
 
       if (this.evidenceList.length < this.fileList.length) {
-        this.$toast('图片正在加载中，请稍等...');
+        this.$toast('正在加载中，请稍等...');
         try {
           await this.waitForAllImagesLoaded();
         } catch (error) {
-          this.$toast.fail('图片加载失败，请重试');
+          this.$toast.fail('加载失败，请重试');
           this.isSubmitting = false;
           return;
         }
       }
 
       if (this.evidenceList.length === 0) {
-        this.$toast.fail('请至少上传一张图片');
+        this.$toast.fail('请至少上传一个文件');
         return;
       }
 
@@ -311,7 +325,7 @@ export default {
 
           if (Date.now() - startTime > timeout) {
             clearInterval(interval);
-            reject(new Error('等待图片加载超时'));
+            reject(new Error('等待文件加载超时'));
           }
         }, 200);
       });
@@ -355,6 +369,11 @@ export default {
   padding: 10px;
 }
 
+.upload-note {
+  font-size: 12px; /* 设置字体大小 */
+  color: #999; /* 设置字体颜色为灰色 */
+}
+
 .loading-box {
   display: flex;
   align-items: center;
@@ -366,7 +385,6 @@ export default {
   text-align: center;
   padding: 20px;
 }
-
 .van-button--default {
   background-color: #f5f5f5;
   color: #333;

@@ -17,15 +17,24 @@
           </template>
         </van-cell>
       <!-- 图片上传区域 -->
-        <van-cell title="上传凭证（一次性上传不得超过5张图片，暂不支持上传动态照片和视频）" />
-        <van-uploader
-            v-model="fileList"
-            :after-read="onAfterRead"
-            multiple
-            :max-count="5"
-            upload-text="上传图片"
-            accept="image/*"
-        />
+      <van-cell title="上传凭证">
+        <template #label>
+          <span class="upload-note">支持点击图标上传任何格式文件，但总大小不得超过20M，文件总数不得超过5个</span>
+        </template>
+      </van-cell>
+      <van-uploader
+          v-model="fileList"
+          :after-read="onAfterRead"
+          multiple
+          :max-count="5"
+          upload-text="上传文件"
+          accept="*"
+      >
+        <!-- 自定义上传区域内容 -->
+        <div class="custom-upload-area">
+          <img src="@/assets/custom-upload-icon2.png" alt="上传图标" style="width: 88px; height: 88px;" />
+        </div>
+      </van-uploader>
     </div>
 
     <!-- 提交按钮组 -->
