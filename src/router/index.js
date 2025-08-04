@@ -4,16 +4,16 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 // 导入视图组件...
-import Home from '../views/Home.vue'
-import CartFile from '../views/CartFile.vue'
-import User from '../views/User.vue'
-import Task from "@/views/Task.vue";
-import IndexView from "@/views/IndexView.vue";
-import Login from "@/views/Login.vue";
-import StatisticalReport from "@/views/StatisticalReport.vue";
-import UploadSummary from "@/views/UploadSummary.vue";
-import ChatCategory from "@/views/ChatCategory.vue";
-import CreatePost from "@/views/CreatePost.vue";
+import Home from '../views/home/Home.vue'
+import CartFile from '../views/share/CartFile.vue'
+import User from '../views/user/User.vue'
+import Task from "@/views/task/Task.vue";
+import IndexView from "@/views/share/IndexView.vue";
+import Login from "@/views/login/Login.vue";
+import StatisticalReport from "@/views/summary/StatisticalReport.vue";
+import UploadSummary from "@/views/summary/UploadSummary.vue";
+import ChatCategory from "@/views/share/ChatCategory.vue";
+import CreatePost from "@/views/share/CreatePost.vue";
 
 Vue.use(Router)
 
@@ -71,32 +71,32 @@ export default new Router({
     {
       path: `${basePath}preview`,
       name: 'FilePreview',
-      component: () => import('@/views/FilePreview.vue')
+      component: () => import('@/views/share/FilePreview.vue')
     },
     {
       path: `${basePath}dd-preview`,
       name: 'DingtalkFilePreview',
-      component: () => import('@/views/DingtalkFilePreview.vue')
+      component: () => import('@/views/share/DingtalkFilePreview.vue')
     },
     {
       path: `${basePath}download`,
       name: 'FileDownload',
-      component: () => import('@/views/FileDownload.vue')
+      component: () => import('@/views/share/FileDownload.vue')
     },
     {
       path: `${basePath}profile`,
       name: 'Profile',
-      component: () => import('@/views/Profile.vue')
+      component: () => import('@/views/user/Profile.vue')
     },
     {
       path: `${basePath}project-code`,
       name: 'ProjectCode',
-      component: () => import('@/views/ProjectCode.vue')
+      component: () => import('@/views/project/ProjectCode.vue')
     },
     {
       path: `${basePath}code-recode`,
       name: 'CodeRecode',
-      component: () => import('@/views/CodeRecode.vue')
+      component: () => import('@/views/share/CodeRecode.vue')
     },
     {
       path: `${basePath}notice-detail`,
@@ -107,7 +107,7 @@ export default new Router({
     {
       path: `${basePath}task-record`,
       name: 'taskRecord',
-      component: () => import('../views/taskRecord.vue')
+      component: () => import('../views/task/taskRecord.vue')
     },
     {
       path: `${basePath}statistical-report`,
@@ -122,42 +122,42 @@ export default new Router({
     {
       path: `${basePath}file-type-stats`,
       name: 'FileTypeStats',
-      component: () => import('@/views/FileTypeStats.vue')
+      component: () => import('@/views/summary/FileTypeStats.vue')
     },
     {
       path: `${basePath}recent-logs`,
       name: 'RecentLogs',
-      component: () => import('@/views/RecentLogs.vue')
+      component: () => import('@/views/summary/RecentLogs.vue')
     },
     {
       path: `${basePath}project-manage`,
       name: 'projectManage',
-      component: () => import('@/views/projectManage.vue')
+      component: () => import('@/views/project/projectManage.vue')
     },
     {
       path: `${basePath}task-manage`,
       name: 'taskManage',
-      component: () => import('@/views/taskManage.vue')
+      component: () => import('@/views/task/taskManage.vue')
     },
     {
       path: `${basePath}task-detail`,
       name: 'TaskDetail',
-      component: () => import('@/views/taskDetail.vue')
+      component: () => import('@/views/task/taskDetail.vue')
     },
     {
       path: `${basePath}task-detail-last`,
       name: 'TaskDetailLast',
-      component: () => import('@/views/taskDetailLast.vue')
+      component: () => import('@/views/task/taskDetailLast.vue')
     },
     {
       path: `${basePath}task-detail-progress`,
       name: 'TaskDetailProgress',
-      component: () => import('@/views/taskDetailProgress.vue')
+      component: () => import('@/views/task/taskDetailProgress.vue')
     },
     {
       path: `${basePath}task-detail-look`,
       name: 'TaskDetailLook',
-      component: () => import('@/views/taskDetailLook.vue')
+      component: () => import('@/views/task/taskDetailLook.vue')
     },
     {
       path: "/sensor_ddingWork/Release/cardStorageOperate",
@@ -167,7 +167,7 @@ export default new Router({
     {
       path: "/sensor_ddingWork/Release/task/evidence-detail",
       name: 'EvidenceDetail',
-      component: () => import('@/views/EvidenceDetail.vue')
+      component: () => import('@/views/share/EvidenceDetail.vue')
     },
     {
       path: "/sensor_ddingWork/Release/code/codeList",
@@ -202,12 +202,12 @@ export default new Router({
     {
       path: '/sensor_ddingWork/Release/progress-tracking',
       name: 'ProgressTracking',
-      component: () => import('@/views/ProgressTracking.vue')
+      component: () => import('@/views/project/ProgressTracking.vue')
     },
     {
       path: '/sensor_ddingWork/Release/project-detail/:id',
       name: 'ProjectDetail',
-      component: () => import('@/views/ProjectDetail.vue')
+      component: () => import('@/views/project/ProjectDetail.vue')
     },
     // 捕获非法路径，重定向到登录页
     {

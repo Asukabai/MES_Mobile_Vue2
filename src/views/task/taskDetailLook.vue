@@ -146,7 +146,7 @@
 </template>
 
 <script>
-import EvidenceDetail from '@/views/EvidenceDetail.vue'
+import EvidenceDetail from '@/views/share/EvidenceDetail.vue'
 import { downloadFile as utilsDownloadFile, previewFile as utilsPreviewFile } from '@/utils/fileUtils';
 export default {
   name: 'TaskDetail',
