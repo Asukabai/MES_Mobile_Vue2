@@ -102,3 +102,124 @@ function getTemporaryUrl(fileName, fileMd5) {
     );
   });
 }
+
+// export function downloadFileByBase64(fileName, fileBase64) {
+//   // 提取纯 Base64 数据部分
+//   const pureBase64 = extractPureBase64(fileBase64);
+//
+//   // 验证是否为有效的 Base64 字符串
+//   if (!isBase64Valid(pureBase64)) {
+//     console.error('无效的 Base64 数据:', fileBase64);
+//     alert('文件下载失败：数据格式不正确');
+//     return;
+//   }
+//
+//   const byteCharacters = atob(pureBase64);
+//   const byteNumbers = new Array(byteCharacters.length);
+//   for (let i = 0; i < byteCharacters.length; i++) {
+//     byteNumbers[i] = byteCharacters.charCodeAt(i);
+//   }
+//   const byteArray = new Uint8Array(byteNumbers);
+//   const blob = new Blob([byteArray], { type: 'application/octet-stream' });
+//
+//   const link = document.createElement('a');
+//   link.href = URL.createObjectURL(blob);
+//   link.download = fileName;
+//   document.body.appendChild(link);
+//   link.click();
+//   document.body.removeChild(link);
+// }
+//
+// // 辅助函数：验证 Base64 字符串
+// function isBase64Valid(str) {
+//   try {
+//     return btoa(atob(str)) === str;
+//   } catch (e) {
+//     return false;
+//   }
+// }
+//
+// // 辅助函数：提取纯 Base64 数据部分
+// function extractPureBase64(base64String) {
+//   const base64PrefixRegex = /^data:[^;]+;base64,/;
+//   return base64String.replace(base64PrefixRegex, '');
+// }
+
+
+export function downloadFileByBase64(fileName, fileBase64) {
+  // 提取纯 Base64 数据部分
+  const pureBase64 = extractPureBase64(fileBase64);
+
+  // 验证是否为有效的 Base64 字符串
+  if (!isBase64Valid(pureBase64)) {
+    console.error('无效的 Base64 数据:', fileBase64);
+    alert('文件下载失败：数据格式不正确');
+    return;
+  }
+
+  // 构造 Data URL
+  const mimeType = getMimeType(fileName); // 根据文件名推断 MIME 类型
+  const dataUrl = `data:${mimeType};base64,${pureBase64}`;
+
+  // 判断是否为移动端
+  const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  if (isMobile) {
+    // 移动端：通过 iframe 实现下载
+    const iframe = document.createElement('iframe');
+    iframe.src = dataUrl;
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+
+    // 移除 iframe（可选）
+    setTimeout(() => {
+      document.body.removeChild(iframe);
+    }, 5000); // 5秒后移除 iframe
+  } else {
+    // PC 端：通过 <a> 标签实现下载
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+}
+
+// 辅助函数：验证 Base64 字符串
+function isBase64Valid(str) {
+  try {
+    return btoa(atob(str)) === str;
+  } catch (e) {
+    return false;
+  }
+}
+
+// 辅助函数：提取纯 Base64 数据部分
+function extractPureBase64(base64String) {
+  const base64PrefixRegex = /^data:[^;]+;base64,/;
+  return base64String.replace(base64PrefixRegex, '');
+}
+
+// 辅助函数：根据文件名推断 MIME 类型
+function getMimeType(fileName) {
+  const ext = fileName.split('.').pop().toLowerCase();
+  const mimeTypes = {
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    png: 'image/png',
+    gif: 'image/gif',
+    pdf: 'application/pdf',
+    txt: 'text/plain',
+    zip: 'application/zip',
+    doc: 'application/msword',
+    docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    xls: 'application/vnd.ms-excel',
+    xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    ppt: 'application/vnd.ms-powerpoint',
+    pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    default: 'application/octet-stream'
+  };
+  return mimeTypes[ext] || mimeTypes.default;
+}
+

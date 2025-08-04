@@ -1,7 +1,5 @@
 <template>
   <div class="evidence-detail-page">
-<!--    <van-nav-bar title="凭证详情" left-text="返回到上一页" @click-left="$router.go(-1)" />-->
-
     <!-- 加载中提示 -->
     <van-loading size="24px" vertical v-if="loading">加载中...</van-loading>
 
@@ -20,38 +18,10 @@
     </van-cell-group>
 
     <!-- 阶段卡片列表 -->
-<!--    <div v-for="(stage, index) in stageList" :key="index" class="stage-card">-->
-<!--      <van-cell-group>-->
-<!--        <van-cell title="任务进度">-->
-<!--          <div class="cell-content">{{ stage.TaskStageFile_Progress || '0' }}%</div>-->
-<!--        </van-cell>-->
-
-<!--        <van-cell title="任务备注">-->
-<!--          <div class="cell-content">{{ stage.TaskStageFile_Remark || '暂无备注' }}</div>-->
-<!--        </van-cell>-->
-
-<!--        <van-cell title="上传凭证">-->
-<!--          <div class="image-list" v-if="Array.isArray(stage.TaskStage_Files) && stage.TaskStage_Files.length">-->
-<!--            <div v-for="(file, idx) in stage.TaskStage_Files" :key="idx" class="image-item">-->
-<!--              <van-image-->
-<!--                  width="80"-->
-<!--                  height="80"-->
-<!--                  :src="file.File_Base64 || placeholderImage"-->
-<!--                  @click="previewImage(file.File_Base64)"-->
-<!--              />-->
-<!--              <div class="upload-time">{{ file.Upload_Time_Formatted || '暂无时间' }}</div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div v-else class="cell-content" style="color: #999;">暂无图片</div>-->
-<!--        </van-cell>-->
-<!--      </van-cell-group>-->
-<!--    </div>-->
-    <!-- 阶段卡片列表 -->
     <div v-if="stageList.length > 0">
       <div v-for="(stage, index) in stageList" :key="index" class="stage-card">
         <van-cell-group>
           <van-cell title="任务进度">
-<!--            <div class="cell-content">{{ stage.TaskStageFile_Progress || '0' }}%</div>-->
             <div class="progress-container">
               <van-progress
                   :percentage="parseFloat(stage.TaskStageFile_Progress) || 0"
@@ -73,13 +43,24 @@
 
           <van-cell title="上传凭证">
             <div class="image-list" v-if="Array.isArray(stage.TaskStage_Files) && stage.TaskStage_Files.length">
-              <div v-for="(file, idx) in stage.TaskStage_Files" :key="idx" class="image-item">
-                <van-image
-                    width="80"
-                    height="80"
-                    :src="file.File_Base64 "
-                    @click="previewImage(file.File_Base64)"
-                />
+              <div v-for="(file, idx) in stage.TaskStage_Files" :key="idx" class="file-item">
+                <!-- 判断是否为图片 -->
+                <template v-if="isImage(file.File_Name)">
+                  <van-image
+                      width="80"
+                      height="80"
+                      :src="file.File_Base64"
+                      @click="previewImage(file.File_Base64)"
+                  />
+                </template>
+                <template v-else>
+                  <div class="file-info">
+                    <span class="file-name">{{ file.File_Name }}</span>
+<!--                    <div class="file-actions">-->
+<!--                      <van-button type="primary" size="mini" @click="downloadFile(file.File_Name,file.File_Base64)">下载</van-button>-->
+<!--                    </div>-->
+                  </div>
+                </template>
                 <div class="upload-time">{{ file.Upload_Time_Formatted || '暂无时间' }}</div>
               </div>
             </div>
@@ -100,7 +81,6 @@
       <div class="stage-card" style="margin-top: 24px;">
         <van-cell-group>
           <van-cell title="任务进度">
-<!--            <div class="cell-content">100%</div>-->
             <div class="progress-container">
               <van-progress
                   :percentage="100"
@@ -131,13 +111,24 @@
 
           <van-cell title="上传凭证">
             <div class="image-list" v-if="finalEvidenceList.length > 0">
-              <div v-for="(file, idx) in finalEvidenceList" :key="idx" class="image-item">
-                <van-image
-                    width="80"
-                    height="80"
-                    :src="file.File_Base64 "
-                    @click="previewImage(file.File_Base64)"
-                />
+              <div v-for="(file, idx) in finalEvidenceList" :key="idx" class="file-item">
+                <!-- 判断是否为图片 -->
+                <template v-if="isImage(file.File_Name)">
+                  <van-image
+                      width="80"
+                      height="80"
+                      :src="file.File_Base64"
+                      @click="previewImage(file.File_Base64)"
+                  />
+                </template>
+                <template v-else>
+                  <div class="file-info">
+                    <span class="file-name">{{ file.File_Name }}</span>
+<!--                    <div class="file-actions">-->
+<!--                      <van-button type="primary" size="mini" @click="downloadFile(file.File_Name,file.File_Base64)">下载</van-button>-->
+<!--                    </div>-->
+                  </div>
+                </template>
                 <div class="upload-time">{{ file.Upload_Time_Formatted || '暂无时间' }}</div>
               </div>
             </div>
@@ -149,7 +140,7 @@
 
     <!-- 空状态：当整个 stageList 为空时显示 -->
     <van-empty
-        v-else
+        v-if="stageList.length === 0 && finalEvidenceList.length === 0"
         description="暂无凭证提交"
         :image="noEvidenceImg"
         image-size="80"
@@ -160,9 +151,10 @@
 
 
 <script>
-import SensorRequest from "@/utils/SensorRequest"
-import noEvidenceImg from '@/assets/智能办公.png'
-import { ImagePreview } from "vant"
+import SensorRequest from "@/utils/SensorRequest";
+import noEvidenceImg from '@/assets/智能办公.png';
+import { ImagePreview } from "vant";
+import {downloadFileByBase64} from "@/utils/fileUtils";
 
 export default {
   name: "EvidenceDetail",
@@ -283,11 +275,17 @@ export default {
     formatDate(dateString) {
       const date = new Date(dateString)
       return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
-    }
+    },
+    isImage(fileName) {
+      const ext = fileName.split('.').pop().toLowerCase();
+      return ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(ext);
+    },
+    downloadFile(fileName, fileBase64) {
+      downloadFileByBase64(fileName, fileBase64);
+    },
   }
 }
 </script>
-
 
 
 <style scoped>
@@ -312,9 +310,32 @@ export default {
   padding: 5px 0;
 }
 
+.file-name {
+  display: block; /* 确保文本块级显示 */
+  word-break: break-all; /* 强制换行 */
+  max-width: 15ch; /* 限制最大宽度为 12 个字符 */
+  white-space: normal; /* 允许换行 */
+  text-align: center; /* 居中对齐（可选） */
+  font-weight: bold; /* 加粗显示 */
+}
 
-.image-item {
-  text-align: center; /* 居中对齐 */
+.file-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 16px;
+}
+
+.file-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.file-actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
 }
 
 .van-image {
@@ -336,4 +357,3 @@ export default {
   color: #999;
 }
 </style>
-
