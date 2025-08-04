@@ -167,7 +167,7 @@ export default new Router({
     {
       path: "/sensor_ddingWork/Release/task/evidence-detail",
       name: 'EvidenceDetail',
-      component: () => import('@/views/share/EvidenceDetail.vue')
+      component: () => import('@/views/task/EvidenceDetail.vue')
     },
     {
       path: "/sensor_ddingWork/Release/code/codeList",

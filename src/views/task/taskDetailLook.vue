@@ -15,8 +15,13 @@
               v-show="shouldShowField(key)"
               class="task-field"
           >
+            <!-- 特殊处理时间字段 -->
+            <template v-if="isTimeField(key)">
+              {{ formatTime(value) }}
+            </template>
+
             <!-- 特殊处理负责人和参与者 -->
-            <template v-if="key === 'Task_Leader' || key === 'Task_Participant'">
+            <template v-else-if="key === 'Task_Leader' || key === 'Task_Participant'">
               {{ getPersonName(value) }}
             </template>
 
@@ -37,12 +42,6 @@
                   :overlay-style="{ backgroundColor: 'rgba(0, 0, 0, 0.3)' }"
               >
                 <div class="popup-content">
-<!--                  <van-nav-bar-->
-<!--                      :title="currentPopupTitle"-->
-<!--                      left-text="返回"-->
-<!--                      @click-left="hideDetail"-->
-<!--                      style="flex-shrink: 0;"-->
-<!--                  />-->
                   <van-nav-bar
                       left-text="返回到上一页"
                       @click-left="hideDetail"
@@ -96,13 +95,7 @@
               :overlay-style="{ backgroundColor: 'rgba(0, 0, 0, 0.3)' }"
           >
             <div class="popup-content">
-<!--              <van-nav-bar
-                  title="任务附件"
-                  left-text="返回"
-                  @click-left="hideFilePopup"
-                  style="flex-shrink: 0;"
-              />-->
-            <van-nav-bar
+              <van-nav-bar
                   left-text="返回到上一页"
                   @click-left="hideFilePopup"
                   style="flex-shrink: 0;"
@@ -115,20 +108,20 @@
                 >
                   <span style="flex: 1;">{{ file.File_Name }}</span>
                   <van-button
-                  icon="down"
-                  size="mini"
-                  type="primary"
-                  style="margin-left: 8px;"
-                  @click="downloadFile(file)"
-              >下载</van-button>
-                <van-button
-                    icon="guide-o"
-                    size="mini"
-                    type="info"
-                    style="margin-left: 8px;"
-                    @click="previewFile(file)"
-                >预览</van-button>
-              </div>
+                      icon="down"
+                      size="mini"
+                      type="primary"
+                      style="margin-left: 8px;"
+                      @click="downloadFile(file)"
+                  >下载</van-button>
+                  <van-button
+                      icon="guide-o"
+                      size="mini"
+                      type="info"
+                      style="margin-left: 8px;"
+                      @click="previewFile(file)"
+                  >预览</van-button>
+                </div>
               </div>
             </div>
           </van-popup>
@@ -146,8 +139,9 @@
 </template>
 
 <script>
-import EvidenceDetail from '@/views/share/EvidenceDetail.vue'
+import EvidenceDetail from '@/views/task/EvidenceDetail.vue'
 import { downloadFile as utilsDownloadFile, previewFile as utilsPreviewFile } from '@/utils/fileUtils';
+
 export default {
   name: 'TaskDetail',
   components: {
@@ -244,22 +238,27 @@ export default {
       }
       return subKeyMap[key] || key
     },
-    // getPersonName(value) {
-    //   console.log('传入 getPersonName 的 value:', value)
-    //   try {
-    //     let obj = typeof value === 'string' ? JSON.parse(value) : value
-    //
-    //     if (Array.isArray(obj)) {
-    //       obj = obj[0] || {}
-    //     }
-    //
-    //     return obj?.Person_Name || '暂无数据'
-    //   } catch (e) {
-    //     console.error('获取 Person_Name 失败:', e)
-    //     return '暂无数据'
-    //   }
-    // },
-
+    isTimeField(key) {
+      return ['Task_StartTime', 'Task_ExEndTime', 'Task_FinishTime'].includes(key);
+    },
+    formatTime(time) {
+      if (!time) {
+        return '暂无数据';
+      }
+      try {
+        const date = new Date(time);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+      } catch (e) {
+        console.error('时间格式化失败:', e);
+        return '时间格式错误';
+      }
+    },
     getPersonName(value) {
       console.log('传入 getPersonName 的 value:', value);
       try {
@@ -280,8 +279,6 @@ export default {
         return '暂无数据';
       }
     },
-
-    // ✅ 安全调用 hasOwnProperty，避免 ESLint 报错
     deepClone(obj, hash = new WeakMap()) {
       if (obj === null || typeof obj !== 'object') return obj
       if (hash.has(obj)) return undefined
@@ -311,7 +308,6 @@ export default {
   }
 }
 </script>
-
 
 <style scoped>
 .nav-text {
