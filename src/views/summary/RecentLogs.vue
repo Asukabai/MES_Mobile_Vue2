@@ -2,10 +2,10 @@
   <div class="recent-logs-page">
     <!-- 导航栏 -->
     <van-nav-bar>
-      <!-- 标题插槽：加粗字体 -->
-      <template #title>
-        <span class="nav-title">系统日志</span>
-      </template>
+<!--      &lt;!&ndash; 标题插槽：加粗字体 &ndash;&gt;-->
+<!--      <template #title>-->
+<!--        <span class="nav-title">系统日志</span>-->
+<!--      </template>-->
 
       <!-- 排序图标 -->
       <template #left>

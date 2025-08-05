@@ -1,6 +1,6 @@
 <template>
   <div class="project-manage">
-    <van-nav-bar title="项目列表" fixed />
+<!--    <van-nav-bar title="项目列表" fixed />-->
     <div class="content">
       <!-- 加载状态 -->
       <div v-if="loading" style="text-align: center; padding: 20px;">加载中...</div>
@@ -354,16 +354,16 @@ export default {
 }
 
 .project-manage {
-  padding-top: 46px; /* 与导航栏高度一致 */
+  padding-top: 10px; /* 与导航栏高度一致 */
 }
 
 .content {
-  padding: 16px;
+  padding: 10px;
 }
 
 /* 卡片样式 */
 .project-card {
-  margin-bottom: 16px;
+  margin-bottom: 10px;
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 默认阴影 */

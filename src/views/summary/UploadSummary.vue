@@ -1,7 +1,7 @@
 <template>
   <div class="upload-summary">
     <!-- 导航栏 -->
-    <van-nav-bar title="上传文件信息汇总" />
+<!--    <van-nav-bar title="上传文件信息汇总" />-->
 
     <!-- 总览 -->
     <van-cell-group title="信息总览">

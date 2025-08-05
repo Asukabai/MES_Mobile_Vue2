@@ -8,7 +8,7 @@
     </van-overlay>
 
     <!-- 导航栏 -->
-    <van-nav-bar title="统计报表" />
+<!--    <van-nav-bar title="统计报表" />-->
 
     <!-- 单独展示：服务器资源 -->
     <div class="server-resource-panel">

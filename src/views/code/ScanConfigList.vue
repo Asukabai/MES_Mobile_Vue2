@@ -1,6 +1,6 @@
 <template>
   <div class="config-list-container">
-    <h2>配置列表</h2>
+<!--    <h2>配置列表</h2>-->
 
     <van-loading v-if="loading" type="spinner" style="margin: 20px auto">加载中...</van-loading>
     <van-empty v-if="!loading && list.length === 0" description="暂无数据" />

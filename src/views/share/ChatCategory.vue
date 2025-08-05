@@ -1,9 +1,9 @@
 <template>
   <div class="knowledge-base-page">
     <!-- 页面标题 -->
-    <van-nav-bar
-        title="知识库"
-    />
+<!--    <van-nav-bar-->
+<!--        title="知识库"-->
+<!--    />-->
 
     <!-- 经验贴列表 -->
     <van-list
@@ -40,12 +40,11 @@
 
 <script>
 import MainTabBar from '@/components/MainTabBar.vue'
-import { NavBar, List, Cell, Icon } from 'vant'
+import { List, Cell, Icon } from 'vant'
 
 export default {
   name: 'KnowledgeBasePage',
   components: {
-    VanNavBar: NavBar,
     VanList: List,
     VanCell: Cell,
     VanIcon: Icon,

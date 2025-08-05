@@ -132,7 +132,7 @@ const router = new Router({
       path: `${basePath}upload-summary`,
       name: 'UploadSummary',
       component: UploadSummary,
-      meta: { title: '上传汇总' }
+      meta: { title: '上传文件信息汇总' }
     },
     {
       path: `${basePath}file-type-stats`,
@@ -144,19 +144,19 @@ const router = new Router({
       path: `${basePath}recent-logs`,
       name: 'RecentLogs',
       component: () => import('@/views/summary/RecentLogs.vue'),
-      meta: { title: '近期日志' }
+      meta: { title: '系统日志' }
     },
     {
       path: `${basePath}project-manage`,
       name: 'projectManage',
       component: () => import('@/views/project/projectManage.vue'),
-      meta: { title: '项目管理' }
+      meta: { title: '项目列表' }
     },
     {
       path: `${basePath}task-manage`,
       name: 'taskManage',
       component: () => import('@/views/task/taskManage.vue'),
-      meta: { title: '任务管理' }
+      meta: { title: '任务日历' }
     },
     {
       path: `${basePath}task-detail`,
@@ -204,7 +204,7 @@ const router = new Router({
       path: "/sensor_ddingWork/Release/code/config",
       name: 'ScanConfigPage',
       component: () => import('@/views/code/ScanConfigPage.vue'),
-      meta: { title: '扫描配置' }
+      meta: { title: '扫码配置' }
     },
     {
       path: "/sensor_ddingWork/Release/code/configList",

@@ -1,8 +1,6 @@
 <template>
   <div>
     <van-cell
-        title="用户信息"
-        icon="user-o"
         :title-style="{ fontWeight: 'bold', fontSize: '16px' }"
     />
     <!-- 用户信息卡片 -->

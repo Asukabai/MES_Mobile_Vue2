@@ -1,6 +1,6 @@
 <template>
   <div class="scan-config-container">
-    <h2>扫码配置</h2>
+<!--    <h2>扫码配置</h2>-->
 
     <van-cell-group inset>
       <!-- 模块编码字段 -->

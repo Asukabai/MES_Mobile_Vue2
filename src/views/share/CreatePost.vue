@@ -1,9 +1,9 @@
 <template>
   <div class="create-post-page">
     <!-- 页面标题 -->
-    <van-nav-bar
-        title="知识库提交表单"
-    />
+<!--    <van-nav-bar-->
+<!--        title="知识库提交表单"-->
+<!--    />-->
 
     <!-- 表单内容 -->
     <van-form @submit="onSubmit" class="form-container">
@@ -107,12 +107,11 @@
 </template>
 
 <script>
-import { NavBar, Form, Field, Uploader, Button, Icon, Toast, Cell, Switch, Popup, Picker } from 'vant'
+import {  Form, Field, Uploader, Button, Icon, Toast, Cell, Switch, Popup, Picker } from 'vant'
 
 export default {
   name: 'CreatePostPage',
   components: {
-    VanNavBar: NavBar,
     VanForm: Form,
     VanField: Field,
     VanUploader: Uploader,

@@ -7,44 +7,46 @@
       <van-tab title="收到的分享">
         <!-- 下拉刷新组件 -->
         <van-pull-refresh v-model="receivedRefreshing" @refresh="onReceivedRefresh">
-          <van-list
-              :loading="receivedLoading"
-              :finished="receivedFinished"
-              finished-text="没有更多了"
-              @load="loadReceivedData"
-          >
-            <van-card
-                v-for="item in receivedList"
-                :key="item.ID_SharedFileInfo"
-                :title="item.File_Name"
-                :desc="formatDesc(item)"
-                :thumb="getLocalImage(item)"
-                class="share-card"
+          <div class="cards-container">
+            <van-list
+                :loading="receivedLoading"
+                :finished="receivedFinished"
+                finished-text="没有更多了"
+                @load="loadReceivedData"
             >
-              <template #tags>
-                <van-tag plain type="danger" style="margin-right: 8px; margin-bottom: 8px;">{{ formatSharedType(item.Shared_Type) }}</van-tag>
-                <van-tag plain type="success" v-if="item.Expire_Time" style="margin-right: 8px; margin-bottom: 8px;">有效期至：{{ item.Expire_Time }}</van-tag>
-                <van-tag plain type="primary" v-else style="margin-right: 8px; margin-bottom: 8px;">分享文件永久有效</van-tag>
-              </template>
+              <van-card
+                  v-for="item in receivedList"
+                  :key="item.ID_SharedFileInfo"
+                  :title="item.File_Name"
+                  :desc="formatDesc(item)"
+                  :thumb="getLocalImage(item)"
+                  class="share-card"
+              >
+                <template #tags>
+                  <van-tag plain type="danger" style="margin-right: 8px; margin-bottom: 8px;">{{ formatSharedType(item.Shared_Type) }}</van-tag>
+                  <van-tag plain type="success" v-if="item.Expire_Time" style="margin-right: 8px; margin-bottom: 8px;">有效期至：{{ item.Expire_Time }}</van-tag>
+                  <van-tag plain type="primary" v-else style="margin-right: 8px; margin-bottom: 8px;">分享文件永久有效</van-tag>
+                </template>
 
-              <template #footer>
-                <van-button
-                    icon="down"
-                    round
-                    size="small"
-                    type="info"
-                    @click="handleDownload(item)"
-                >下载</van-button>
-                <van-button
-                    icon="guide-o"
-                    round
-                    size="small"
-                    type="info"
-                    @click="handlePreview(item)"
-                >预览</van-button>
-              </template>
-            </van-card>
-          </van-list>
+                <template #footer>
+                  <van-button
+                      icon="down"
+                      round
+                      size="small"
+                      type="info"
+                      @click="handleDownload(item)"
+                  >下载</van-button>
+                  <van-button
+                      icon="guide-o"
+                      round
+                      size="small"
+                      type="info"
+                      @click="handlePreview(item)"
+                  >预览</van-button>
+                </template>
+              </van-card>
+            </van-list>
+          </div>
         </van-pull-refresh>
       </van-tab>
 
@@ -52,45 +54,47 @@
       <van-tab title="发送的分享">
         <!-- 下拉刷新组件 -->
         <van-pull-refresh v-model="sentRefreshing" @refresh="onSentRefresh">
-          <van-empty description="" v-if="sentList.length === 0 && !sentLoading" />
-          <van-list
-              :loading="sentLoading"
-              :finished="sentFinished"
-              finished-text="没有更多了"
-              @load="loadSentData"
-          >
-            <van-card
-                v-for="item in sentList"
-                :key="item.ID_SharedFileInfo"
-                :title="item.File_Name"
-                :desc="formatSentDesc(item)"
-                :thumb="getLocalImage(item)"
-                class="share-card"
+          <div class="cards-container">
+            <van-empty description="" v-if="sentList.length === 0 && !sentLoading && sentFinished" />
+            <van-list
+                :loading="sentLoading"
+                :finished="sentFinished"
+                finished-text="没有更多了"
+                @load="loadSentData"
             >
-              <template #tags>
-                <van-tag plain type="danger" style="margin-right: 8px; margin-bottom: 8px;">{{ formatSharedType(item.Shared_Type) }}</van-tag>
-                <van-tag plain type="success" v-if="item.Expire_Time" style="margin-right: 8px; margin-bottom: 8px;">有效期至：{{ item.Expire_Time }}</van-tag>
-                <van-tag plain type="primary" v-else style="margin-right: 8px; margin-bottom: 8px;">分享文件永久有效</van-tag>
-              </template>
+              <van-card
+                  v-for="item in sentList"
+                  :key="item.ID_SharedFileInfo"
+                  :title="item.File_Name"
+                  :desc="formatSentDesc(item)"
+                  :thumb="getLocalImage(item)"
+                  class="share-card"
+              >
+                <template #tags>
+                  <van-tag plain type="danger" style="margin-right: 8px; margin-bottom: 8px;">{{ formatSharedType(item.Shared_Type) }}</van-tag>
+                  <van-tag plain type="success" v-if="item.Expire_Time" style="margin-right: 8px; margin-bottom: 8px;">有效期至：{{ item.Expire_Time }}</van-tag>
+                  <van-tag plain type="primary" v-else style="margin-right: 8px; margin-bottom: 8px;">分享文件永久有效</van-tag>
+                </template>
 
-              <template #footer>
-                <van-button
-                    icon="down"
-                    round
-                    size="small"
-                    type="info"
-                    @click="handleDownload(item)"
-                >下载</van-button>
-                <van-button
-                    icon="guide-o"
-                    round
-                    size="small"
-                    type="info"
-                    @click="handlePreview(item)"
-                >预览</van-button>
-              </template>
-            </van-card>
-          </van-list>
+                <template #footer>
+                  <van-button
+                      icon="down"
+                      round
+                      size="small"
+                      type="info"
+                      @click="handleDownload(item)"
+                  >下载</van-button>
+                  <van-button
+                      icon="guide-o"
+                      round
+                      size="small"
+                      type="info"
+                      @click="handlePreview(item)"
+                  >预览</van-button>
+                </template>
+              </van-card>
+            </van-list>
+          </div>
         </van-pull-refresh>
       </van-tab>
     </van-tabs>
@@ -187,7 +191,7 @@ export default {
             let JSON_Data =  JSON.parse(respData)
             console.log("加载发送的分享文件数据 JSON_Data : "+respData)
             // 成功回调
-            // 按时间由近到远排序（ Shared_Time 是时间字段）
+            // 按时间由近到远排序（假设 Shared_Time 是时间字段）
             if (Array.isArray(JSON_Data)) {
               JSON_Data.sort((a, b) => {
                 // 将时间字符串转换为时间戳进行比较
@@ -197,7 +201,6 @@ export default {
                 return timeB - timeA;
               });
             }
-
             this.sentList = JSON_Data || [];
             this.sentLoading = false;
             this.sentFinished = true;
@@ -216,12 +219,16 @@ export default {
     // 下拉刷新 - 收到的分享
     onReceivedRefresh() {
       this.receivedRefreshing = true;
+      // 重置状态以重新加载数据
+      this.receivedFinished = false;
       this.loadReceivedData();
     },
 
     // 下拉刷新 - 发送的分享
     onSentRefresh() {
       this.sentRefreshing = true;
+      // 重置状态以重新加载数据
+      this.sentFinished = false;
       this.loadSentData();
     },
 
@@ -320,32 +327,52 @@ export default {
   margin-top: 0;
 }
 
+.cards-container {
+  padding: 10px 2.5%; /* 2.5%的左右padding实现95%宽度 */
+}
+
 .share-card {
-  margin-bottom: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 16px; /* 更加圆润 */
   overflow: hidden;
+  background: linear-gradient(135deg, #ffffff, #f8f9fa); /* 渐变背景 */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* 添加过渡效果 */
+}
+
+.share-card:hover {
+  transform: translateY(-2px); /* 悬停时轻微上移 */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 .van-card__title {
   font-size: 14px;
   font-weight: bold;
+  color: #333;
+  margin-bottom: 4px;
 }
 
 .van-card__desc {
-  font-size: 12px;
+  font-size: 13px;
   color: #666;
+  margin-bottom: 8px;
 }
 
 .van-card__thumb {
-  width: 73px;
-  height: 73px;
+  width: 80px;
+  height: 80px;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: 12px; /* 缩略图也更加圆润 */
 }
 
 .van-card__footer .van-button {
-  font-size: 11px;
-  padding: 0 8px;
+  font-size: 12px;
+  padding: 0 12px;
+  height: 30px;
+  margin-left: 8px;
+}
+
+.van-tag {
+  border-radius: 8px; /* 标签也更加圆润 */
 }
 </style>
