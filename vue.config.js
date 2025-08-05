@@ -32,7 +32,7 @@ module.exports = defineConfig({
   // chainWebpack: config => {
   //   config.plugin('html')
   //       .tap(args => {
-  //         args[0].title = "晟思工作助手";
+  //         args[0].title = "XXX工作助手";
   //         // args[0].title = "";
   //         return args;
   //       })

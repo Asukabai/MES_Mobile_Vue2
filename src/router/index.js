@@ -1,5 +1,3 @@
-// src/router/index.js
-
 import Vue from 'vue'
 import Router from 'vue-router'
 import * as dd from 'dingtalk-jsapi'
@@ -20,7 +18,6 @@ Vue.use(Router)
 
 // 获取全局路径前缀
 const basePath = process.env.VUE_APP_BASE_PATH
-// const basePath = process.env.VUE_APP_BASE_PATH || '/sensor_ddingWork/Debug/'
 
 const router = new Router({
   mode: 'history',
@@ -57,7 +54,7 @@ const router = new Router({
       path: `${basePath}cart`,
       name: 'CartFile',
       component: CartFile,
-      meta: { title: '分享文件' }
+      meta: { title: '文件分享' }
     },
     {
       path: `${basePath}user`,
@@ -253,224 +250,6 @@ const router = new Router({
   ]
 })
 
-// 动态设置标题
-// router.beforeEach((to, from, next) => {
-//   // const moduleNames = process.env.MODULE_NAMES;
-//
-//   let moduleNames = {};
-//   try {
-//     moduleNames = JSON.parse(process.env.VUE_APP_MODULE_NAMES || '{}');
-//   } catch (e) {
-//     alert('解析MODULE_NAMES失败:'+  e);
-//   }
-//
-//   alert('Current path 3 :'+  to.path)
-//   alert('Module names 4 :'+  moduleNames); // 打印模块名称配置
-//   alert('Module names keys 5:'+ Object.keys(moduleNames)); // 打印 moduleNames 的所有键
-//   alert('Resolved title 6:'+ moduleNames[to.path]); // 打印匹配到的标题
-//   // 如果没有匹配到，则使用默认标题
-//   // document.title = moduleNames[to.path] || "工作助手";
-//   // next();
-//   // const title = moduleNames[to.path] || "工作助手11";
-//   // // 延迟设置标题，确保不会被覆盖
-//   // next(() => {
-//   //   document.title = title;
-//   // });
-//
-//   // 改进的路径匹配逻辑：支持前缀匹配
-//   let title = "工作助手";
-//   if (moduleNames[to.path]) {
-//     // 精确匹配
-//     title = moduleNames[to.path];
-//   } else {
-//     // 前缀匹配
-//     for (const path in moduleNames) {
-//       if (to.path.startsWith(path)) {
-//         title = moduleNames[path];
-//         break;
-//       }
-//     }
-//   }
-//
-//   // 使用next回调确保在路由切换完成后设置标题
-//   // next(() => {
-//   //   // 延迟设置确保标题被正确更新
-//   //   Vue.nextTick(() => {
-//   //     document.title = title;
-//   //   });
-//   // });
-//   // 将标题存储在路由meta中，供vue-meta使用
-//   to.meta.title = title;
-//   next();
-//
-// });
-
-// 使用 afterEach 钩子确保在路由切换完成后设置标题
-// router.afterEach((to) => {
-//   if (to.meta.title) {
-//     document.title = to.meta.title;
-//   }
-// });
-
-
-// router.beforeEach((to, from, next) => {
-//   const moduleNames = process.env.MODULE_NAMES ;
-//   let title = "工作助手";
-//
-//   // 尝试匹配完整路径
-//   if (moduleNames[to.path]) {
-//     title = moduleNames[to.path];
-//   } else {
-//     // 尝试匹配部分路径
-//     for (const path in moduleNames) {
-//       if (to.path.startsWith(path)) {
-//         title = moduleNames[path];
-//         break;
-//       }
-//     }
-//   }
-//
-//   console.log('Resolved title:', title); // 打印解析后的标题
-//   alert('Resolved title:' + title); // 弹窗显示解析后的标题
-//
-//   document.title = title;
-//   next();
-//
-//   // 延迟设置标题，确保不会被覆盖
-//   // next(() => {
-//   //   document.title = title;
-//   // });
-// });
-
-
-// 动态设置标题
-// router.beforeEach((to, from, next) => {
-//   // 设置页面标题
-//   document.title = to.meta.title || '工作助手';
-//   next();
-// });
-
-
-// router.beforeEach((to, from, next) => {
-//   // 添加调试信息
-//   console.log('路由跳转到:', to.path);
-//   alert('路由跳转到:'+ to.path);
-//   console.log('路由元信息:', to.meta);
-//   alert('路由元信息:'+ to.meta);
-//   console.log('标题应该设置为:', to.meta.title || '工作助手');
-//   alert('标题应该设置为:'+ to.meta.title || '工作助手');
-//
-//   // 设置页面标题
-//   document.title = to.meta.title || '工作助手';
-//
-//   // 添加设置后的标题验证
-//   alert('实际设置的标题:'+ document.title);
-//
-//   next();
-// });
-
-// 动态设置标题 - 适配钉钉环境
-// router.beforeEach((to, from, next) => {
-//   const title = to.meta.title || '工作助手';
-//   // 设置页面标题（普通浏览器）
-//   document.title = title;
-//   // 适配钉钉环境
-//   setDingTalkTitle(title);
-//   next();
-// });
-//
-// // 路由切换完成后再次设置（确保生效）
-// router.afterEach((to) => {
-//   Vue.nextTick(() => {
-//     const title = to.meta.title || '工作助手';
-//     document.title = title;
-//     setDingTalkTitle(title);
-//   });
-// });
-//
-// // 专门用于设置钉钉标题的函数
-// function setDingTalkTitle(title) {
-//   // 检查是否在钉钉环境中
-//   if (typeof window.dd !== 'undefined' && dd.ready) {
-//     try {
-//       // 使用钉钉 API 设置标题
-//       dd.ready(() => {
-//         dd.biz.navigation.setTitle({
-//           title: title
-//         }).catch((error) => {
-//           console.error('钉钉标题设置失败:', error);
-//         });
-//       });
-//     } catch (e) {
-//       console.error('调用钉钉API异常:', e);
-//     }
-//   }
-// }
-
-
-
-// ... existing code ...
-// 动态设置标题 - 适配钉钉环境
-// router.beforeEach((to, from, next) => {
-//   console.log('=== 路由守卫 beforeEach ===');
-//   alert('从路由:'+ from.path);
-//   alert('到路由:'+ to.path);
-//   alert('路由元信息:'+ to.meta);
-//
-//   const title = to.meta.title || '工作助手';
-//   alert('应设置的标题:'+ title);
-//
-//   // 设置页面标题（普通浏览器）
-//   document.title = title;
-//   alert('document.title 已设置为:'+ document.title);
-//
-//   // 适配钉钉环境
-//   updatePageTitle(title);
-//
-//   next();
-// });
-//
-// // 路由切换完成后再次设置（确保生效）
-// router.afterEach((to) => {
-//   alert('=== 路由守卫 afterEach ===');
-//   alert('DD当前路由:'+  to.path);
-//
-//   Vue.nextTick(() => {
-//     const title = to.meta.title || '工作助手';
-//     document.title = title;
-//     alert('afterEach 中 document.title 设置为:'+ document.title);
-//     updatePageTitle(title);
-//   });
-// });
-//
-// // 统一的页面标题更新函数
-// function updatePageTitle(title) {
-//   alert('=== updatePageTitle 函数 ===');
-//   alert('尝试设置标题:'+ title);
-//
-//   // 首先设置文档标题
-//   document.title = title;
-//   alert('document.title ='+ document.title);
-//
-//   // 检查是否在钉钉环境中
-//   alert('dd 对象是否存在:'+ typeof dd !== 'undefined');
-//
-//   if (typeof dd !== 'undefined') {
-//     alert('调用钉钉 API 设置标题');
-//     dd.biz.navigation.setTitle({
-//       title: title
-//     }).then(() => {
-//       alert('钉钉标题设置成功:'+ title);
-//     }).catch((error) => {
-//       alert('钉钉标题设置失败:'+ error);
-//     });
-//   } else {
-//     alert('不在钉钉环境中，跳过钉钉 API 调用');
-//   }
-// }
-// ... existing code ...
-
-// ... existing code ...
 // 动态设置标题 - 适配钉钉环境
 router.beforeEach((to, from, next) => {
   console.log('=== 路由守卫 beforeEach ===');
@@ -529,7 +308,5 @@ function updatePageTitle(title) {
     console.log('不在钉钉环境中，跳过钉钉 API 调用');
   }
 }
-// ... existing code ...
-
 
 export default router;

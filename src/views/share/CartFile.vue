@@ -1,13 +1,12 @@
 <template>
   <div class="page-container">
-    <van-nav-bar title="文件分享" />
-
-    <!-- 下拉刷新组件 -->
-    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-      <!-- 标签页 -->
-      <van-tabs v-model="activeTab" animated swipeable class="share-tabs">
-        <!-- 收到的分享文件 -->
-        <van-tab title="收到的分享">
+    <!--    <van-nav-bar title="文件分享" />-->
+    <!-- 标签页固定在顶部 -->
+    <van-tabs v-model="activeTab" animated swipeable class="share-tabs" sticky>
+      <!-- 收到的分享文件 -->
+      <van-tab title="收到的分享">
+        <!-- 下拉刷新组件 -->
+        <van-pull-refresh v-model="receivedRefreshing" @refresh="onReceivedRefresh">
           <van-list
               :loading="receivedLoading"
               :finished="receivedFinished"
@@ -46,10 +45,13 @@
               </template>
             </van-card>
           </van-list>
-        </van-tab>
+        </van-pull-refresh>
+      </van-tab>
 
-        <!-- 发送的分享文件 -->
-        <van-tab title="发送的分享">
+      <!-- 发送的分享文件 -->
+      <van-tab title="发送的分享">
+        <!-- 下拉刷新组件 -->
+        <van-pull-refresh v-model="sentRefreshing" @refresh="onSentRefresh">
           <van-empty description="" v-if="sentList.length === 0 && !sentLoading" />
           <van-list
               :loading="sentLoading"
@@ -89,9 +91,9 @@
               </template>
             </van-card>
           </van-list>
-        </van-tab>
-      </van-tabs>
-    </van-pull-refresh>
+        </van-pull-refresh>
+      </van-tab>
+    </van-tabs>
 
     <!-- 底部导航栏 -->
     <MainTabBar />
@@ -131,7 +133,8 @@ export default {
       sentFinished: false,
 
       // 下拉刷新状态
-      isLoading: false,
+      receivedRefreshing: false,
+      sentRefreshing: false,
     };
   },
   mounted() {
@@ -157,14 +160,14 @@ export default {
             this.receivedList = JSON_Data || [];
             this.receivedLoading = false;
             this.receivedFinished = true;
-            this.isLoading = false;
+            this.receivedRefreshing = false;
           },
           (error) => {
             // 失败回调
             console.error('获取收到的分享文件失败:', error);
             this.receivedLoading = false;
             this.receivedFinished = true;
-            this.isLoading = false;
+            this.receivedRefreshing = false;
           }
       );
     },
@@ -184,28 +187,42 @@ export default {
             let JSON_Data =  JSON.parse(respData)
             console.log("加载发送的分享文件数据 JSON_Data : "+respData)
             // 成功回调
+            // 按时间由近到远排序（ Shared_Time 是时间字段）
+            if (Array.isArray(JSON_Data)) {
+              JSON_Data.sort((a, b) => {
+                // 将时间字符串转换为时间戳进行比较
+                const timeA = new Date(a.Shared_Time).getTime();
+                const timeB = new Date(b.Shared_Time).getTime();
+                // 降序排列（由近到远）
+                return timeB - timeA;
+              });
+            }
+
             this.sentList = JSON_Data || [];
             this.sentLoading = false;
             this.sentFinished = true;
-            this.isLoading = false;
+            this.sentRefreshing = false;
           },
           (error) => {
             // 失败回调
             console.error('获取发送的分享文件失败:', error);
             this.sentLoading = false;
             this.sentFinished = true;
-            this.isLoading = false;
+            this.sentRefreshing = false;
           }
       );
     },
 
-    // 下拉刷新
-    onRefresh() {
-      if (this.activeTab === 0) {
-        this.loadReceivedData();
-      } else {
-        this.loadSentData();
-      }
+    // 下拉刷新 - 收到的分享
+    onReceivedRefresh() {
+      this.receivedRefreshing = true;
+      this.loadReceivedData();
+    },
+
+    // 下拉刷新 - 发送的分享
+    onSentRefresh() {
+      this.sentRefreshing = true;
+      this.loadSentData();
     },
 
     handleDownload(file) {
@@ -236,13 +253,6 @@ export default {
       }
 
       let desc = `发送给: ${receiver} -  ${item.Shared_Time || ''}`;
-
-      // 添加文件有效性的描述
-      // if (item.Shared_Valid === 1) {
-      //   desc += ' (永久有效)';
-      // } else if (item.Expire_Time) {
-      //   desc += ` (有效期至: ${item.Expire_Time})`;
-      // }
 
       return desc;
     },
@@ -307,7 +317,7 @@ export default {
 }
 
 .share-tabs {
-  margin-top: 16px;
+  margin-top: 0;
 }
 
 .share-card {
