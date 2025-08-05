@@ -9,6 +9,11 @@ import {GetDingUserToken} from '@/utils/Dingding'
 
 export default {
   name: 'LoginPage',
+  metaInfo() {
+    return {
+      title: '登录'
+    }
+  },
   data() {
     return {
       code: '',

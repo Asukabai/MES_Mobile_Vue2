@@ -113,6 +113,11 @@ import SensorRequest from "@/utils/SensorRequest";
 import {key_DingScannedResult, updateCachedProductId} from "@/utils/Dingding";
 export default {
   name: 'HomePage',
+  metaInfo() {
+    return {
+      title: '首页'
+    }
+  },
   components: {
     MainTabBar,
   },

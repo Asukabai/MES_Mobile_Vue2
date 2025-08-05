@@ -1,4 +1,15 @@
 const {defineConfig} = require("@vue/cli-service");
+// const moduleNames = require('/src/assets/config/moduleNamesConfig.json');
+
+
+// const path = require("path");
+
+// 使用绝对路径加载 moduleNamesConfig.json
+// const moduleNamesPath = path.resolve(__dirname, "./src/assets/config/moduleNamesConfig.json");
+// const moduleNames = require(moduleNamesPath);
+//
+//
+// const { DefinePlugin } = require("webpack");
 module.exports = defineConfig({
   // publicPath: './',
   publicPath: '/sensor_ddingWork/Release/',
@@ -18,11 +29,20 @@ module.exports = defineConfig({
       }
     }
   },
-  chainWebpack: config => {
-    config.plugin('html')
-        .tap(args => {
-          args[0].title = "晟思工作助手";
-          return args;
-        })
-  }
+  // chainWebpack: config => {
+  //   config.plugin('html')
+  //       .tap(args => {
+  //         args[0].title = "晟思工作助手";
+  //         // args[0].title = "";
+  //         return args;
+  //       })
+  // },
+  // configureWebpack: {
+  //   // 添加全局变量
+  //   plugins: [
+  //     new DefinePlugin({
+  //       'process.env.MODULE_NAMES': JSON.stringify(moduleNames)
+  //     })
+  //   ]
+  // }
 })
