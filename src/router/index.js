@@ -11,8 +11,8 @@ import IndexView from "@/views/share/IndexView.vue";
 import Login from "@/views/login/Login.vue";
 import StatisticalReport from "@/views/summary/StatisticalReport.vue";
 import UploadSummary from "@/views/summary/UploadSummary.vue";
-import ChatCategory from "@/views/share/ChatCategory.vue";
-import CreatePost from "@/views/share/CreatePost.vue";
+import ChatCategory from "@/views/knowledge/ChatCategory.vue";
+import CreatePost from "@/views/knowledge/CreatePost.vue";
 
 Vue.use(Router)
 
