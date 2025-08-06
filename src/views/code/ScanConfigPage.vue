@@ -117,11 +117,16 @@ export default {
             this.moduleCode = parts.slice(0, 2).join('_');
           },
           onFail: (err) => {
-            console.error('扫码失败:', err);
-            alert('扫码失败:' + (err.errorCode || '') + (err.errorMessage || ''));
-            alert('扫码失败:' + JSON.stringify(err));
-            let errorMessage = '扫码失败，请重试';
-            this.$toast.fail(errorMessage);
+            // console.error('扫码失败:', err);
+            // alert('扫码失败:' + (err.errorCode || '') + (err.errorMessage || ''));
+            // alert('扫码失败:' + JSON.stringify(err));
+            // let errorMessage = '扫码失败，请重试';
+            // this.$toast.fail(errorMessage);
+            if (err.errorCode !== 300001) {
+              // alert("未扫描到二维码！");
+              let errorMessage = '未扫描到二维码！';
+              this.$toast.fail(errorMessage);
+            }
           },
           onCancel: (err) => {
             console.log('用户点击了扫码页面返回按钮', err); // 打印 err 的完整结构

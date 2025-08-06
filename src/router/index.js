@@ -213,6 +213,12 @@ const router = new Router({
       meta: { title: '配置列表' }
     },
     {
+      path: "/sensor_ddingWork/Release/code/batch_scan_results",
+      name: 'ScanConfigList',
+      component: () => import('@/views/code/BatchScanResults.vue'),
+      meta: { title: '批量扫码结果' }
+    },
+    {
       path: "/sensor_ddingWork/Release/code/AddStored",
       name: 'AddStored',
       component: () => import('@/views/code/AddStored.vue'),

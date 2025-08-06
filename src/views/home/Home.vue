@@ -193,7 +193,7 @@ export default {
         this.scanQRCode();
       }
       if (item.text === '批量扫码') {
-        this.$toast.success('正在开发中 ！')
+        this.scanQRCodeList();
       }
       if (item.text === '联系人') {
         this.$toast.success('正在开发中 ！')
@@ -270,12 +270,139 @@ export default {
           },
           onFail: (err) => {
             if (err.errorCode !== 300001) {
-              alert("未扫描到二维码！");
+              // alert("未扫描到二维码！");
+              let errorMessage = '未扫描到二维码 ！';
+              this.$toast.fail(errorMessage);
             }
           }
         });
       });
-    }
+    },
+    scanQRCodeList() {
+      let isScanning = false; // 控制扫描循环的标志
+      const scannedResults = []; // 用于存储扫码结果的列表
+      let firstPrefix = null; // 存储第一次扫码内容的 _ 前部分
+      // let lastResult = null; // 存储上一次的扫码结果
+      const scan = () => {
+        if (!isScanning) return;
+        dd.biz.util.scan({
+          type: 'qrCode',
+          onSuccess: (data) => {
+            const result = data.text; // 获取扫描结果
+            if (result) {
+              const parts = result.split('_');
+              if (parts.length < 3) {
+                // 扫描结果中没有 _
+                this.$message({
+                  message: '二维码的类型不符，请切换板卡重新扫描!',
+                  type: 'error',
+                  duration: 2000, // 2秒后自动关闭
+                  showClose: true // 显示关闭按钮
+                });
+                return;}
+              // const prefix = parts[0]; // 获取 _ 前的部分
+              let prefix = parts.slice(0, 2).join('_'); // 拼接第一个和第二个 _ 之间的部分
+              // eslint-disable-next-line no-unused-vars
+              let param = { 'prefix': prefix };
+              // 检查是否重复扫码
+              if (scannedResults.includes(result)) {
+                // if (lastResult === result) {
+                // this.$message({
+                //   message: '二维码重复扫描,请重新扫码！',
+                //   type: 'info',
+                //   duration: 2000, // 2秒后自动关闭
+                //   showClose: true // 显示关闭按钮
+                // });
+                alert("二维码重复扫描,此次记录不算，请重新扫码！")
+                scan(); // 重新尝试扫描
+                return;}
+              // eslint-disable-next-line no-unused-vars
+              SensorRequest.GetAssetInfoByAssetCodeFun(JSON.stringify({ Asset_Code: result }), (response) => {
+                if (scannedResults.length === 0) {
+                  // 第一次扫码
+                  firstPrefix = prefix;
+                  scannedResults.push(result); // 将结果添加到列表中
+                } else {
+                  // 从第二次扫码开始
+                  if (prefix === firstPrefix) {
+                    // 扫描的是相同类型的资产
+                    scannedResults.push(result); // 将结果添加到列表中
+                  } else {
+                    // 扫描的是不同类型的资产
+                    alert("扫描了不同类型的资产，请重新扫描相同的资产类型！");
+                    isScanning = true; // 重新尝试扫描
+                    scan(); // 重新尝试扫描
+                    return;
+                  }
+                }
+                // lastResult = result; // 更新上一次的扫码结果
+                isScanning = false; // 暂停扫描
+                if (confirm("扫码成功！内容是:" + result + "是否继续扫描？")) {
+                  isScanning = true; // 用户选择继续扫描
+                  scan(); // 用户选择继续扫描
+                } else {
+                  this.stopScan(scannedResults); // 用户选择停止扫描
+                }
+                // eslint-disable-next-line no-unused-vars
+              }, (error) => {
+                this.$message({
+                  message: '二维码未查询到，请联系管理员录入！',
+                  type:'error'
+                });
+                isScanning = false; // 停止扫描
+              });
+            } else {
+              this.$message({
+                message: '扫描的二维码不符合要求，将自动重新扫描！',
+                type: 'info',
+                duration: 2000, // 2秒后自动关闭
+                showClose: true // 显示关闭按钮
+              });
+              isScanning = true; // 重新尝试扫描
+              scan(); // 重新尝试扫描
+            }
+          },
+          onFail: (err) => {
+            if (err.errorCode !== 300001) {
+              alert("未扫描到二维码 请退出后继续扫描 ！");
+            }
+            isScanning = true; // 重新尝试扫描
+            scan(); // 重新尝试扫描
+          },
+          onCancel: () => {
+            alert("用户取消扫描时停止扫描二维码 ！");
+            this.stopScan(scannedResults); // 用户取消扫描时停止扫描
+          }
+        });
+      };
+      dd.ready(() => {
+        // 提示用户进入批量扫描模式
+        this.$message({
+          message: '已进入批量扫码模式，请扫描相同类型资产！',
+          type: 'info',
+          duration: 2000, // 2秒后自动关闭
+          showClose: true // 显示关闭按钮
+        });
+        isScanning = true; // 开始扫描前设置为 true
+        scan(); // 开始第一次扫描
+      });
+    },
+    stopScan(scannedResults) {
+      // alert("已停止批量扫描。");
+      this.$message({
+        message: '已停止批量扫描 ！',
+        type: 'info',
+        duration: 2000, // 2秒后自动关闭
+        showClose: true // 显示关闭按钮
+      });
+      this.navigateToResultsPage(scannedResults); // 跳转到结果页面
+    },
+    navigateToResultsPage(scannedResults) {
+      this.$router.push({
+        path: '/sensor_ddingWork/Release/code/batch_scan_results',
+        query: { scannedResults: JSON.stringify(scannedResults) }
+      });
+    },
   }
 }
 </script>
