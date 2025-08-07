@@ -18,11 +18,18 @@
     </van-list>
     <!-- 底部导航栏 -->
     <main-tab-bar />
+
+    <!-- 悬浮加号圆形按钮 -->
+    <floating-action-button
+        :initial-position="buttonPosition"
+        @click="goToCreatePost"
+    />
   </div>
 </template>
 
 <script>
 import MainTabBar from '@/components/MainTabBar.vue'
+import FloatingActionButton from '@/components/FloatingActionButton.vue'
 import { List, Cell } from 'vant'
 
 export default {
@@ -30,7 +37,8 @@ export default {
   components: {
     VanList: List,
     VanCell: Cell,
-    MainTabBar
+    MainTabBar,
+    FloatingActionButton
   },
   data() {
     return {
