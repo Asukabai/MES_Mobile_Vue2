@@ -320,7 +320,7 @@ export default {
 
 <style scoped>
 .page-container {
-  padding: 0;
+  padding: 0 0 35px;/* 为底部导航栏预留空间 */
 }
 
 .share-tabs {
