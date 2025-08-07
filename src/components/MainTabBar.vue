@@ -137,7 +137,7 @@ export default {
   right: 0;
   z-index: 999;
   background-color: #fff;
-  height: 40px;
+  height: 50px;
   padding-bottom: env(safe-area-inset-bottom);
 }
 
@@ -154,8 +154,8 @@ export default {
 
 /* 调整图标大小 */
 ::v-deep .van-tabbar-item__icon img {
-  width: 20px;
-  height: 20px;
+  width: 23px;
+  height: 23px;
 }
 
 /* 调整文字样式 */
