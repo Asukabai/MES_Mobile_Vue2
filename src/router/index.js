@@ -228,13 +228,13 @@ const router = new Router({
       path: "/sensor_ddingWork/Release/code/AddHistory",
       name: 'AddHistory',
       component: () => import('@/views/code/AddHistory.vue'),
-      meta: { title: '添加历史' }
+      meta: { title: '资产记录表单' }
     },
     {
       path: "/sensor_ddingWork/Release/code/HistoryView",
       name: 'HistoryView',
       component: () => import('@/views/code/HistoryView.vue'),
-      meta: { title: '历史查看' }
+      meta: { title: '资产记录详情' }
     },
     {
       path: '/sensor_ddingWork/Release/progress-tracking',

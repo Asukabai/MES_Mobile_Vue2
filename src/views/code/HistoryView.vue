@@ -2,24 +2,19 @@
   <div>
     <!-- 添加加载状态的判断 -->
     <div v-if="isLoading">
-      <h2>{{ boardID }}资产记录列表</h2>
+      <h3 style="text-align: center;">{{ boardID }}记录列表</h3>
       <div class="loading-message">
         数据加载中...
       </div>
     </div>
     <!-- 数据加载完成后显示最近的三条内容，如果点击查看所有历史内容可以另外点击 -->
     <div v-else>
-      <h2>{{ boardID }}资产记录列表</h2>
+      <h3 style="text-align: center;">{{ boardID }}记录列表</h3>
       <div class="return-button-container">
         <div class="button-row">
           <el-button  @click="goBackQR">返回扫码界面</el-button>
           <el-button  @click="resetForm">重置表单记录</el-button>
-          <!--          <el-button  @click="goBackADD">继续新增记录</el-button>-->
         </div>
-        <!--        <div class="button-row">-->
-        <!--&lt;!&ndash;          <el-button  @click="queryByPerson">查看本人记录</el-button>&ndash;&gt;-->
-        <!--          <el-button  @click="resetForm">重置表单记录</el-button>-->
-        <!--        </div>-->
         <div style="height: 5px;"></div>
         <div class="button-row">
           <el-select v-model="selectedCategory" placeholder="请选择分类" style="margin-left: 5px;">
@@ -30,7 +25,7 @@
                 :value="item.value">
             </el-option>
           </el-select>
-          <el-button size="small" @click="queryByCategory">分类加载记录</el-button>
+          <el-button  @click="queryByCategory">分类加载记录</el-button>
         </div>
       </div>
       <div  v-if="count !== 0" class="empty-message" >
@@ -38,7 +33,7 @@
       </div>
       <!-- 添加虚线分隔 -->
       <div class="separator"></div>
-      <div class="card-list">
+      <div class="card-list-container">
         <CardItem v-for="(record, index) in cardRecords" :key="index" :record="record"/>
       </div>
       <!-- 添加条件判断，当数据为空时展示提示信息 -->
@@ -112,7 +107,7 @@ export default {
         if (systemConfigure.isDebugMode) {
           console.log('Received response data: ' + JSON.stringify(response)); }
         console.log('Received response data :', response); // 打印日志
-        alert('Received response data :'+ response); // 打印日志
+        // alert('Received response data :'+ response); // 打印日志
         let   JSON_response  = JSON.parse(response);
         if (Array.isArray(JSON_response) && JSON_response.length > 0) {
           this.cardRecords = JSON_response.map(item => this.parseData(item)).reverse();} else {
@@ -232,8 +227,8 @@ export default {
   }
 };
 </script>
+// ... existing code ...
 <style scoped>
-
 .empty-message {
   text-align: center;
   color: #999;
@@ -255,6 +250,22 @@ export default {
 
 .card-list {
   margin-top: 10px;
+  width: 100%; /* 确保卡片列表占满容器宽度 */
+  box-sizing: border-box; /* 包含内边距和边框 */
+  padding: 0; /* 移除默认内边距 */
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .card-list {
+    padding: 0 5px; /* 小屏幕上的小内边距 */
+  }
+}
+
+@media (max-width: 480px) {
+  .card-list {
+    padding: 0; /* 超小屏幕上无内边距 */
+  }
 }
 
 .info-message {
@@ -264,22 +275,38 @@ export default {
   margin-top: 10px;
 }
 
-
 .return-button-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%; /* 设置宽度以对齐三行 */
+  width: 100%;
+  box-sizing: border-box; /* 包含内边距和边框 */
 }
 
 .button-row {
   display: flex;
-  justify-content: center; /* 居中排列 */
-  margin-bottom: 10px; /* 每行之间的间距 */
+  justify-content: center;
+  margin-bottom: 10px;
+  width: 100%; /* 确保按钮行占满容器宽度 */
+  box-sizing: border-box;
 }
 
 .button-row el-button,
 .button-row el-select {
-  margin: 0 5px; /* 按钮和下拉框之间的间距 */
+  margin: 0 5px;
+}
+
+/* 父组件根元素样式 */
+div[style*="text-align: center;"]:first-of-type {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 10px;
+}
+
+/* 为整个组件添加响应式容器 */
+div > div:not(.card-list):not(.lightbox) {
+  width: 100%;
+  box-sizing: border-box;
 }
 </style>
+

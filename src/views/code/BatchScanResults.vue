@@ -1,8 +1,5 @@
 <template>
   <el-container>
-<!--    <el-header>-->
-<!--      <h1 style="margin: 0; color: #ffffff;">批量扫码结果</h1>-->
-<!--    </el-header>-->
     <el-main>
       <el-card>
         <div style="margin-bottom: 10px;">
@@ -79,13 +76,13 @@ export default {
                   if (response[0].isStored === '已入库' && response[0].isUsed === '已领用') {
                     // 跳转到资产操作页面
                     this.$router.push({
-                      path: '/ddinguia/web/add_history_storedBatch', // 目标页面的路径
+                      path: '/sensor_ddingWork/Release/code/add_history_storedBatch', // 目标页面的路径
                       query: { results: JSON.stringify(this.results) } // 传递 results 数据
                     });
                   } else {
                     // 跳转到出入库登记页面
                     this.$router.push({
-                      path: '/ddinguia/web/add_history_batch', // 目标页面的路径
+                      path: '/sensor_ddingWork/Release/code/add_history_batch', // 目标页面的路径
                       query: { results: JSON.stringify(this.results) } // 传递 results 数据
                     });
                   }

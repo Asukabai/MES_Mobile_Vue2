@@ -1,8 +1,6 @@
 <template>
-  <div style="padding-top: 60px; transform: scale(0.9); transform-origin: top left;">
-    <div style="text-align: center;">
-      <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;晟思资产记录表单</h2>
-    </div>
+  <div style="padding-top: 0px; transform: scale(0.9); transform-origin: center;">
+
     <el-form ref="form" :model="form" label-width="100px">
       <el-row>
         <el-col :span="24">
@@ -21,7 +19,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="记录人:">
+          <el-form-item label="记录人员:">
             <span>{{ form.currentLocation }}</span>
           </el-form-item>
         </el-col>
@@ -118,7 +116,7 @@ import {
   cachedProductPerson,
   cachedPersonIndex,
   key_DingResponseStored, key_DingResponseUsed, cachedResponseStored, cachedResponseUsed
-} from "../../utils/Dingding.js";
+} from "@/utils/Dingding.js";
 
 export default {
   data() {
@@ -407,7 +405,7 @@ export default {
               this.$message.success('保存成功!');
               setTimeout(() => {
                 this.resetTestingFields(); // 重置表单字段
-                this.$router.push("/ddinguia/web/history");
+                this.$router.push("/sensor_ddingWork/Release/code/HistoryView");
               }, 500); // 0.5 秒后跳转
             })
             .catch(error => {
@@ -425,7 +423,7 @@ export default {
               this.$message.success('保存成功!');
               setTimeout(() => {
                 this.resetTestingFields(); // 重置表单字段
-                this.$router.push("/ddinguia/web/history");
+                this.$router.push("/sensor_ddingWork/Release/code/HistoryView");
               }, 500); // 0.5 秒后跳转
             })
             .catch(error => {
@@ -438,10 +436,10 @@ export default {
       }
     },
     goBack() {
-      this.$router.push({ path: '/ddinguia/web/history' });
+      this.$router.push({ path: '/sensor_ddingWork/Release/code/HistoryView' });
     },
     goBack1() {
-      this.$router.push({ path: '/ddinguia/web/home' });
+      this.$router.push({ path: '/sensor_ddingWork/Release/home' });
     },
   },
 };
