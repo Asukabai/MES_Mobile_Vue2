@@ -15,6 +15,11 @@ Vue.use(Vant)
 Vue.use(downloadManager)
 Vue.config.productionTip = false
 
+// import VantGreen from 'vant-green';
+// import 'vant-green/lib/index.css';
+//
+// Vue.use(VantGreen);
+
 // 解析 URL 查询参数
 function getURLParams() {
   const search = window.location.search || window.location.hash.split('?')[1] || ''

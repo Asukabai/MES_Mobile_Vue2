@@ -1,6 +1,12 @@
 <template>
-  <div class="tabbar-wrapper">
-    <van-tabbar v-model="active" class="fixed-tabbar" :safe-area-inset-bottom="true">
+  <div class="main-tabbar-container">
+    <slot v-if="!disableRouterView"></slot>
+    <van-tabbar
+        v-model="active"
+        class="fixed-tabbar"
+        :safe-area-inset-bottom="true"
+        route
+    >
       <van-tabbar-item
           v-for="(item, index) in tabbars"
           :key="index"
@@ -12,7 +18,7 @@
           <img
               :src="active ? item.iconActive : item.iconInactive"
               :alt="item.title"
-              style="width: 24px; height: 24px;"
+              style="width: 20px; height: 20px;"
           />
         </template>
 
@@ -20,13 +26,17 @@
         <span>{{ item.title }}</span>
       </van-tabbar-item>
     </van-tabbar>
-
-    <router-view></router-view>
   </div>
 </template>
 
 <script>
 export default {
+  props: {
+    disableRouterView: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       // 基础路径和当前激活的 tab 索引
@@ -115,8 +125,9 @@ export default {
 </script>
 
 <style scoped>
-.tabbar-wrapper {
-  padding-bottom: env(safe-area-inset-bottom);
+.main-tabbar-container {
+  position: relative;
+  box-sizing: border-box;
 }
 
 .fixed-tabbar {
@@ -125,12 +136,31 @@ export default {
   left: 0;
   right: 0;
   z-index: 999;
-  padding-bottom: env(safe-area-inset-bottom); /* 避开 Home Indicator */
-  background-color: #fff; /* 确保背景色防止透明 */
+  background-color: #fff;
+  height: 40px;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* 可选：添加图标过渡效果 */
 .van-tabbar-item__icon img {
   transition: all 0.2s ease-in-out;
+}
+
+/* 调整标签栏项的内边距 */
+::v-deep .van-tabbar-item {
+  padding: 2px 0;
+  font-size: 12px;
+}
+
+/* 调整图标大小 */
+::v-deep .van-tabbar-item__icon img {
+  width: 20px;
+  height: 20px;
+}
+
+/* 调整文字样式 */
+::v-deep .van-tabbar-item__text {
+  font-size: 12px;
+  line-height: 1.2;
 }
 </style>

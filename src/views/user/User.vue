@@ -1,45 +1,48 @@
 <template>
-  <div>
-    <van-cell
-        :title-style="{ fontWeight: 'bold', fontSize: '16px' }"
-    />
-    <!-- 用户信息卡片 -->
-    <van-cell-group class="user-card">
-      <van-cell>
-        <div style="display: flex; align-items: center;">
-          <div class="user-avatar">
-            <van-image
-                round
-                width="50px"
-                height="50px"
-                :src="require('@/assets/企业头像.png')"
-            />
+  <div class="user-page-wrapper">
+    <div class="user-content">
+      <van-cell
+          :title-style="{ fontWeight: 'bold', fontSize: '16px' }"
+      />
+      <!-- 用户信息卡片 -->
+      <van-cell-group class="user-card">
+        <van-cell>
+          <div style="display: flex; align-items: center;">
+            <div class="user-avatar">
+              <van-image
+                  round
+                  width="50px"
+                  height="50px"
+                  :src="require('@/assets/企业头像.png')"
+              />
+            </div>
+            <div class="user-details">
+              <p v-if="!userInfo.name">正在加载用户信息...</p>
+              <p v-else><strong>姓名：</strong>{{ userInfo.name }}</p>
+              <p><strong>手机号：</strong>{{ userInfo.phone }}</p>
+              <p><strong>企业：</strong>陕西晟思智能测控有限公司 </p>
+            </div>
           </div>
-          <div class="user-details">
-            <p v-if="!userInfo.name">正在加载用户信息...</p>
-            <p v-else><strong>姓名：</strong>{{ userInfo.name }}</p>
-            <p><strong>手机号：</strong>{{ userInfo.phone }}</p>
-            <p><strong>企业：</strong>陕西晟思智能测控有限公司 </p>
-          </div>
+        </van-cell>
+        <!-- 下部分：验证码区域 -->
+        <div class="footer-section">
+          <VerificationCode />
         </div>
-      </van-cell>
-      <!-- 下部分：验证码区域 -->
-      <div class="footer-section">
-        <VerificationCode />
-      </div>
-    </van-cell-group>
+      </van-cell-group>
 
 
-    <!-- 其他功能入口 -->
-    <van-cell-group style="margin-top: 15px;">
-      <van-cell title="个人资料" is-link @click="$router.push('/sensor_ddingWork/Release/profile')" />
-      <van-cell title="缓存清理" is-link @click="handleInviteClick" />
-      <van-cell title="推送通知" is-link @click="handlePushNotification" />
-      <van-cell title="在线支持" is-link @click="handleOnlineSupport" />
-<!--      <van-cell title="问题反馈" is-link @click="handleFeedback" />-->
-<!--      <van-cell title="设置" is-link @click="handleSettings" />-->
-    </van-cell-group>
-    <MainTabBar/>
+      <!-- 其他功能入口 -->
+      <van-cell-group style="margin-top: 15px;">
+        <van-cell title="个人资料" is-link @click="$router.push('/sensor_ddingWork/Release/profile')" />
+        <van-cell title="缓存清理" is-link @click="handleInviteClick" />
+        <van-cell title="推送通知" is-link @click="handlePushNotification" />
+        <van-cell title="在线支持" is-link @click="handleOnlineSupport" />
+        <!--      <van-cell title="问题反馈" is-link @click="handleFeedback" />-->
+        <!--      <van-cell title="设置" is-link @click="handleSettings" />-->
+      </van-cell-group>
+    </div>
+    <!-- 底部导航栏 -->
+    <MainTabBar />
   </div>
 </template>
 
@@ -139,12 +142,25 @@ export default {
 
 
 <style scoped>
+.user-page-wrapper {
+  position: relative;
+  min-height: 100vh;
+  padding-bottom: 0; /* 移除底部填充，因为MainTabBar会处理 */
+  box-sizing: border-box;
+}
+
+.user-content {
+  padding-bottom: 10px;
+  box-sizing: border-box;
+}
+
 .user-card {
   margin: 15px;
-  border-radius: 12px; /* 圆角 */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 阴影 */
-  overflow: hidden; /* 确保内部元素也应用圆角 */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
+
 .user-card .van-cell__value {
   display: flex;
   align-items: center;
