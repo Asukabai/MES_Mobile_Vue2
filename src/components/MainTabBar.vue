@@ -1,6 +1,5 @@
 <template>
-  <div class="main-tabbar-container">
-    <slot v-if="!disableRouterView"></slot>
+  <div class="tabbar-portal">
     <van-tabbar
         v-model="active"
         class="fixed-tabbar"
@@ -32,9 +31,9 @@
 <script>
 export default {
   props: {
-    disableRouterView: {
+    showRouterView: {
       type: Boolean,
-      default: false
+      default: true
     }
   },
   data() {
@@ -42,6 +41,7 @@ export default {
       // 基础路径和当前激活的 tab 索引
       basePath: '/sensor_ddingWork/Release/',
       active: 0,
+      isIOS: false,
 
       // 图标资源路径（可以统一管理或按需加载）
       icons: {
@@ -116,18 +116,40 @@ export default {
       if (index !== -1) {
         this.active = index;
       }
+    },
+    detectIOS() {
+      // 检测是否为iOS设备
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      this.isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
     }
   },
   mounted() {
     this.updateActiveTab(this.$route.path);
+    this.detectIOS();
   }
 };
 </script>
 
 <style scoped>
-.main-tabbar-container {
-  position: relative;
-  box-sizing: border-box;
+.tabbar-portal {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  height: calc(50px + var(--safe-area-inset-bottom, 0px));
+  pointer-events: none;
+}
+
+.tabbar-portal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+  pointer-events: auto;
 }
 
 .fixed-tabbar {
@@ -135,10 +157,15 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 999;
+  z-index: 9999;
   background-color: #fff;
   height: 50px;
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: var(--safe-area-inset-bottom, 0px);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  pointer-events: auto;
 }
 
 /* 可选：添加图标过渡效果 */
@@ -148,14 +175,14 @@ export default {
 
 /* 调整标签栏项的内边距 */
 ::v-deep .van-tabbar-item {
-  padding: 2px 0;
+  padding: 4px 0;
   font-size: 12px;
 }
 
 /* 调整图标大小 */
 ::v-deep .van-tabbar-item__icon img {
-  width: 23px;
-  height: 23px;
+  width: 20px;
+  height: 20px;
 }
 
 /* 调整文字样式 */

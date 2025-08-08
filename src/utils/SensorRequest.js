@@ -156,6 +156,12 @@ import * as ssDing from '../utils/Dingding.js';
               callSuccess(respData);
           }, callFail);
       },
+      // 知识库——获取信息表格数据
+      ErrorRepositoryGetFun(param, callSuccess, callFail) {
+          ssDing.PostDataUrl("ErrorRepositoryGetFun", param, true, respData => {
+              callSuccess(respData);
+          }, callFail);
+      },
       // 添加资产信息
       AssetInfoAddFun(param) {
           return new Promise((resolve, reject) => {

@@ -99,14 +99,11 @@
       </van-tab>
     </van-tabs>
 
-    <!-- 底部导航栏 -->
-    <MainTabBar />
   </div>
 </template>
 
 <script>
 import SensorRequest from '@/utils/SensorRequest';
-import MainTabBar from '@/components/MainTabBar.vue';
 import { key_DingUserPhone } from '@/utils/Dingding';
 import { downloadFile as utilsDownloadFile, previewFile as utilsPreviewFile } from '@/utils/fileUtils';
 
@@ -119,9 +116,6 @@ function getLocalUserInfo() {
 
 export default {
   name: 'CartFile',
-  components: {
-    MainTabBar,
-  },
   data() {
     return {
       activeTab: 0, // 当前选中的 tab index
@@ -320,7 +314,14 @@ export default {
 
 <style scoped>
 .page-container {
-  padding: 0 0 35px;/* 为底部导航栏预留空间 */
+  padding: 0 0 50px;/* 为底部导航栏预留空间 */
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.page-container.safe-area-bottom {
+  padding-bottom: calc(50px + var(--safe-area-inset-bottom, 0px));
 }
 
 .share-tabs {

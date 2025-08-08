@@ -1,5 +1,5 @@
 <template>
-  <div class="user-page-wrapper">
+  <div class="user-page-wrapper" :class="{ 'safe-area-bottom': isIOS }">
     <div class="user-content">
       <van-cell
           :title-style="{ fontWeight: 'bold', fontSize: '16px' }"
@@ -41,15 +41,12 @@
         <!--      <van-cell title="设置" is-link @click="handleSettings" />-->
       </van-cell-group>
     </div>
-    <!-- 底部导航栏 -->
-    <MainTabBar />
   </div>
 </template>
 
 <script>
 import * as dd from 'dingtalk-jsapi'
 import { Cell, CellGroup, Image,Toast } from 'vant'
-import MainTabBar from '@/components/MainTabBar.vue'
 import VerificationCode from "@/components/VerificationCode.vue";
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -58,21 +55,27 @@ export default {
     VerificationCode,
     VanCell: Cell,
     VanCellGroup: CellGroup,
-    VanImage: Image,
-    MainTabBar
+    VanImage: Image
   },
   data() {
     return {
       userInfo: {
         name: '',
         phone: ''
-      }
+      },
+      isIOS: false
     };
   },
   mounted() {
     this.loadUserInfo();
+    this.detectIOS();
   },
   methods: {
+    detectIOS() {
+      // 检测是否为iOS设备
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      this.isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+    },
     loadUserInfo() {
       const name = localStorage.getItem('sensor_DingName'); // 从缓存中获取姓名
       const phone = localStorage.getItem('key_DingUserPhone'); // 假设手机号也已保存
@@ -140,18 +143,25 @@ export default {
 };
 </script>
 
-
 <style scoped>
 .user-page-wrapper {
-  position: relative;
-  min-height: 100vh;
-  padding-bottom: 0; /* 移除底部填充，因为MainTabBar会处理 */
-  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 50px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  -webkit-scroll-behavior: smooth;
+}
+
+.user-page-wrapper.safe-area-bottom {
+  bottom: calc(50px + var(--safe-area-inset-bottom, 0px));
 }
 
 .user-content {
-  padding-bottom: 10px;
-  box-sizing: border-box;
+  padding: 0 0 10px 0;
+  min-height: 100%;
 }
 
 .user-card {
@@ -172,5 +182,10 @@ export default {
 
 .user-details {
   text-align: left;
+}
+
+/* 确保最后的内容不会被底部导航栏遮挡 */
+.van-cell-group:last-child {
+  margin-bottom: 20px;
 }
 </style>
