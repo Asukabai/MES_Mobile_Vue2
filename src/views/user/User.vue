@@ -145,18 +145,9 @@ export default {
 
 <style scoped>
 .user-page-wrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 50px;
+  height: 100%;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  -webkit-scroll-behavior: smooth;
-}
-
-.user-page-wrapper.safe-area-bottom {
-  bottom: calc(50px + var(--safe-area-inset-bottom, 0px));
 }
 
 .user-content {

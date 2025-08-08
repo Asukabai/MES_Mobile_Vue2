@@ -32,9 +32,6 @@
         </van-grid>
       </div>
     </div>
-
-    <!-- 底部导航栏 -->
-    <MainTabBar />
   </div>
 </template>
 
@@ -107,7 +104,6 @@
 }
 </style>
 <script>
-import MainTabBar from '@/components/MainTabBar.vue'
 import * as dd from 'dingtalk-jsapi'
 import SensorRequest from "@/utils/SensorRequest";
 import {key_DingScannedResult, updateCachedProductId} from "@/utils/Dingding";
@@ -117,9 +113,6 @@ export default {
     return {
       title: '首页'
     }
-  },
-  components: {
-    MainTabBar,
   },
   data() {
     return {

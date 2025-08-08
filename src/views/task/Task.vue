@@ -165,14 +165,11 @@
         </van-pull-refresh>
       </van-tab>
     </van-tabs>
-    <!-- 底部导航栏 -->
-    <main-tab-bar />
   </div>
 </template>
 
 <script>
 import SensorRequest from '@/utils/SensorRequest';
-import MainTabBar from '@/components/MainTabBar.vue';
 import { Toast } from 'vant';
 import { key_DingUserPhone } from '@/utils/Dingding';
 
@@ -185,9 +182,6 @@ function getLocalUserInfo() {
 
 export default {
   name: 'TaskPage',
-  components: {
-    MainTabBar,
-  },
   data() {
     return {
       activeTab: 0, // 默认激活第一个 tab

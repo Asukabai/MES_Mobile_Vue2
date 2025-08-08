@@ -314,14 +314,9 @@ export default {
 
 <style scoped>
 .page-container {
-  padding: 0 0 50px;/* 为底部导航栏预留空间 */
   height: 100%;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-}
-
-.page-container.safe-area-bottom {
-  padding-bottom: calc(50px + var(--safe-area-inset-bottom, 0px));
 }
 
 .share-tabs {

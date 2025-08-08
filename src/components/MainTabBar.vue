@@ -1,31 +1,29 @@
 <template>
-  <div class="tabbar-portal">
-    <van-tabbar
-        v-model="active"
-        class="fixed-tabbar"
-        :safe-area-inset-bottom="true"
-        route
+  <van-tabbar
+      v-model="active"
+      class="fixed-tabbar"
+      :safe-area-inset-bottom="true"
+      route
+  >
+    <van-tabbar-item
+        v-for="(item, index) in tabbars"
+        :key="index"
+        :to="item.path"
+        :badge="item.badge"
     >
-      <van-tabbar-item
-          v-for="(item, index) in tabbars"
-          :key="index"
-          :to="item.path"
-          :badge="item.badge"
-      >
-        <!-- 自定义图标 -->
-        <template #icon="{ active }">
-          <img
-              :src="active ? item.iconActive : item.iconInactive"
-              :alt="item.title"
-              style="width: 20px; height: 20px;"
-          />
-        </template>
+      <!-- 自定义图标 -->
+      <template #icon="{ active }">
+        <img
+            :src="active ? item.iconActive : item.iconInactive"
+            :alt="item.title"
+            style="width: 20px; height: 20px;"
+        />
+      </template>
 
-        <!-- 文字标题 -->
-        <span>{{ item.title }}</span>
-      </van-tabbar-item>
-    </van-tabbar>
-  </div>
+      <!-- 文字标题 -->
+      <span>{{ item.title }}</span>
+    </van-tabbar-item>
+  </van-tabbar>
 </template>
 
 <script>
@@ -131,41 +129,11 @@ export default {
 </script>
 
 <style scoped>
-.tabbar-portal {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 9999;
-  height: calc(50px + var(--safe-area-inset-bottom, 0px));
-  pointer-events: none;
-}
-
-.tabbar-portal::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: transparent;
-  pointer-events: auto;
-}
-
 .fixed-tabbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 9999;
-  background-color: #fff;
+  position: relative;
   height: 50px;
-  padding-bottom: var(--safe-area-inset-bottom, 0px);
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-  -webkit-transform: translate3d(0, 0, 0);
-  transform: translate3d(0, 0, 0);
-  will-change: transform;
-  pointer-events: auto;
+  border-top: 1px solid #f0f0f0;
 }
 
 /* 可选：添加图标过渡效果 */

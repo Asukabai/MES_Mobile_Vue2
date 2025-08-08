@@ -23,13 +23,10 @@
           @click="viewPostDetail(post)"
       />
     </van-list>
-    <!-- 底部导航栏 -->
-    <main-tab-bar />
   </div>
 </template>
 
 <script>
-import MainTabBar from '@/components/MainTabBar.vue'
 import { List, Cell, Search } from 'vant'
 import SensorRequest from '@/utils/SensorRequest.js'
 
@@ -39,7 +36,6 @@ export default {
     VanList: List,
     VanCell: Cell,
     VanSearch: Search,
-    MainTabBar
   },
   data() {
     return {
