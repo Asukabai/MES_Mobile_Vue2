@@ -328,10 +328,7 @@ export default {
 }
 
 .card-background {
-  background-image: url('../../assets/background_3.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-color: #3f83f8;
   position: relative;
   border-radius: 16px;
   margin-bottom: 15px;
@@ -346,7 +343,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.7); /* 半透明白色遮罩 */
+  background-color: rgba(255, 255, 255, 0.28); /* 半透明白色遮罩 */
   z-index: 1;
   border-radius: 16px;
 }
