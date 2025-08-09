@@ -7,7 +7,7 @@
       <van-tab title="收到的分享">
         <!-- 下拉刷新组件 -->
         <van-pull-refresh v-model="receivedRefreshing" @refresh="onReceivedRefresh">
-          <div class="cards-container card-background">
+          <div class="cards-container">
             <van-list
                 :loading="receivedLoading"
                 :finished="receivedFinished"
@@ -19,7 +19,6 @@
                   :key="item.ID_SharedFileInfo"
                   :title="item.File_Name"
                   :desc="formatDesc(item)"
-                  :thumb="getLocalImage(item)"
                   class="share-card"
               >
                 <template #tags>
@@ -33,14 +32,12 @@
                       icon="down"
                       round
                       size="small"
-                      type="info"
                       @click="handleDownload(item)"
                   >下载</van-button>
                   <van-button
                       icon="guide-o"
                       round
                       size="small"
-                      type="info"
                       @click="handlePreview(item)"
                   >预览</van-button>
                 </template>
@@ -54,7 +51,7 @@
       <van-tab title="发送的分享">
         <!-- 下拉刷新组件 -->
         <van-pull-refresh v-model="sentRefreshing" @refresh="onSentRefresh">
-          <div class="cards-container card-background">
+          <div class="cards-container">
             <van-empty description="" v-if="sentList.length === 0 && !sentLoading && sentFinished" />
             <van-list
                 :loading="sentLoading"
@@ -67,7 +64,6 @@
                   :key="item.ID_SharedFileInfo"
                   :title="item.File_Name"
                   :desc="formatSentDesc(item)"
-                  :thumb="getLocalImage(item)"
                   class="share-card"
               >
                 <template #tags>
@@ -81,14 +77,12 @@
                       icon="down"
                       round
                       size="small"
-                      type="info"
                       @click="handleDownload(item)"
                   >下载</van-button>
                   <van-button
                       icon="guide-o"
                       round
                       size="small"
-                      type="info"
                       @click="handlePreview(item)"
                   >预览</van-button>
                 </template>
@@ -327,57 +321,67 @@ export default {
   padding: 10px 2.5%; /* 2.5%的左右padding实现95%宽度 */
 }
 
-.card-background {
-  background-color: #3f83f8;
-  position: relative;
-  border-radius: 16px;
+.share-card {
   margin-bottom: 15px;
-  padding: 15px;
-  min-height: 150px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 16px; /* 更加圆润 */
+  overflow: hidden;
+  background: linear-gradient(135deg, #ffffff, #f8f9fa); /* 渐变背景 */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* 添加过渡效果 */
+  background-image: url('../../assets/background-8.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
 }
 
-.card-background::before {
+.share-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.28); /* 半透明白色遮罩 */
+  background-color: rgba(255, 255, 255, 0.4); /* 半透明白色遮罩 */
   z-index: 1;
-  border-radius: 16px;
 }
 
-.cards-container > * {
+.share-card >>> .van-card__content {
   position: relative;
   z-index: 2;
 }
 
-.share-card {
-  margin-bottom: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 16px; /* 更加圆润 */
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.9); /* 使用半透明背景确保可读性 */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* 添加过渡效果 */
+.share-card >>> .van-card__header {
+  position: relative;
+  z-index: 2;
 }
 
-.share-card:hover {
-  transform: translateY(-2px); /* 悬停时轻微上移 */
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+.share-card >>> .van-card__body {
+  position: relative;
+  z-index: 2;
 }
 
-.van-card__title {
+.share-card >>> .van-card__footer {
+  position: relative;
+  z-index: 2;
+}
+
+.share-card >>> .van-card__title {
   font-size: 14px;
   font-weight: bold;
   color: #333;
   margin-bottom: 4px;
 }
 
-.van-card__desc {
+.share-card >>> .van-card__desc {
   font-size: 13px;
   color: #666;
   margin-bottom: 8px;
+}
+
+.share-card:hover {
+  transform: translateY(-2px); /* 悬停时轻微上移 */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
 }
 
 .van-card__thumb {

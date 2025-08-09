@@ -2,11 +2,12 @@
   <div class="verification-code">
     <!-- 刷新按钮 -->
     <van-button
-        type="info"
         size="small"
         :disabled="isRefreshing"
         @click="fetchDDingCode"
+        class="custom-button"
     >
+      <img :src="keyIcon" alt="key" class="button-icon" />
       {{ isRefreshing ? `请等待(${refreshCountdown}s)` : '获取密钥' }}
     </van-button>
 
@@ -38,7 +39,8 @@ export default {
       // 新增字段：用于控制密钥隐藏倒计时
       countdownTime: 30,
       countdownVisible: false,
-      hideInterval: null
+      hideInterval: null,
+      keyIcon: require('@/assets/key.png')
     }
   },
   methods: {
@@ -129,6 +131,19 @@ export default {
   font-size: 12px;
   color: #999;
   margin-left: 8px;
+}
+/*  background-color: #73b3fa;*/
+.custom-button {
+  background-color: #6db0fa;
+  color: white;
+  border: none;
+}
+
+.button-icon {
+  width: 15px;
+  height: 15px;
+  vertical-align: middle;
+  margin-right: 2px;
 }
 
 .van-button--small {
