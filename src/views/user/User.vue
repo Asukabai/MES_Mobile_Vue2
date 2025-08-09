@@ -6,16 +6,16 @@
       />
       <!-- 用户信息卡片 -->
       <van-cell-group class="user-card">
-        <van-cell>
+        <van-cell class="user-card-background">
           <div style="display: flex; align-items: center;">
-            <div class="user-avatar">
-              <van-image
-                  round
-                  width="50px"
-                  height="50px"
-                  :src="require('@/assets/企业头像.png')"
-              />
-            </div>
+<!--            <div class="user-avatar">-->
+<!--              <van-image-->
+<!--                  round-->
+<!--                  width="50px"-->
+<!--                  height="50px"-->
+<!--                  :src="require('@/assets/企业头像.png')"-->
+<!--              />-->
+<!--            </div>-->
             <div class="user-details">
               <p v-if="!userInfo.name">正在加载用户信息...</p>
               <p v-else><strong>姓名：</strong>{{ userInfo.name }}</p>
@@ -46,7 +46,8 @@
 
 <script>
 import * as dd from 'dingtalk-jsapi'
-import { Cell, CellGroup, Image,Toast } from 'vant'
+// import { Cell, CellGroup, Image,Toast } from 'vant'
+import { Cell, CellGroup, Toast } from 'vant'
 import VerificationCode from "@/components/VerificationCode.vue";
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -55,7 +56,7 @@ export default {
     VerificationCode,
     VanCell: Cell,
     VanCellGroup: CellGroup,
-    VanImage: Image
+
   },
   data() {
     return {
@@ -143,8 +144,7 @@ export default {
 };
 </script>
 
-<style scoped>
-.user-page-wrapper {
+<style scoped>.user-page-wrapper {
   height: 100%;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -162,16 +162,53 @@ export default {
   overflow: hidden;
 }
 
-.user-card .van-cell__value {
+.user-card-background {
+  background-image: url('../../assets/background-2.png'); /* 替换为您的背景图片路径 */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 150px;
+  position: relative;
+}
+
+.user-card-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.2); /* 半透明白色遮罩 */
+  z-index: 1;
+}
+
+.user-info-container {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  position: relative;
+  z-index: 2;
 }
 
 .user-avatar {
-  margin-right: 25px;
+  margin-bottom: 15px;
+  position: relative;
+  z-index: 2;
 }
 
 .user-details {
+  text-align: left;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.user-details p {
+  background-color: rgba(255, 255, 255, 0.7); /* 为文字添加轻微背景以提高可读性 */
+  padding: 10px 10px;
+  border-radius: 15px;
+  display: block;
+  margin: 8px 0;
   text-align: left;
 }
 

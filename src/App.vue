@@ -31,6 +31,7 @@ export default {
     this.detectOS();
   },
   methods: {
+    // 使用 Vue 的条件渲染通过 JavaScript 检测操作系统比 CSS 媒体查询更准确   可扩展性：可以在 JavaScript 中进行更多与平台相关的逻辑处理   可维护性：逻辑集中在一个地方，便于维护和修改   灵活性：可以根据需要添加更多的平台特定逻辑
     detectOS() {
       const userAgent = navigator.userAgent || navigator.vendor || window.opera;
       this.isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
