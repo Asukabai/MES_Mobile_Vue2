@@ -7,7 +7,7 @@
       <van-tab title="收到的分享">
         <!-- 下拉刷新组件 -->
         <van-pull-refresh v-model="receivedRefreshing" @refresh="onReceivedRefresh">
-          <div class="cards-container">
+          <div class="cards-container card-background">
             <van-list
                 :loading="receivedLoading"
                 :finished="receivedFinished"
@@ -54,7 +54,7 @@
       <van-tab title="发送的分享">
         <!-- 下拉刷新组件 -->
         <van-pull-refresh v-model="sentRefreshing" @refresh="onSentRefresh">
-          <div class="cards-container">
+          <div class="cards-container card-background">
             <van-empty description="" v-if="sentList.length === 0 && !sentLoading && sentFinished" />
             <van-list
                 :loading="sentLoading"
@@ -327,12 +327,41 @@ export default {
   padding: 10px 2.5%; /* 2.5%的左右padding实现95%宽度 */
 }
 
+.card-background {
+  background-image: url('../../assets/background_3.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  border-radius: 16px;
+  margin-bottom: 15px;
+  padding: 15px;
+  min-height: 150px;
+}
+
+.card-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7); /* 半透明白色遮罩 */
+  z-index: 1;
+  border-radius: 16px;
+}
+
+.cards-container > * {
+  position: relative;
+  z-index: 2;
+}
+
 .share-card {
   margin-bottom: 15px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: 16px; /* 更加圆润 */
   overflow: hidden;
-  background: linear-gradient(135deg, #ffffff, #f8f9fa); /* 渐变背景 */
+  background: rgba(255, 255, 255, 0.9); /* 使用半透明背景确保可读性 */
   transition: transform 0.3s ease, box-shadow 0.3s ease; /* 添加过渡效果 */
 }
 
