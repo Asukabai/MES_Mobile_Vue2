@@ -91,6 +91,25 @@ export default {
             document.body.appendChild(downloadLink)
             downloadLink.click()
             document.body.removeChild(downloadLink)
+
+          //downloadLink.href = this.fileUrl + (this.fileUrl.includes('?') ? '&' : '?') + 'filename=' + encodeURIComponent(this.fileName)
+          // 这个逻辑是将文件名作为URL参数附加到原始URL上，而不是直接拼接文件名到URL末尾。原因如下：
+          //URL格式要求：URL有特定的结构（协议://域名:端口/路径?查询参数#锚点），不能随意在末尾添加文件名
+              // 查询参数格式：通过?和&来分隔查询参数是标准做法
+              // 如果你想要直接在URL路径末尾拼接文件名，可以使用以下方式：
+
+          // 更好的做法是让后端在HTTP响应头中设置Content-Disposition来指定文件名
+
+          // const downloadLink = document.createElement('a')
+          // // 通过URL参数附加文件名，帮助浏览器识别文件名
+          // downloadLink.href = this.fileUrl + '/' + encodeURIComponent(this.fileName)
+          // downloadLink.textContent = `点击下载 ${this.fileName}`
+          // downloadLink.setAttribute('download', this.fileName)
+          // downloadLink.style.display = 'none'
+          // document.body.appendChild(downloadLink)
+          // downloadLink.click()
+          // document.body.removeChild(downloadLink)
+
           // ✅ 强制跳转浏览器下载
           // window.location.href = this.fileUrl
         } catch (error) {

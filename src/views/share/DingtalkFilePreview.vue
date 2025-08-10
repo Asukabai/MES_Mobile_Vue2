@@ -15,7 +15,7 @@
       <div v-else-if="previewError" class="error-container">
         <van-icon name="warning-o" size="40" />
         <p class="error-text">{{ previewError }}</p>
-        <van-button type="primary" @click="retryPreview">重试</van-button>
+        <van-button type="info" @click="retryPreview">重试</van-button>
       </div>
 
       <div v-else-if="previewSuccess && !isTextView" class="success-container">
@@ -26,13 +26,13 @@
       <div v-else-if="isTextView && textContent" class="text-preview-container">
         <h3 class="text-title">{{ fileName }}</h3>
         <div class="text-content">{{ textContent }}</div>
-        <van-button type="primary" @click="goBack">返回</van-button>
+        <van-button type="info" @click="goBack">返回</van-button>
       </div>
 
       <div v-else class="info-container">
         <van-icon name="info-o" size="40" />
         <p class="info-text">即将使用钉钉文档预览功能打开文件</p>
-        <van-button type="primary" @click="previewFile">开始预览</van-button>
+        <van-button type="info" @click="previewFile">开始预览</van-button>
       </div>
     </div>
   </div>
