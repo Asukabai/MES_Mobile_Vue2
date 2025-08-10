@@ -134,7 +134,7 @@ export default {
 }
 /*  background-color: #73b3fa;*/
 .custom-button {
-  background-color: #6db0fa;
+  background-color: #4098f8;
   color: white;
   border: none;
 }

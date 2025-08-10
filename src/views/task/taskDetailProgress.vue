@@ -1,10 +1,10 @@
 <template>
   <div>
     <!-- 标题 -->
-    <van-nav-bar title="任务过程提交表单" fixed />
+<!--    <van-nav-bar title="任务过程提交表单" fixed />-->
 
     <!-- 所有表单内容的卡片 -->
-    <div class="card-container" style="margin-top: 50px; padding-bottom: 20px;">
+    <div class="card-container" style="margin-top: 0px; padding-bottom: 20px;">
       <van-cell title="任务名称" :value="taskName" />
       <van-cell title="项目编号" :value="projectCode" />
       <van-cell title="任务描述">

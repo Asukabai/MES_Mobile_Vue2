@@ -1,5 +1,5 @@
 <template>
-  <div class="task-page">
+  <div class="task-page page-container">
     <!-- 页面标题 -->
     <!--    <van-nav-bar-->
     <!--        title="任务"-->
@@ -28,92 +28,75 @@
     </div>
 
     <!-- 标签页 -->
-    <!--
-            background="#f5f5f5"          背景色
-        color="#1989fa"              激活项颜色
-        title-active-color="#1989fa" 选中文字颜色
-        title-inactive-color="#666"  未选中文字颜色
-        line-width="30px"            滑块宽度
-        line-height="3px"            滑块高度 -->
     <van-tabs
         v-model="activeTab"
         animated
         swipeable
-        class="task-tabs"
-        background="#f5f5f5"
-        color="#1989fa"
-        title-active-color="#1989fa"
-        title-inactive-color="#666"
-        line-width="30px"
-        line-height="3px"
+        class="share-tabs task-tabs"
         sticky
     >
       <van-tab title="我参与的">
         <van-pull-refresh
             v-model="participatedRefreshing"
             @refresh="onParticipatedRefresh">
-          <van-list
-              :loading="participatedLoading"
-              :finished="participatedFinished"
-              finished-text="没有更多了"
-              @load="loadParticipatedTasks"
-          >
-            <van-card
-                v-for="item in participatedList"
-                :key="item.ID_TaskInfo"
-                :title="`任务名称：${item.Task_Name || '未命名任务'}`"
-                :desc="formatParticipatedDesc(item)"
-                :thumb="require('@/assets/任务模版.png')"
-                class="task-card"
+          <div class="cards-container">
+            <van-list
+                :loading="participatedLoading"
+                :finished="participatedFinished"
+                finished-text="没有更多了"
+                @load="loadParticipatedTasks"
             >
-              <template #tag>
-                <van-tag
-                    :type="getTaskStatusType(item.Task_Status)"
-                >
-                  {{ item.Task_Status }}
-                </van-tag>
-              </template>
+              <van-card
+                  v-for="item in participatedList"
+                  :key="item.ID_TaskInfo"
+                  :title="`任务名称：${item.Task_Name || '未命名任务'}`"
+                  :desc="formatParticipatedDesc(item)"
+                  class="task-card share-card"
+              >
 
-              <!-- 标签 -->
-              <template #tags>
-                <van-tag plain type="primary">
-                  {{ formatDateRange(item.Task_StartTime, item.Task_ExEndTime) }}
-                </van-tag>
-              </template>
+                <!-- 标签 -->
+                <template #tags>
+                  <van-tag
+                      :type="getTaskStatusType(item.Task_Status)"
+                  >
+                    {{ item.Task_Status }}
+                  </van-tag>
+                  <van-tag plain type="primary">
+                    {{ formatDateRange(item.Task_StartTime, item.Task_ExEndTime) }}
+                  </van-tag>
+                </template>
 
-              <template #footer>
-                <van-button
-                    icon="flag-o"
-                    round
-                    size="small"
-                    type="info"
-                    :disabled="isTaskCompleted(item.Task_Status)"
-                    @click="handleTaskButtonClick(item, '完成提交')"
-                >
-                  完成提交
-                </van-button>
-                <van-button
-                    icon="award-o"
-                    round
-                    size="small"
-                    type="info"
-                    :disabled="isTaskCompleted(item.Task_Status)"
-                    @click="handleTaskButtonClick(item, '进度提交')"
-                >
-                  进度提交
-                </van-button>
-                <van-button
-                    icon="eye-o"
-                    round
-                    size="small"
-                    type="info"
-                    @click="goToTaskDetailLook(item)"
-                >
-                  查看
-                </van-button>
-              </template>
-            </van-card>
-          </van-list>
+                <template #footer>
+                  <van-button
+                      icon="flag-o"
+                      round
+                      size="small"
+                      :disabled="isTaskCompleted(item.Task_Status)"
+                      @click="handleTaskButtonClick(item, '完成提交')"
+                  >
+                    完成提交
+                  </van-button>
+                  <van-button
+                      icon="award-o"
+                      round
+                      size="small"
+                      :disabled="isTaskCompleted(item.Task_Status)"
+                      @click="handleTaskButtonClick(item, '进度提交')"
+                  >
+                    进度提交
+                  </van-button>
+                  <van-button
+                      icon="eye-o"
+                      round
+                      size="small"
+                      @click="goToTaskDetailLook(item)"
+                  >
+                    查看
+                  </van-button>
+                </template>
+              </van-card>
+            </van-list>
+          </div>
         </van-pull-refresh>
       </van-tab>
 
@@ -122,46 +105,43 @@
         <van-pull-refresh
             v-model="responsibleRefreshing"
             @refresh="onResponsibleRefresh">
-          <van-list
-              :loading="responsibleLoading"
-              :finished="responsibleFinished"
-              finished-text="没有更多了"
-              @load="loadResponsibleTasks"
-          >
-            <van-card
-                v-for="item in responsibleList"
-                :key="item.ID_TaskInfo"
-                :title="`任务名称：${item.Task_Name || '未命名任务'}`"
-                :desc="formatParticipatedDesc(item)"
-                :thumb="require('@/assets/任务模版.png')"
-                class="task-card"
+          <div class="cards-container">
+            <van-list
+                :loading="responsibleLoading"
+                :finished="responsibleFinished"
+                finished-text="没有更多了"
+                @load="loadResponsibleTasks"
             >
+              <van-card
+                  v-for="item in responsibleList"
+                  :key="item.ID_TaskInfo"
+                  :title="`任务名称：${item.Task_Name || '未命名任务'}`"
+                  :desc="formatParticipatedDesc(item)"
+                  class="task-card share-card"
+              >
+                <!-- 标签 -->
+                <template #tags>
+                  <van-tag
+                      :type="getTaskStatusType(item.Task_Status)"
+                  >
+                    {{ item.Task_Status }}
+                  </van-tag>
+                  <van-tag plain type="primary">
+                    {{ formatDateRange(item.Task_StartTime, item.Task_ExEndTime) }}
+                  </van-tag>
+                </template>
 
-              <!-- 自定义 tag 插槽 -->
-              <template #tag>
-                <van-tag
-                    :type="getTaskStatusType(item.Task_Status)">
-                  {{ item.Task_Status }}
-                </van-tag>
-              </template>
-              <!-- 标签 -->
-              <template #tags>
-                <van-tag plain type="primary">
-                  {{ formatDateRange(item.Task_StartTime, item.Task_ExEndTime) }}
-                </van-tag>
-              </template>
-
-              <template #footer>
-                <van-button
-                    icon="eye-o"
-                    round size="small"
-                    type="info"
-                    @click="goToTaskDetailLook(item)">
-                  查看
-                </van-button>
-              </template>
-            </van-card>
-          </van-list>
+                <template #footer>
+                  <van-button
+                      icon="eye-o"
+                      round size="small"
+                      @click="goToTaskDetailLook(item)">
+                    查看
+                  </van-button>
+                </template>
+              </van-card>
+            </van-list>
+          </div>
         </van-pull-refresh>
       </van-tab>
     </van-tabs>
@@ -465,90 +445,109 @@ export default {
 </script>
 
 <style scoped>
-.task-page {
-  padding-bottom: 50px; /* 留出底部 tabbar 的空间 */
-}
-/* 标签页样式 */
-.task-tabs {
-  margin-top: 10px;
-  padding: 0 10px;
-  --van-tabs-card-background: #f5f5f5; /* 卡片模式下背景色 */
+
+.page-container {
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-.task-tabs /deep/ .van-tab__title {
+.share-tabs {
+  margin-top: 0;
+}
+
+.cards-container {
+  padding: 10px 2.5%; /* 2.5%的左右padding实现95%宽度 */
+}
+
+.share-card {
+  margin-bottom: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 16px; /* 更加圆润 */
+  overflow: hidden;
+  background: linear-gradient(135deg, #ffffff, #f8f9fa); /* 渐变背景 */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* 添加过渡效果 */
+  background-image: url('../../assets/background-8.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.share-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.1); /* 半透明白色遮罩 */
+  z-index: 1;
+}
+
+.share-card >>> .van-card__content {
+  position: relative;
+  z-index: 2;
+}
+
+.share-card >>> .van-card__header {
+  position: relative;
+  z-index: 2;
+}
+
+.share-card >>> .van-card__body {
+  position: relative;
+  z-index: 2;
+}
+
+.share-card >>> .van-card__footer {
+  position: relative;
+  z-index: 2;
+}
+
+.share-card >>> .van-card__title {
   font-size: 14px;
-  font-weight: normal;
-}
-
-.task-tabs /deep/ .van-tab--active .van-tab__title {
-  font-weight: bold;
-  color: #1989fa !important;
-}
-.task-page {
-  padding-bottom: 50px; /* 留出底部 tabbar 的空间 */
-}
-
-/* 可选：修改 van-nav-bar 样式 */
-.van-nav-bar {
-  background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.van-nav-bar__title {
-  font-size: 18px;
   font-weight: bold;
   color: #333;
+  margin-bottom: 4px;
 }
 
-/* 自定义 van-card 右上角 tag 颜色 */
-.van-card__tag {
-  background-color: #969799 !important; /* 默认灰色 */
-  color: white !important;
-  font-weight: normal !important;
-  border-radius: 2px !important;
+.share-card >>> .van-card__desc {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
 }
 
-/* 已完成 - 绿色 */
-.status-completed .van-card__tag {
-  background-color: #07c160 !important;
+.share-card:hover {
+  transform: translateY(-2px); /* 悬停时轻微上移 */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
 }
 
-/* 进行中 - 蓝色 */
-.status-in-progress .van-card__tag {
-  background-color: #1989fa !important;
+.van-card__thumb {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 12px; /* 缩略图也更加圆润 */
 }
 
-/* 未开始 - 灰色 */
-.status-pending .van-card__tag {
-  background-color: #969799 !important;
+.van-card__footer .van-button {
+  font-size: 12px;
+  padding: 0 12px;
+  height: 30px;
+  margin-left: 8px;
 }
 
-/* 搁置 - 橙色 */
-.status-on-hold .van-card__tag {
-  background-color: #f08800 !important;
+.van-tag {
+  border-radius: 8px; /* 标签也更加圆润 */
 }
 
-/* 标签页样式 */
-.task-tabs {
-  margin-top: 0px;
-  padding: 0 10px;
-  --van-tabs-card-background: #f5f5f5; /* 卡片模式下背景色 */
+/* 保留原有的部分样式 */
+.filter-buttons {
+  padding: 10px;
 }
 
-.task-tabs /deep/ .van-tab__title {
-  font-size: 14px;
-  font-weight: normal;
-}
-
-.task-tabs /deep/ .van-tab--active .van-tab__title {
-  font-weight: bold;
-  color: #1989fa !important;
-}
-
-.tab-content {
-  padding: 16px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+.filter-buttons .van-button {
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 </style>

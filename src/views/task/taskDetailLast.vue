@@ -1,10 +1,10 @@
 <template>
   <div>
     <!-- 固定标题 -->
-    <van-nav-bar title="任务完成提交表单" fixed />
+<!--    <van-nav-bar title="任务完成提交表单" fixed />-->
 
     <!-- 表单内容的卡片 -->
-    <div class="card-container" style="margin-top: 50px; padding-bottom: 20px;">
+    <div class="card-container" style="margin-top: 0px; padding-bottom: 20px;">
       <!-- 任务信息 -->
         <van-cell title="任务名称" :value="taskName" />
         <van-cell title="项目编号" :value="projectCode" />
@@ -249,7 +249,6 @@ export default {
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin: 10px;
-  padding: 15px;
 }
 
 .loading-box {

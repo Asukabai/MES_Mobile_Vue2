@@ -168,13 +168,13 @@ const router = new Router({
       path: `${basePath}task-detail-last`,
       name: 'TaskDetailLast',
       component: () => import('@/views/task/taskDetailLast.vue'),
-      meta: { title: '最终任务详情' }
+      meta: { title: '任务完成提交表单' }
     },
     {
       path: `${basePath}task-detail-progress`,
       name: 'TaskDetailProgress',
       component: () => import('@/views/task/taskDetailProgress.vue'),
-      meta: { title: '任务进度详情' }
+      meta: { title: '任务进度提交表单' }
     },
     {
       path: `${basePath}task-detail-look`,

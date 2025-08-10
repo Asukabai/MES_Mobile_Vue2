@@ -17,7 +17,7 @@
               <van-card
                   v-for="item in receivedList"
                   :key="item.ID_SharedFileInfo"
-                  :title="item.File_Name"
+                  :title="`文件名称：${item.File_Name || '未命名文件'}`"
                   :desc="formatDesc(item)"
                   class="share-card"
               >
@@ -59,10 +59,17 @@
                 finished-text="没有更多了"
                 @load="loadSentData"
             >
-              <van-card
+<!--              <van-card-->
+<!--                  v-for="item in sentList"-->
+<!--                  :key="item.ID_SharedFileInfo"-->
+<!--                  :title="item.File_Name"-->
+<!--                  :desc="formatSentDesc(item)"-->
+<!--                  class="share-card"-->
+<!--              >-->
+                <van-card
                   v-for="item in sentList"
                   :key="item.ID_SharedFileInfo"
-                  :title="item.File_Name"
+                  :title="`文件名称：${item.File_Name || '未命名文件'}`"
                   :desc="formatSentDesc(item)"
                   class="share-card"
               >
@@ -342,7 +349,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.4); /* 半透明白色遮罩 */
+  background-color: rgba(255, 255, 255, 0.1); /* 半透明白色遮罩 */
   z-index: 1;
 }
 
