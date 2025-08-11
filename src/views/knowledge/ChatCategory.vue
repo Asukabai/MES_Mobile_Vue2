@@ -3,7 +3,7 @@
     <!-- 搜索栏 -->
     <van-search
         v-model="searchParams.Error_Name"
-        placeholder="请输入文件名称"
+        placeholder="请输入问题名称"
         @search="onSearch"
         class="custom-search"
     />
@@ -20,7 +20,7 @@
           v-for="(post, index) in posts"
           :key="index"
           :title="post.Error_Name || post.Error_Code || '未知错误'"
-          :label="`类型: ${post.Error_Type || '未分类'}`"
+          :label="`记录类型: ${post.Error_Type || '未分类'}`"
           is-link
           @click="viewPostDetail(post)"
           class="custom-cell"
@@ -153,6 +153,9 @@ export default {
   background-color: #3f83f8;
   border-radius: 0 18px 18px 0;
 }
+
+/*为 .custom-cell 添加了 width: 95%，使每个列表项只占屏幕宽度的95%
+将 margin 调整为 10px auto，使列表项在水平方向上居中显示*/
 
 .custom-cell {
   background-color: #ffffff;
