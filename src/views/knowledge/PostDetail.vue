@@ -1,6 +1,5 @@
 <template>
   <div class="post-detail-page">
-
     <div class="post-content" v-if="post">
       <van-cell-group>
         <van-cell title="问题名称" :value="post.Error_Name || '未提供'" />
@@ -28,18 +27,40 @@
         </van-cell>
       </van-cell-group>
 
+
+      <!-- 移除了原来的单个文件单元格，改为更详细的文件信息展示-->
+
       <van-cell-group style="margin-top: 10px;" v-if="post.Error_Solution && post.Error_Solution.length > 0">
         <van-cell title="解决方案文件" />
-        <van-cell
-            v-for="(solution, index) in post.Error_Solution"
-            :key="index"
-            :title="solution.File_Name"
-            is-link
-            @click="downloadFile(solution)"
-        >
-          <template #right-icon>
-            <van-icon name="arrow" />
-          </template>
+        <van-cell v-for="(solution, index) in post.Error_Solution" :key="index">
+          <div class="file-item">
+            <div class="file-info">
+              <div class="file-name">{{ solution.File_Name }}</div>
+              <div class="file-meta">
+                <span class="upload-time" v-if="solution.Upload_Time">上传时间: {{ formatDate(solution.Upload_Time) }}</span>
+              </div>
+            </div>
+            <div class="file-actions">
+              <van-button
+                  size="small"
+                  type="info"
+                  class="action-button download-button"
+                  @click="handleDownload(solution)"
+              >
+                <img :src="keyIcon" alt="key" class="button-icon" />
+                下载
+              </van-button>
+              <van-button
+                  size="small"
+                  type="info"
+                  class="action-button preview-button"
+                  @click="handlePreview(solution)"
+              >
+                <img :src="keyIconView" alt="key" class="button-icon1" />
+                预览
+              </van-button>
+            </div>
+          </div>
         </van-cell>
       </van-cell-group>
     </div>
@@ -51,65 +72,39 @@
 </template>
 
 <script>
-import { Cell, CellGroup, Icon, Loading, Toast } from 'vant'
+import { Cell, CellGroup, Loading, Toast, Button } from 'vant'
+import { downloadFile, previewFile } from '@/utils/fileUtils'
 
 export default {
   name: 'PostDetail',
   components: {
     VanCell: Cell,
     VanCellGroup: CellGroup,
-    VanIcon: Icon,
-    VanLoading: Loading
+    VanLoading: Loading,
+    VanButton: Button
   },
   data() {
     return {
-      post: null
+      post: null,
+      keyIcon: require('@/assets/download.png'),
+      keyIconView: require('@/assets/scan-4.png')
     }
   },
   created() {
     this.loadPostDetail()
   },
   methods: {
-    goBack() {
-      this.$router.go(-1)
-    },
     loadPostDetail() {
-      // 从路由参数中获取帖子ID
-      // eslint-disable-next-line no-unused-vars
-      const postId = this.$route.params.id
+      // 从路由查询参数中获取帖子数据
+      const postData = this.$route.query.data
 
-      // 实际项目中需要通过API获取数据
-      // 示例代码：
-      /*
-      SensorRequest.getErrorDetail(postId, (respData) => {
-        this.post = JSON.parse(respData)
-      }, (errorMsg) => {
-        Toast.fail('获取详情失败: ' + errorMsg)
-      })
-      */
-
-      // 模拟数据用于演示
-      this.post = {
-        "Error_Name": "ERP与MES数据同步失败",
-        "Error_Code": null,
-        "Error_Type": "其他",
-        "Error_Description": "MES系统未能将生产订单数据同步至ERP系统，导致库存数据不一致。",
-        "Error_Creator": null,
-        "Error_Particulars": [],
-        "Error_Solution": [
-          {
-            "File_Name": "模块流程图对应mermaid代码.txt",
-            "File_Md5": "62cefc3d4e903725e2852e1868dfd443",
-            "File_Base64": "",
-            "Upload_Time": "2025-07-16T09:39:11.837Z"
-          }
-        ],
-        "Error_Keyword": null,
-        "Id": "6891da77f70ab43e1786fcd7",
-        "Uuid": "1402234308273373185",
-        "Ts_create": "2025-08-05T10:18:31.347Z",
-        "Ts_edit": "2025-08-05T10:18:31.347Z",
-        "Logic_del": 0
+      if (postData) {
+        try {
+          this.post = JSON.parse(postData)
+        } catch (e) {
+          console.error('解析帖子数据失败:', e)
+          Toast.fail('数据解析失败')
+        }
       }
     },
     formatDate(dateString) {
@@ -117,10 +112,11 @@ export default {
       const date = new Date(dateString)
       return date.toLocaleString('zh-CN')
     },
-    downloadFile(solution) {
-      Toast('下载文件: ' + solution.File_Name)
-      // 实际项目中应该实现文件下载逻辑
-      // 例如通过solution.File_Md5或其他标识符下载文件
+    handleDownload(file) {
+      downloadFile(file)
+    },
+    handlePreview(file) {
+      previewFile(file)
     }
   }
 }
@@ -143,6 +139,67 @@ export default {
 .particular-content {
   white-space: pre-wrap;
   line-height: 1.6;
-  color: #333;
+  color: #999999;
+}
+
+.file-item {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.file-info {
+  margin-bottom: 10px;
+}
+
+.file-name {
+  font-weight: bold;
+  font-size: 14px;
+  color: #999999;
+  margin-bottom: 5px;
+}
+
+.file-meta {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  color: #999;
+}
+
+.file-meta span {
+  margin-bottom: 3px;
+}
+
+.file-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.action-button {
+  margin-left: 10px;
+}
+
+.download-button {
+  background-color: #3f83f8;
+  border-color: #3f83f8;
+}
+
+.preview-button {
+  background-color: #3f83f8;
+  border-color: #3f83f8;
+}
+
+.button-icon {
+  width: 17px;
+  height: 17px;
+  vertical-align: middle;
+  margin-right: 2px;
+}
+
+.button-icon1 {
+  width: 15px;
+  height: 15px;
+  vertical-align: middle;
+  margin-right: 4px;
 }
 </style>

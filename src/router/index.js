@@ -51,8 +51,14 @@ const router = new Router({
       component: CreatePost,
       meta: { title: '创建帖子' }
     },
+    // {
+    //   path: `${basePath}post-detail/:id`,
+    //   name: 'PostDetail',
+    //   component: PostDetail,
+    //   meta: { title: '详情信息' }
+    // },
     {
-      path: `${basePath}post-detail/:id`,
+      path: `${basePath}post-detail`,
       name: 'PostDetail',
       component: PostDetail,
       meta: { title: '详情信息' }

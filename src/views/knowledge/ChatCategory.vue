@@ -67,8 +67,13 @@ export default {
       this.$router.push('/sensor_ddingWork/Release/create_post') // 跳转到创建页面
     },
     viewPostDetail(post) {
-      // 根据实际返回数据结构调整跳转逻辑
-      this.$router.push(`/sensor_ddingWork/Release/post-detail/${post.Id || post.id || post.Error_ID}`)
+      // 传递整个post对象到详情页
+      this.$router.push({
+        path: `/sensor_ddingWork/Release/post-detail`,
+        query: {
+          data: JSON.stringify(post)
+        }
+      })
     },
     onSearch() {
       this.posts = []
