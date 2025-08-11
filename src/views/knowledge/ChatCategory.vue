@@ -5,6 +5,7 @@
         v-model="searchParams.Error_Name"
         placeholder="请输入文件名称"
         @search="onSearch"
+        class="custom-search"
     />
 
     <!-- 错误列表 -->
@@ -13,6 +14,7 @@
         :finished="finished"
         finished-text="没有更多了"
         @load="onLoad"
+        class="custom-list"
     >
       <van-cell
           v-for="(post, index) in posts"
@@ -21,6 +23,7 @@
           :label="`类型: ${post.Error_Type || '未分类'}`"
           is-link
           @click="viewPostDetail(post)"
+          class="custom-cell"
       />
     </van-list>
   </div>
@@ -116,9 +119,66 @@ export default {
 }
 </script>
 
-<style scoped>
-.knowledge-base-page {
+<style scoped>.knowledge-base-page {
   padding-bottom: 50px;
+}
+
+.custom-search {
+  padding: 10px;
+  background-color:  #4098f8;
+  border-radius: 20px;
+  margin: 10px;
+}
+
+.custom-search ::v-deep .van-search__content {
+  border: 2px solid #ffffff;
+  border-radius: 20px;
+  background-color: #e6f0ff;
+}
+
+.custom-search ::v-deep .van-field__left-icon {
+  color: #ffffff;
+}
+
+.custom-search ::v-deep .van-field__control {
+  color: #333333;
+}
+
+.custom-search ::v-deep .van-field__control::placeholder {
+  color: #666666;
+}
+
+.custom-search ::v-deep .van-search__action {
+  color: #ffffff;
+  background-color: #3f83f8;
+  border-radius: 0 18px 18px 0;
+}
+
+.custom-cell {
+  background-color: #ffffff;
+  margin: 10px auto;
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(63, 131, 248, 0.2);
+  transition: all 0.3s ease;
+  width: 95%;
+}
+
+.custom-cell ::v-deep .van-cell__title {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+}
+
+.custom-cell ::v-deep .van-cell__label {
+  white-space: normal;
+  color: #666;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.custom-cell:active {
+  background-color: #e6f0ff;
+  transform: scale(0.98);
 }
 
 .van-cell__title {
