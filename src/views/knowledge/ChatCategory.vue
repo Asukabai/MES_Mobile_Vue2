@@ -3,7 +3,7 @@
     <!-- 搜索栏 -->
     <van-search
         v-model="searchParams.Error_Name"
-        placeholder="请输入问题名称"
+        placeholder="请输入问题名称（支持模糊匹配-换行自动搜索）"
         @search="onSearch"
         class="custom-search"
     />
@@ -14,13 +14,13 @@
         :finished="finished"
         finished-text="没有更多了"
         @load="onLoad"
-        class="custom-list"
     >
+<!--      :title="post.Error_Name || post.Error_Code || '未知错误'"-->
       <van-cell
           v-for="(post, index) in posts"
           :key="index"
-          :title="post.Error_Name || post.Error_Code || '未知错误'"
-          :label="`记录类型: ${post.Error_Type || '未分类'}`"
+          :title="`问题名称: ${post.Error_Name || post.Error_Code || '未知错误'}`"
+          :label="`类型: ${post.Error_Type || '未分类'}`"
           is-link
           @click="viewPostDetail(post)"
           class="custom-cell"
@@ -28,6 +28,10 @@
     </van-list>
   </div>
 </template>
+
+<!--根据是否有搜索关键词来决定使用哪个接口：
+当搜索框有内容时，使用ErrorRepositorySelectFun接口进行模糊查询
+当搜索框无内容时，使用原来的ErrorRepositoryGetFun接口加载数据-->
 
 <script>
 import { List, Cell, Search } from 'vant'
@@ -85,52 +89,100 @@ export default {
     },
     loadData() {
       this.loading = true
-      // 将参数转换为JSON字符串
-      const param = JSON.stringify(this.searchParams)
 
-      SensorRequest.ErrorRepositoryGetFun(
-          param,
-          (respData) => {
-            console.log("chat_respData: "+respData)
-            let chat_respData =  JSON.parse(respData)
-            this.loading = false
-            if (respData && Array.isArray(chat_respData)) {
-              // 如果返回的是数组，直接赋值
-              if (this.posts.length === 0) {
-                this.posts = chat_respData
+      // 判断是否是搜索模式
+      if (this.searchParams.Error_Name) {
+        // 搜索模式，使用ErrorRepositorySelectFun接口
+        // 构造搜索参数
+        const searchParam = {
+          Error_Name: this.searchParams.Error_Name,
+          Error_Type: ""
+        }
+        // 将参数转换为JSON字符串
+        const param = JSON.stringify(searchParam)
+
+        // 使用ErrorRepositorySelectFun接口进行搜索
+        SensorRequest.ErrorRepositorySelectFun(
+            param,
+            (respData) => {
+              console.log("search_respData: "+respData)
+              let search_respData =  JSON.parse(respData)
+              this.loading = false
+              if (respData && Array.isArray(search_respData)) {
+                // 如果返回的是数组，直接赋值
+                if (this.posts.length === 0) {
+                  this.posts = search_respData
+                } else {
+                  this.posts = [...this.posts, ...search_respData]
+                }
+                // 假设每次返回10条数据，如果没有更多数据则finished设为true
+                this.finished = search_respData.length < 10
+              } else if (respData) {
+                // 如果返回的是单个对象
+                this.posts = [search_respData]
+                this.finished = true
               } else {
-                this.posts = [...this.posts, ...chat_respData]
+                // 没有数据返回
+                this.finished = true
               }
-              // 假设每次返回10条数据，如果没有更多数据则finished设为true
-              this.finished = chat_respData.length < 10
-            } else if (respData) {
-              // 如果返回的是单个对象
-              this.posts = [chat_respData]
+            },
+            (errorMsg) => {
+              this.loading = false
               this.finished = true
-            } else {
-              // 没有数据返回
-              this.finished = true
+              console.error('获取数据失败:', errorMsg)
+              // 可以添加错误提示
             }
-          },
-          (errorMsg) => {
-            this.loading = false
-            this.finished = true
-            console.error('获取数据失败:', errorMsg)
-            // 可以添加错误提示
-          }
-      )
+        )
+      } else {
+        // 正常加载模式，使用原来的ErrorRepositoryGetFun接口
+        // 将参数转换为JSON字符串
+        const param = JSON.stringify(this.searchParams)
+
+        SensorRequest.ErrorRepositoryGetFun(
+            param,
+            (respData) => {
+              console.log("chat_respData: "+respData)
+              let chat_respData =  JSON.parse(respData)
+              this.loading = false
+              if (respData && Array.isArray(chat_respData)) {
+                // 如果返回的是数组，直接赋值
+                if (this.posts.length === 0) {
+                  this.posts = chat_respData
+                } else {
+                  this.posts = [...this.posts, ...chat_respData]
+                }
+                // 假设每次返回10条数据，如果没有更多数据则finished设为true
+                this.finished = chat_respData.length < 10
+              } else if (respData) {
+                // 如果返回的是单个对象
+                this.posts = [chat_respData]
+                this.finished = true
+              } else {
+                // 没有数据返回
+                this.finished = true
+              }
+            },
+            (errorMsg) => {
+              this.loading = false
+              this.finished = true
+              console.error('获取数据失败:', errorMsg)
+              // 可以添加错误提示
+            }
+        )
+      }
     }
   }
 }
 </script>
 
-<style scoped>.knowledge-base-page {
+<style scoped>
+.knowledge-base-page {
   padding-bottom: 50px;
 }
 
 .custom-search {
   padding: 10px;
-  background-color:  #4098f8;
+  background-color: #4c87ee;
   border-radius: 20px;
   margin: 10px;
 }
@@ -159,14 +211,11 @@ export default {
   border-radius: 0 18px 18px 0;
 }
 
-/*为 .custom-cell 添加了 width: 95%，使每个列表项只占屏幕宽度的95%
-将 margin 调整为 10px auto，使列表项在水平方向上居中显示*/
-
 .custom-cell {
   background-color: #ffffff;
   margin: 10px auto;
-  border-radius: 14px;
-  box-shadow: 0 2px 10px rgba(63, 131, 248, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(69, 125, 222, 0.4); /* 改为淡蓝色阴影 */
   transition: all 0.3s ease;
   width: 95%;
 }
@@ -185,7 +234,7 @@ export default {
 }
 
 .custom-cell:active {
-  background-color: #e6f0ff;
+  background-color: #88b1ef;
   transform: scale(0.98);
 }
 
