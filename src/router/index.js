@@ -13,6 +13,7 @@ import StatisticalReport from "@/views/summary/StatisticalReport.vue";
 import UploadSummary from "@/views/summary/UploadSummary.vue";
 import ChatCategory from "@/views/knowledge/ChatCategory.vue";
 import CreatePost from "@/views/knowledge/CreatePost.vue";
+import PostDetail from "@/views/knowledge/PostDetail.vue";
 
 Vue.use(Router)
 
@@ -49,6 +50,12 @@ const router = new Router({
       name: 'CreatePost',
       component: CreatePost,
       meta: { title: '创建帖子' }
+    },
+    {
+      path: `${basePath}post-detail/:id`,
+      name: 'PostDetail',
+      component: PostDetail,
+      meta: { title: '详情信息' }
     },
     {
       path: `${basePath}cart`,

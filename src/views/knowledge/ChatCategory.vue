@@ -3,7 +3,7 @@
     <!-- 搜索栏 -->
     <van-search
         v-model="searchParams.Error_Name"
-        placeholder="请输入错误名称"
+        placeholder="请输入文件名称"
         @search="onSearch"
     />
 
@@ -18,7 +18,7 @@
           v-for="(post, index) in posts"
           :key="index"
           :title="post.Error_Name || post.Error_Code || '未知错误'"
-          :label="post.Error_Description || '暂无描述'"
+          :label="`类型: ${post.Error_Type || '未分类'}`"
           is-link
           @click="viewPostDetail(post)"
       />
@@ -65,7 +65,7 @@ export default {
     },
     viewPostDetail(post) {
       // 根据实际返回数据结构调整跳转逻辑
-      this.$router.push(`/sensor_ddingWork/Release/post-detail/${post.id || post.Error_ID}`)
+      this.$router.push(`/sensor_ddingWork/Release/post-detail/${post.Id || post.id || post.Error_ID}`)
     },
     onSearch() {
       this.posts = []
@@ -83,19 +83,21 @@ export default {
       SensorRequest.ErrorRepositoryGetFun(
           param,
           (respData) => {
+            console.log("chat_respData: "+respData)
+            let chat_respData =  JSON.parse(respData)
             this.loading = false
-            if (respData && Array.isArray(respData)) {
+            if (respData && Array.isArray(chat_respData)) {
               // 如果返回的是数组，直接赋值
               if (this.posts.length === 0) {
-                this.posts = respData
+                this.posts = chat_respData
               } else {
-                this.posts = [...this.posts, ...respData]
+                this.posts = [...this.posts, ...chat_respData]
               }
               // 假设每次返回10条数据，如果没有更多数据则finished设为true
-              this.finished = respData.length < 10
+              this.finished = chat_respData.length < 10
             } else if (respData) {
               // 如果返回的是单个对象
-              this.posts = [respData]
+              this.posts = [chat_respData]
               this.finished = true
             } else {
               // 没有数据返回
