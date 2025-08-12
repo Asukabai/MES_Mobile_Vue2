@@ -257,7 +257,8 @@ export function GetDingUserToken(callSuccess, callFail) {
         // alert("22222")
         let decodedToken = jwt_decode(newToken);
         // console.log(decodedToken);
-        // alert(decodedToken)
+        // alert("Token: "+newToken)
+        // alert("decodedToken: "+decodedToken)
         let name = decodedToken.userName;
         let userPhone = decodedToken.userPhone;
         let userIndex = decodedToken.userID;
