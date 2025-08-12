@@ -6,7 +6,7 @@
       </div>
       <div
           class="tabbar-content"
-          :class="{ 'ios-tabbar': isIOS, 'android-tabbar': !isIOS }"
+          :class="{ 'ios-tabbar': isIOS, 'android-tabbar': !isIOS && !isHarmonyOS, 'harmony-tabbar': isHarmonyOS }"
       >
         <MainTabBar />
       </div>
@@ -24,7 +24,8 @@ export default {
   },
   data() {
     return {
-      isIOS: false
+      isIOS: false,
+      isHarmonyOS: false
     }
   },
   mounted() {
@@ -35,6 +36,9 @@ export default {
     detectOS() {
       const userAgent = navigator.userAgent || navigator.vendor || window.opera;
       this.isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+
+      // 检测鸿蒙系统
+      this.isHarmonyOS = /HarmonyOS|OpenHarmony/i.test(userAgent);  // 兼容新旧版本标识
     }
   }
 }
@@ -79,6 +83,10 @@ body {
 
 .tabbar-content.android-tabbar {
   height: 50px;
+}
+
+.tabbar-content.harmony-tabbar {
+  height: 60px;
 }
 
 html, body {

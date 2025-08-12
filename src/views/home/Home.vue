@@ -4,32 +4,34 @@
     <div class="background"></div>
     <!-- 卡片容器（固定定位） -->
     <div class="card-wrapper">
-      <!-- 资产卡片 -->
-      <div class="card-section asset-card">
-        <van-grid :border="false" :column-num="3">
-          <van-grid-item
-              v-for="(item, index) in assetItems"
-              :key="index"
-              :icon="item.icon"
-              :text="item.text"
-              @click="handleGridClick(item)"
-              class="custom-grid-item"
-          />
-        </van-grid>
-      </div>
+      <div class="card-content">
+        <!-- 资产卡片 -->
+        <div class="card-section asset-card">
+          <van-grid :border="false" :column-num="3">
+            <van-grid-item
+                v-for="(item, index) in assetItems"
+                :key="index"
+                :icon="item.icon"
+                :text="item.text"
+                @click="handleGridClick(item)"
+                class="custom-grid-item"
+            />
+          </van-grid>
+        </div>
 
-      <!-- 耗材卡片 -->
-      <div class="card-section consumable-card">
-        <van-grid :border="false" :column-num="3">
-          <van-grid-item
-              v-for="(item, index) in consumableItems"
-              :key="index"
-              :icon="item.icon"
-              :text="item.text"
-              @click="handleGridClick(item)"
-              class="custom-grid-item"
-          />
-        </van-grid>
+        <!-- 耗材卡片 -->
+        <div class="card-section consumable-card">
+          <van-grid :border="false" :column-num="3">
+            <van-grid-item
+                v-for="(item, index) in consumableItems"
+                :key="index"
+                :icon="item.icon"
+                :text="item.text"
+                @click="handleGridClick(item)"
+                class="custom-grid-item"
+            />
+          </van-grid>
+        </div>
       </div>
     </div>
   </div>
@@ -64,27 +66,9 @@
   font-size: 16px;
 }
 
-/* 卡片区域 */
-.card-section {
-  margin: 20px auto 8px; /* 上下间距增大，居中显示 */
-  padding: 8px; /* 减少内边距 */
-  width: 84%; /* 卡片宽度适当缩小 */
-  max-width: 400px; /* 最大宽度限制，适配移动端 */
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 1;
-  position: relative;
-}
-
-.card-section h2 {
-  font-size: 18px;
-  margin-bottom: 10px;
-  color: #333;
-}
 .card-wrapper {
   position: fixed;
-  top: 160px;
+  top: 150px;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
@@ -92,6 +76,39 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
+  bottom: calc(40px + env(safe-area-inset-bottom, 0px)); /* 预留标签栏空间 */
+  overflow: hidden;
+}
+
+.card-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 16px 16px 16px; /* 添加内边距 */
+  /* 隐藏滚动条 */
+  scrollbar-width: none; /* Firefox */
+}
+
+.card-content::-webkit-scrollbar {
+  display: none; /* Chrome Safari */
+}
+
+/* 卡片区域 */
+.card-section {
+  margin: 20px auto 8px; /* 上下间距增大，居中显示 */
+  padding: 8px; /* 减少内边距 */
+  width: 90%; /* 使用父容器的宽度 */
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  position: relative;
+  min-height: fit-content; /* 确保卡片能完整显示 */
+}
+
+.card-section h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #333;
 }
 
 /* 六宫格项样式 */

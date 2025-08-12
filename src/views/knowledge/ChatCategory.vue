@@ -3,7 +3,7 @@
     <!-- 搜索栏 -->
     <van-search
         v-model="searchParams.Error_Name"
-        placeholder="请输入问题名称（支持模糊匹配-换行自动搜索）"
+        placeholder="请输入问题名称（支持换行自动搜索）"
         @search="onSearch"
         class="custom-search"
     />

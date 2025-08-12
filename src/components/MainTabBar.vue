@@ -134,6 +134,7 @@ export default {
   height: 50px;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   border-top: 1px solid #f0f0f0;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* 可选：添加图标过渡效果 */
