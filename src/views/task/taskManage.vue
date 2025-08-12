@@ -16,76 +16,59 @@
 
     <!-- 任务展示卡片 -->
     <div class="task-card-container">
-      <!-- 当两个卡片都有内容或至少一个有内容时显示 -->
-      <template v-if="responsibleTasksForDate.length > 0 || participatedTasksForDate.length > 0">
+      <van-tabs v-model="activeTab" animated swipeable>
         <!-- 我负责的任务 -->
-        <div v-if="responsibleTasksForDate.length > 0">
-          <div class="section-title">我负责的</div>
-          <div class="task-card" v-for="(task, index) in responsibleTasksForDate" :key="'responsible-'+index">
-            <h4>任务名称：{{ task.title }}</h4>
-            <p>描述：{{ task.description }}</p>
-            <p>状态：{{ task.status }}</p>
-            <p>日期：{{ task.date }}</p>
-            <!--            <div class="task-actions">-->
-            <!--              <button class="submit-button" @click="goToTaskDetail">提交任务</button>-->
-            <!--            </div>-->
-            <div class="task-actions">
-              <button class="submit-button" @click="goToTaskDetail">
-                <img src="@/assets/upload_task.png" alt="提交任务" class="button-icon">
-                提交任务
-              </button>
+        <van-tab title="我负责的">
+          <div class="task-list">
+            <template v-if="responsibleTasksForDate.length > 0">
+              <div class="task-card" v-for="(task, index) in responsibleTasksForDate" :key="'responsible-'+index">
+                <h4>任务名称：{{ task.title }}</h4>
+                <p>描述：{{ task.description }}</p>
+                <p>状态：{{ task.status }}</p>
+                <p>日期：{{ task.date }}</p>
+                <div class="task-actions">
+                  <button class="submit-button" @click="goToTaskDetail">
+                    <img src="@/assets/upload_task.png" alt="提交任务" class="button-icon">
+                    提交任务
+                  </button>
+                </div>
+              </div>
+            </template>
+            <div v-else class="empty-state">
+              <div class="task-card">
+                <h4>暂无任务</h4>
+                <p>今天可以休息哦 ^_^</p>
+              </div>
             </div>
           </div>
-        </div>
-
-        <!-- 我负责的无任务提示 -->
-        <div v-else>
-          <div class="section-title">我负责的</div>
-          <div class="task-card">
-            <h4>暂无任务</h4>
-            <p>今天可以休息哦 ^_^</p>
-          </div>
-        </div>
+        </van-tab>
 
         <!-- 我参与的任务 -->
-        <div v-if="participatedTasksForDate.length > 0">
-          <div class="section-title">我参与的</div>
-          <div class="task-card" v-for="(task, index) in participatedTasksForDate" :key="'participated-'+index">
-            <h4>任务名称：{{ task.title }}</h4>
-            <p>描述：{{ task.description }}</p>
-            <p>状态：{{ task.status }}</p>
-            <p>日期：{{ task.date }}</p>
-            <!--            <div class="task-actions">-->
-            <!--              <van-button-->
-            <!--                  icon="eye-o"-->
-            <!--                  round size="small"-->
-            <!--                  @click="goToTaskDetail">提交任务-->
-            <!--              </van-button>-->
-            <!--            </div>-->
-            <div class="task-actions">
-              <button class="submit-button" @click="goToTaskDetail">
-                <img src="@/assets/upload_task.png" alt="提交任务" class="button-icon">
-                提交任务
-              </button>
+        <van-tab title="我参与的">
+          <div class="task-list">
+            <template v-if="participatedTasksForDate.length > 0">
+              <div class="task-card" v-for="(task, index) in participatedTasksForDate" :key="'participated-'+index">
+                <h4>任务名称：{{ task.title }}</h4>
+                <p>描述：{{ task.description }}</p>
+                <p>状态：{{ task.status }}</p>
+                <p>日期：{{ task.date }}</p>
+                <div class="task-actions">
+                  <button class="submit-button" @click="goToTaskDetail">
+                    <img src="@/assets/upload_task.png" alt="提交任务" class="button-icon">
+                    提交任务
+                  </button>
+                </div>
+              </div>
+            </template>
+            <div v-else class="empty-state">
+              <div class="task-card">
+                <h4>暂无任务</h4>
+                <p>今天可以休息哦 ^_^</p>
+              </div>
             </div>
           </div>
-        </div>
-
-        <!-- 我参与的无任务提示 -->
-        <div v-else>
-          <div class="section-title">我参与的</div>
-          <div class="task-card">
-            <h4>暂无任务</h4>
-            <p>今天可以休息哦 ^_^</p>
-          </div>
-        </div>
-      </template>
-
-      <!-- 当两个卡片都无内容时显示 -->
-      <div v-else class="task-card">
-        <h4>暂无任务</h4>
-        <p>今天可以休息哦 ^_^</p>
-      </div>
+        </van-tab>
+      </van-tabs>
     </div>
   </div>
 </template>
@@ -121,7 +104,8 @@ export default {
       participatedFinished: false,
       responsibleFinished: false,
       participatedRefreshing: false,
-      responsibleRefreshing: false
+      responsibleRefreshing: false,
+      activeTab: 0 // 默认激活第一个标签页
     };
   },
   created() {
@@ -360,8 +344,7 @@ export default {
   -webkit-overflow-scrolling: touch;
   padding: 10px;
   background-color: #fff;
-  border-bottom: 1px solid #ebedf0;
-  border-radius: 16px 16px 0 0;
+  border-radius: 16px 16px 16px 16px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   margin: 10px 10px 0 10px;
 }
@@ -383,15 +366,56 @@ export default {
 }
 
 .task-card-container {
+  margin: 10px 10px 0 10px;
   flex: 1;
   overflow-y: auto;
-  padding: 25px 15px 15px 15px;
+  padding: 10px;
   background-color: #f9f9f9;
   border-radius: 20px 20px 0 0;
+  background: linear-gradient(to bottom, #ffffff, #f9f9f9);
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
   margin-top: -10px;
   position: relative;
   z-index: 1;
+}
+
+/deep/ .van-tabs {
+  background: transparent;
+}
+
+/deep/ .van-tabs__wrap {
+  background: transparent;
+  padding: 0 10px;
+}
+
+/deep/ .van-tab {
+  font-weight: 500;
+}
+
+/deep/ .van-tabs__nav {
+  background: transparent;
+}
+
+.task-list {
+  padding: 0 15px;
+}
+
+
+
+.empty-state .task-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 180px;
+}
+
+.empty-state .task-card h4 {
+  margin: 0 0 8px 0;
+}
+
+.empty-state .task-card p {
+  margin: 0;
 }
 
 .section-title {
@@ -413,6 +437,27 @@ export default {
   padding: 15px;
   margin-bottom: 15px;
   transition: all 0.3s ease;
+  width: 100%;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.task-card h4 {
+  margin: 0 0 6px 0;
+  font-size: 16px;
+  line-height: 1.3;
+}
+
+.task-card p {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.task-card .task-actions {
+  margin-top: 8px;
 }
 
 .submit-button {
@@ -437,5 +482,12 @@ export default {
 .task-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
 }
 </style>
