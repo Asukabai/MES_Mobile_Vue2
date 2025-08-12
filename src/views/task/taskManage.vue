@@ -9,6 +9,11 @@
       />
     </div>
 
+    <!-- 连接处美化元素 -->
+    <div class="calendar-task-divider">
+      <div class="divider-wave"></div>
+    </div>
+
     <!-- 任务展示卡片 -->
     <div class="task-card-container">
       <!-- 当两个卡片都有内容或至少一个有内容时显示 -->
@@ -21,9 +26,9 @@
             <p>描述：{{ task.description }}</p>
             <p>状态：{{ task.status }}</p>
             <p>日期：{{ task.date }}</p>
-<!--            <div class="task-actions">-->
-<!--              <button class="submit-button" @click="goToTaskDetail">提交任务</button>-->
-<!--            </div>-->
+            <!--            <div class="task-actions">-->
+            <!--              <button class="submit-button" @click="goToTaskDetail">提交任务</button>-->
+            <!--            </div>-->
             <div class="task-actions">
               <button class="submit-button" @click="goToTaskDetail">
                 <img src="@/assets/upload_task.png" alt="提交任务" class="button-icon">
@@ -50,13 +55,13 @@
             <p>描述：{{ task.description }}</p>
             <p>状态：{{ task.status }}</p>
             <p>日期：{{ task.date }}</p>
-<!--            <div class="task-actions">-->
-<!--              <van-button-->
-<!--                  icon="eye-o"-->
-<!--                  round size="small"-->
-<!--                  @click="goToTaskDetail">提交任务-->
-<!--              </van-button>-->
-<!--            </div>-->
+            <!--            <div class="task-actions">-->
+            <!--              <van-button-->
+            <!--                  icon="eye-o"-->
+            <!--                  round size="small"-->
+            <!--                  @click="goToTaskDetail">提交任务-->
+            <!--              </van-button>-->
+            <!--            </div>-->
             <div class="task-actions">
               <button class="submit-button" @click="goToTaskDetail">
                 <img src="@/assets/upload_task.png" alt="提交任务" class="button-icon">
@@ -356,13 +361,37 @@ export default {
   padding: 10px;
   background-color: #fff;
   border-bottom: 1px solid #ebedf0;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  margin: 10px 10px 0 10px;
+}
+
+/* 新增的连接处美化样式 */
+.calendar-task-divider {
+  position: relative;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  z-index: 10;
+}
+
+.divider-wave {
+  width: 100%;
+  height: 20px;
+  background-size: cover;
+  margin-top: -1px;
 }
 
 .task-card-container {
   flex: 1;
   overflow-y: auto;
-  padding: 15px;
+  padding: 25px 15px 15px 15px;
   background-color: #f9f9f9;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  margin-top: -10px;
+  position: relative;
+  z-index: 1;
 }
 
 .section-title {
@@ -379,7 +408,7 @@ export default {
 
 .task-card {
   background-color: #ffffff;
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 15px;
   margin-bottom: 15px;
@@ -390,7 +419,7 @@ export default {
   background-color: #3f83f8;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   padding: 8px 16px;
   font-size: 14px;
   cursor: pointer;
