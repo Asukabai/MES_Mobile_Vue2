@@ -25,7 +25,7 @@ export async function previewFile(file) {
   console.log('预览文件:', file);
 
   // 检查是否为移动端
-  const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|HarmonyOS|OpenHarmony/i.test(navigator.userAgent);
 
   if (!isMobile) {
     alert('暂不支持PC端预览 !');

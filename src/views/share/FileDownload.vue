@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     isMobile() {
-      return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|HarmonyOS|OpenHarmony/i.test(navigator.userAgent)
     },
     async initDownload() {
       const encodedUrl = this.$route.query.fileUrl
