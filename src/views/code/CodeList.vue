@@ -1,10 +1,10 @@
 <template>
   <div class="welcome-container">
   <div class="container">
-    <div class="header">
-      <h6> &nbsp;&nbsp;&nbsp;&nbsp;本人记录日志时间列表</h6>
-    </div>
-    <div class="block">
+<!--    <div class="header">-->
+<!--      <h6> &nbsp;&nbsp;&nbsp;&nbsp;本人记录日志时间列表</h6>-->
+<!--    </div>-->
+    <div class="block" >
       <div class="radio">
         排序方式：
         <el-radio-group v-model="reverse">
@@ -35,6 +35,7 @@
 // import {key_DingUserPhone
 // } from "@/utils/Dingding.js";
 import SensorBorderRequest from "../../utils/SensorRequest";
+import {key_DingUserPhone} from "@/utils/Dingding";
 export default {
 
   data() {
@@ -63,10 +64,10 @@ export default {
     },
 
     fetchActivities() {
-      // let key_DingUserPhone1=  localStorage.getItem(key_DingUserPhone);
+      let key_DingUserPhone1=  localStorage.getItem(key_DingUserPhone);
       const requestParams = JSON.stringify({
-        // Person_Phone: key_DingUserPhone1,
-        Person_Phone: 18192414283,
+        Person_Phone: key_DingUserPhone1,
+        // Person_Phone: 18192414283,
       });
       SensorBorderRequest.GetAssetOperationInfoByPersonFun(requestParams, response => {
         console.log('Received response data:', response); // 打印日志
@@ -114,6 +115,7 @@ export default {
     flex-direction: column;
     min-height: 95vh;
     padding: 1rem;
+    padding-top: 80px;
 }
 
 .header {

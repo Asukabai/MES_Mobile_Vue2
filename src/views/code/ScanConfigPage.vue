@@ -128,25 +128,25 @@ export default {
               this.$toast.fail(errorMessage);
             }
           },
-          onCancel: (err) => {
-            console.log('用户点击了扫码页面返回按钮', err); // 打印 err 的完整结构
-            try {
-              let message = '用户点击了扫码页面返回按钮';
-              if (err) {
-                message += '\n' + JSON.stringify(err); // 将 err 对象转换为字符串
-                if (err.errorCode) {
-                  message += '\nErrorCode: ' + err.errorCode;
-                }
-                if (err.errorMessage) {
-                  message += '\nErrorMessage: ' + err.errorMessage;
-                }
-              }
-              alert(message);
-            } catch (e) {
-              console.error('处理 onCancel 错误时发生异常:', e);
-              alert('用户点击了扫码页面返回按钮');
-            }
-          }
+          // onCancel: (err) => {
+          //   console.log('用户点击了扫码页面返回按钮', err); // 打印 err 的完整结构
+          //   try {
+          //     let message = '用户点击了扫码页面返回按钮';
+          //     if (err) {
+          //       message += '\n' + JSON.stringify(err); // 将 err 对象转换为字符串
+          //       if (err.errorCode) {
+          //         message += '\nErrorCode: ' + err.errorCode;
+          //       }
+          //       if (err.errorMessage) {
+          //         message += '\nErrorMessage: ' + err.errorMessage;
+          //       }
+          //     }
+          //     alert(message);
+          //   } catch (e) {
+          //     console.error('处理 onCancel 错误时发生异常:', e);
+          //     alert('用户点击了扫码页面返回按钮');
+          //   }
+          // }
         });
       });
     },
@@ -175,12 +175,13 @@ export default {
 
       // 调用接口提交
       SensorRequest.AssetModuleInfoAddFun(JSON.stringify(configData),
+          // eslint-disable-next-line no-unused-vars
           (response) => {
             console.log('提交成功:', response);
-            alert('提交成功:'+ response);
+            // alert('提交成功:'+ response);
             this.$toast.success('配置提交成功 ！');
             setTimeout(() => {
-              this.$router.push('/config-list');
+              this.$router.push('/sensor_ddingWork/Release/code/configList');
             }, 1000);
           },
           (error) => {

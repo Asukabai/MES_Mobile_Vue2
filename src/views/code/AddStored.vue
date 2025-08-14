@@ -1,8 +1,8 @@
 <template>
-  <div style="padding-top: 60px; transform: scale(0.9); transform-origin: top left;">
-    <div style="text-align: center;">
-      <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;晟思资产出入库表单</h2>
-    </div>
+  <div style="padding-top: 20px; transform: scale(0.9); transform-origin: top left;">
+<!--    <div style="text-align: center;">-->
+<!--      <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;晟思资产出入库表单</h2>-->
+<!--    </div>-->
     <el-form ref="form" :model="form" label-width="100px">
       <el-row>
         <el-col :span="24">
@@ -254,7 +254,7 @@ export default {
           Person_Name: getLocalUserInfo().name // 记录人名称
         }
       };
-        // 如果 fileList 为空，直接发送请求
+        // 如果 fileList 为空，直接发送请求————AssetInfoAddFun 资产信息添加
       SensorRequest.AssetInfoAddFun(JSON.stringify(reqData))
             .then(response => {
               console.log('保存成功:', response);

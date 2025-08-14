@@ -211,7 +211,7 @@ const router = new Router({
       path: "/sensor_ddingWork/Release/code/codeList",
       name: 'CodeList',
       component: () => import('@/views/code/CodeList.vue'),
-      meta: { title: '编码列表' }
+      meta: { title: '扫码记录日志时间列表' }
     },
     {
       path: "/sensor_ddingWork/Release/code/config",
@@ -235,7 +235,7 @@ const router = new Router({
       path: "/sensor_ddingWork/Release/code/AddStored",
       name: 'AddStored',
       component: () => import('@/views/code/AddStored.vue'),
-      meta: { title: '添加存储' }
+      meta: { title: '晟思资产出入库表单' }
     },
     {
       path: "/sensor_ddingWork/Release/code/AddHistory",

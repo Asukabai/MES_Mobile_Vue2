@@ -1,36 +1,22 @@
 <template>
-  <div style="padding-top: 0px; transform: scale(0.9); transform-origin: center;">
+  <div style="padding-top: 60px; transform: scale(0.9); transform-origin: top left;">
+    <div style="text-align: center;">
+      <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;晟思资产批量记录表单</h2>
+    </div>
     <el-form ref="form" :model="form" label-width="100px">
       <el-row>
         <el-col :span="24">
           <el-form-item label="资产编号:">
-            <span>{{ form.productId }}</span>
+            <el-input v-model="form.productIds" type="textarea" placeholder="资产编号列表" readonly></el-input>
           </el-form-item>
         </el-col>
-        <!-- 添加新的显示项 -->
         <el-col :span="24">
           <el-form-item label="归属项目:">
-            <span>{{ form.projectName }}—{{ form.projectCode }}</span>
+            <span>{{ form.productBelong }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="所属模块:">
-            <span>{{ form.moduleType }}</span>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24">
-          <el-form-item label="模块名称:">
-            <span>{{ form.moduleName }}</span>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24">
-          <el-form-item label="操作类型:">
-            <span>{{ form.moduleOperationType }}</span>
-          </el-form-item>
-        </el-col>
-        <!-- 结束添加 -->
-        <el-col :span="24">
-          <el-form-item label="记录人员:">
+          <el-form-item label="记录人:">
             <span>{{ form.currentLocation }}</span>
           </el-form-item>
         </el-col>
@@ -60,23 +46,23 @@
           <el-form-item label="* 说明备注:">
             <el-select v-model="form.operation" style="width: 80%" placeholder="请选择操作类型">
               <el-option
-                  v-for="option in operationOptions"
-                  :key="option.value"
-                  :label="option.label"
-                  :value="option.value"
+                v-for="option in operationOptions"
+                :key="option.value"
+                :label="option.label"
+                :value="option.value"
               ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item v-if="form.operation === '焊接'" label="* 焊接内容:">
             <el-select
-                v-model="form.weldingContent" multiple style="width: 80%" placeholder="请选择焊接内容">
+              v-model="form.weldingContent" multiple style="width: 80%" placeholder="请选择焊接内容">
               <el-option v-for="option in weldingOptions" :key="option.value" :label="option.label" :value="option.value">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item v-if="form.operation === '装配'" label="* 装配内容:">
             <el-select
-                v-model="form.assembleContent" multiple style="width: 80%" placeholder="请选择装配内容">
+              v-model="form.assembleContent" multiple style="width: 80%" placeholder="请选择装配内容">
               <el-option v-for="option in assembleOptions" :key="option.value" :label="option.label" :value="option.value">
               </el-option>
             </el-select>
@@ -119,7 +105,6 @@
 
 <script>
 import SensorBorderRequest from "../../utils/sensorBorder.js";
-import SensorRequest from "../../utils/SensorRequest.js";
 import {
   key_DingName,
   key_DingScannedResult,
@@ -128,15 +113,14 @@ import {
   cachedProductPerson,
   cachedPersonIndex,
   key_DingResponseStored, key_DingResponseUsed, cachedResponseStored, cachedResponseUsed
-} from "@/utils/Dingding.js";
+} from "../../utils/Dingding.js";
 
 export default {
   data() {
     return {
       form: {
-        productId: this.getProductId(), // 调用方法获取产品 ID,
+        productIds:'',
         currentLocation: this.getProductPerson(),
-        productState:this.getProductState(),
         fileList: [],
         operation: '', // 添加操作种类
         weldingContent: [], // 焊接内容
@@ -144,11 +128,7 @@ export default {
         failureReason: '', // 测试失败原因
         questReason: '', // 问题描述
         assembleContent: [], // 装配描述
-        projectName: '', // 项目名称
-        projectCode: '', // 项目编码
-        moduleType: '', // 模块类型
-        moduleName: '', // 模块名称
-        moduleOperationType: '' // 模块操作类型
+        productBelong:null  //具体归属项目
       },
       loading: false,
       operationOptions: [
@@ -159,13 +139,15 @@ export default {
         { label: '问题描述', value: '问题描述' }],
       weldingOptions: [], // 获取 焊接时候的 下拉框内容
       assembleOptions: [], // 获取 装配时候的 下拉框内容
-      belongContents:[], //获取领用时候 的归属项目
-      isUsed: sessionStorage.getItem(key_DingResponseUsed) || cachedResponseUsed,
-      isStored: sessionStorage.getItem(key_DingResponseStored) || cachedResponseStored
+      belongContents:[] //获取领用时候 的归属项目
     };
   },
   created() {
-    this.fetchAssetInfo(); // 添加获取资产信息的调用
+    // 从查询参数中获取扫码结果
+    this.form.productIds = this.$route.query.results || '';
+    this.fetchProductBelongBatchOptions();
+    this.fetchWeldingBatchOptions();
+    this.fetchAssembleBatchOptions();
   },
   watch: {
     'form.operation': function(newVal) {
@@ -174,47 +156,6 @@ export default {
     }
   },
   methods: {
-    // 添加获取资产信息的方法
-    fetchAssetInfo() {
-      const storedProductId = sessionStorage.getItem(key_DingScannedResult) || cachedProductId;
-      const param = { Asset_Code: storedProductId };
-      // alert("param : "+ JSON.stringify(param))
-
-      SensorRequest.GetAssetInfoByAssetCodeFun(JSON.stringify(param), (response) => {
-        let JSON_response = JSON.parse(response)
-        // alert("JSON_response :" + response)
-        let assetInfo = null;
-        // 判断后端返回的数据类型
-        if (Array.isArray(JSON_response)) {
-          // 如果是数组，取第一个元素
-          if (response.length > 0) {
-            assetInfo = response[0];
-          }
-        } else if (JSON_response && typeof JSON_response === 'object') {
-          // 如果是对象，直接使用
-          assetInfo = JSON_response;
-        }
-        // 从assetInfo中提取数据
-        if (assetInfo) {
-          this.form.projectName = assetInfo.Project_Name || '';
-          this.form.projectCode = assetInfo.Project_Code || '';
-          this.form.moduleType = assetInfo.Module_Type || '';
-          this.form.moduleName = assetInfo.Module_Name || '';
-          this.form.moduleOperationType = assetInfo.Module_OperationType || '';
-        } else {
-          this.$message({
-            message: '数据解析失败',
-            type: 'warning'
-          });
-        }
-      }, (error) => {
-        console.error(error);
-        this.$message({
-          message: '获取资产信息失败: ' + error,
-          type: 'error'
-        });
-      });
-    },
     resetFieldsBasedOnOperation(operation) {
       if (operation === '焊接') {
         // alert(operation);
@@ -242,16 +183,8 @@ export default {
         this.form.failureReason = '';
         this.form.questReason = '';
         this.form.assembleContent = [];
-      }
+}
     },
-
-    getProductState() {
-      const storedProductState = sessionStorage.getItem(key_DingResponseStored)+ "—" + sessionStorage.getItem(key_DingResponseUsed) || cachedResponseStored+ "-"+cachedResponseUsed;
-      // const storedProductState = cachedResponseStored+ "—" +cachedResponseUsed;
-      console.log('getProductState 是: ', storedProductState);
-      return storedProductState;
-    },
-
     getProductId() {
       const storedProductId = sessionStorage.getItem(key_DingScannedResult) || cachedProductId;
       console.log('cachedProductId 是: ', cachedProductId);
@@ -263,7 +196,7 @@ export default {
       return storedPersonIndex; // 返回存储的产品 ID 或者 cachedPersonIndex
     },
     getProductPerson() {
-      const storedProductPerson = localStorage.getItem(key_DingName) ;
+      const storedProductPerson = sessionStorage.getItem(key_DingName) || cachedProductPerson;
       console.log('cachedProductPerson 是: ', cachedProductPerson);
       return storedProductPerson;
     },
@@ -316,6 +249,120 @@ export default {
       this.form.questReason = '';
       this.form.assembleContent = '';
     },
+    fetchProductBelongBatchOptions() {
+
+      const results = this.$route.query.results || '';
+      let storedProductId = '';
+      if (results) {
+        try {
+          const parsedResults = JSON.parse(results);
+          if (Array.isArray(parsedResults) && parsedResults.length > 0) {
+            storedProductId = parsedResults[0];
+            // alert('storedProductId:'+ storedProductId)
+          } else {
+            alert('解析结果为空或不是数组');
+          }
+        } catch (error) {
+          alert('解析 JSON 字符串时出错:'+ error);
+        }
+      }
+      if (!storedProductId) {
+        storedProductId = '暂无配置，无法获取';
+      }
+      let param = { 'storedProductId': storedProductId };
+      SensorBorderRequest.fetchProductBelongContent(param,(response) => {
+        console.log("respData",response)
+        const respData = response;
+        console.log('from before assignment:', this.form); // 调试信息
+        this.form.productBelong = respData; // 将成功返回的数据赋值到 productBelong 上
+      }, (error) => {
+        console.error(error);
+        this.$message({
+          message: error,
+          type: 'error'
+        });
+      });
+    },
+    fetchWeldingBatchOptions() {
+
+      const results = this.$route.query.results || '';
+      let storedProductId = '';
+      if (results) {
+        try {
+          const parsedResults = JSON.parse(results);
+          if (Array.isArray(parsedResults) && parsedResults.length > 0) {
+            storedProductId = parsedResults[0];
+            // alert('storedProductId:'+ storedProductId)
+          } else {
+            alert('解析结果为空或不是数组');
+          }
+        } catch (error) {
+          alert('解析 JSON 字符串时出错:'+ error);
+        }
+      }
+      if (!storedProductId) {
+        storedProductId = '暂无配置，无法获取';
+      }
+      let param = { 'storedProductId': storedProductId };
+      SensorBorderRequest.fetchWeldingOptionContent(param,(response) => {
+        // this.belongContents = response; // 将成功返回的数据赋值到 belongContents
+        // 假设返回的内容是一个字符串，我们需要将其转换为对象数组
+        const respData = response;
+        console.log("respData",respData)
+        // 将数组转换为对象数组
+        this.weldingOptions = respData.map(item => {
+          return {
+            label: item, // 显示的文本
+            value: item  // 绑定的值
+          };
+        });
+      }, (error) => {
+        console.error(error);
+        this.$message({
+          message: error,
+          type: 'error'
+        });
+      });
+    },
+    fetchAssembleBatchOptions() {
+      const results = this.$route.query.results || '';
+      let storedProductId = '';
+      if (results) {
+        try {
+          const parsedResults = JSON.parse(results);
+          if (Array.isArray(parsedResults) && parsedResults.length > 0) {
+            storedProductId = parsedResults[0];
+          } else {
+            alert('解析结果为空或不是数组');
+          }
+        } catch (error) {
+          alert('解析 JSON 字符串时出错:'+ error);
+        }
+      }
+      if (!storedProductId) {
+        storedProductId = '暂无配置，无法获取';
+      }
+      let param = { 'storedProductId': storedProductId };
+      SensorBorderRequest.fetchAssembleOptionContent(param,(response) => {
+        // this.belongContents = response; // 将成功返回的数据赋值到 belongContents
+        // 假设返回的内容是一个字符串，我们需要将其转换为对象数组
+        const respData = response;
+        console.log("respData",respData)
+        // 将数组转换为对象数组
+        this.assembleOptions = respData.map(item => {
+          return {
+            label: item, // 显示的文本
+            value: item  // 绑定的值
+          };
+        });
+      }, (error) => {
+        console.error(error);
+        this.$message({
+          message: error,
+          type: 'error'
+        });
+      });
+    },
     toBase64(file, callback) {
       console.log('开始转换文件为Base64编码');
       const reader = new FileReader();
@@ -335,82 +382,79 @@ export default {
         return;
       }
       this.loading = true; // 开始保存时显示loading图标
-      const reqData = {
-        productId: this.form.productId,
-        currentLocation: this.form.currentLocation,
-        operation: this.form.operation, // 添加操作种类
-        fileList: this.form.fileList.length === 0 ? null : [], // 根据文件列表是否为空初始化 fileList
-        userIndex: this.getPersonIndex(),
-        weldingContent: this.form.weldingContent, // 焊接具体内容
-        testingContent: this.form.testingContent, // 测试具体内容
-        failureReason: this.form.failureReason, // 测试失败原因
-        questReason: this.form.questReason, // 问题描述
-        assembleContent: this.form.assembleContent,// 装配描述
-        isUsed: sessionStorage.getItem(key_DingResponseUsed) || cachedResponseUsed ,
-        isStored: sessionStorage.getItem(key_DingResponseStored) || cachedResponseStored,
-        belongContent:this.form.productBelong //归属项目
-      };
 
-      // 如果 fileList 不为空，进行 Base64 转换
-      if (this.form.fileList.length > 0) {
-        const promises = this.form.fileList.map(file => {
-          return new Promise((resolve) => {
-            this.toBase64(file.file, base64 => {
-              reqData.fileList.push({
-                content: base64,
-                type: file.type,
+      const productIds = this.form.productIds.split('\n').map(id => id.trim()).filter(id => id);
+
+      if (productIds.length === 0) {
+        alert('请至少输入一个资产编号！');
+        this.loading = false;
+        return;
+      }
+
+      const savePromises = productIds.map(productId => {
+        const reqData = {
+          productId: productId,
+          currentLocation: this.form.currentLocation,
+          operation: this.form.operation, // 添加操作种类
+          fileList: this.form.fileList.length === 0 ? null : [], // 根据文件列表是否为空初始化 fileList
+          userIndex: this.getPersonIndex(),
+          weldingContent: this.form.weldingContent, // 焊接具体内容
+          testingContent: this.form.testingContent, // 测试具体内容
+          failureReason: this.form.failureReason, // 测试失败原因
+          questReason: this.form.questReason, // 问题描述
+          assembleContent: this.form.assembleContent, // 装配描述
+          isUsed: sessionStorage.getItem(key_DingResponseUsed) || cachedResponseUsed,
+          isStored: sessionStorage.getItem(key_DingResponseStored) || cachedResponseStored,
+          belongContent: this.form.productBelong // 归属项目
+        };
+
+        // 如果 fileList 不为空，进行 Base64 转换
+        if (this.form.fileList.length > 0) {
+          const promises = this.form.fileList.map(file => {
+            return new Promise((resolve) => {
+              this.toBase64(file.file, base64 => {
+                reqData.fileList.push({
+                  content: base64,
+                  type: file.type,
+                });
+                resolve();
               });
-              resolve();
             });
           });
-        });
-
-        // 等待所有文件转换完成后再发送请求
-        Promise.all(promises)
+          // 等待所有文件转换完成后再发送请求
+          return Promise.all(promises)
             .then(() => {
               // 发送请求到后端
               return SensorBorderRequest.SaveAllCardRecords(reqData);
-            })
-            .then(response => {
-              console.log('保存成功:', response);
-              this.$message.success('保存成功!');
-              setTimeout(() => {
-                this.resetTestingFields(); // 重置表单字段
-                this.$router.push("/sensor_ddingWork/Release/code/HistoryView");
-              }, 500); // 0.5 秒后跳转
-            })
-            .catch(error => {
-              console.error('保存失败:', error);
-              this.$message.error('保存失败！');
-            })
-            .finally(() => {
-              this.loading = false; // 保存完成后取消loading状态
             });
-      } else {
-        // 如果 fileList 为空，直接发送请求
-        SensorBorderRequest.SaveAllCardRecords(reqData)
-            .then(response => {
-              console.log('保存成功:', response);
-              this.$message.success('保存成功!');
-              setTimeout(() => {
-                this.resetTestingFields(); // 重置表单字段
-                this.$router.push("/sensor_ddingWork/Release/code/HistoryView");
-              }, 500); // 0.5 秒后跳转
-            })
-            .catch(error => {
-              console.error('保存失败:', error);
-              this.$message.error('保存失败！');
-            })
-            .finally(() => {
-              this.loading = false; // 保存完成后取消loading状态
-            });
-      }
+        } else {
+          // 如果 fileList 为空，直接发送请求
+          return SensorBorderRequest.SaveAllCardRecords(reqData);
+        }
+      });
+      // 等待所有保存请求完成
+      Promise.all(savePromises)
+        .then(responses => {
+          console.log('所有记录保存成功:', responses);
+          this.$message.success('所有记录保存成功!');
+          setTimeout(() => {
+            this.resetTestingFields(); // 重置表单字段
+            this.$router.push("/ddinguia/web/history222");
+          }, 500); // 0.5 秒后跳转
+        })
+        .catch(error => {
+          console.error('保存失败:', error);
+          this.$message.error('保存失败！');
+        })
+        .finally(() => {
+          this.loading = false; // 保存完成后取消loading状态
+        });
     },
     goBack() {
-      this.$router.push({ path: '/sensor_ddingWork/Release/code/HistoryView' });
+      this.$router.push({ path: '/ddinguia/web/history222' });
     },
     goBack1() {
-      this.$router.push({ path: '/sensor_ddingWork/Release/home' });
+      this.$router.push({ path: '/ddinguia/web/home' });
     },
   },
 };
