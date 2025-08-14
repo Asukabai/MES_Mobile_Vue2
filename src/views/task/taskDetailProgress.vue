@@ -279,7 +279,7 @@ export default {
             TaskStageFile_Remark: this.taskRemark || '暂无备注信息记录',
             TaskStage_Files: this.evidenceList.map(e => ({
               File_Name: e.File_Name,
-              File_Md5: e.File_Md5,
+              File_Md5: "",
               File_Base64: e.File_Base64, // 如果接口允许为空可设为 ''
               Upload_Time: e.Upload_Time
             })),

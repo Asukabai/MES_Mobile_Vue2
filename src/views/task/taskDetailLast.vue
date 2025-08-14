@@ -112,12 +112,12 @@ export default {
       reader.onload = (e) => {
         const base64 = e.target.result;
 
-        const md5 = this.generateSimpleMd5(base64);
+        // const md5 = this.generateSimpleMd5(base64);
 
         this.evidenceList.push({
           File_Name: file.file.name,
           File_Base64: base64,
-          File_Md5: md5,
+          File_Md5: "",
           Upload_Time: new Date().toISOString()
         });
 

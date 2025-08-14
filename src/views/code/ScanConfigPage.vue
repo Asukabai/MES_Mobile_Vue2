@@ -1,6 +1,6 @@
 <template>
   <div class="scan-config-container">
-<!--    <h2>扫码配置</h2>-->
+    <!--    <h2>扫码配置</h2>-->
 
     <van-cell-group inset>
       <!-- 模块编码字段 -->
@@ -18,21 +18,31 @@
       </van-field>
 
       <!-- 模块名称字段 -->
-      <van-cell title="模块名称" is-link :value="moduleName || '请选择模块名称'" @click="showModuleNameSheet = true" />
-      <van-action-sheet
-          v-model="showModuleNameSheet"
-          :actions="moduleNames"
-          cancel-text="取消"
-          @select="onModuleNameSelect"
+      <!-- Deleted:      <van-cell title="模块名称" is-link :value="moduleName || '请选择模块名称'" @click="showModuleNameSheet = true" /> -->
+      <!-- Deleted:      <van-action-sheet -->
+      <!-- Deleted:          v-model="showModuleNameSheet" -->
+      <!-- Deleted:          :actions="moduleNames" -->
+      <!-- Deleted:          cancel-text="取消" -->
+      <!-- Deleted:          @select="onModuleNameSelect" -->
+      <!-- Deleted:      /> -->
+      <van-field
+          label="模块名称"
+          v-model="moduleName"
+          placeholder="请输入模块名称"
       />
 
       <!-- 模块类型字段 -->
-      <van-cell title="模块类型" is-link :value="moduleType || '请选择模块类型'" @click="showModuleTypeSheet = true" />
-      <van-action-sheet
-          v-model="showModuleTypeSheet"
-          :actions="moduleTypes"
-          cancel-text="取消"
-          @select="onModuleTypeSelect"
+      <!-- Deleted:      <van-cell title="模块类型" is-link :value="moduleType || '请选择模块类型'" @click="showModuleTypeSheet = true" /> -->
+      <!-- Deleted:      <van-action-sheet -->
+      <!-- Deleted:          v-model="showModuleTypeSheet" -->
+      <!-- Deleted:          :actions="moduleTypes" -->
+      <!-- Deleted:          cancel-text="取消" -->
+      <!-- Deleted:          @select="onModuleTypeSelect" -->
+      <!-- Deleted:      /> -->
+      <van-field
+          label="模块类型"
+          v-model="moduleType"
+          placeholder="请输入模块类型"
       />
 
       <!-- 操作类型字段 -->
@@ -58,8 +68,8 @@
 </template>
 
 <script>
-import moduleNames from '@/assets/config/moduleNames.json';
-import moduleTypes from '@/assets/config/moduleTypes.json';
+// import moduleNames from '@/assets/config/moduleNames.json';
+// import moduleTypes from '@/assets/config/moduleTypes.json';
 import * as dd from 'dingtalk-jsapi'
 import SensorRequest from "@/utils/SensorRequest";
 export default {
@@ -73,13 +83,13 @@ export default {
       selectedOperationType: '',
 
       // 控制 ActionSheet 显示
-      showModuleNameSheet: false,
-      showModuleTypeSheet: false,
+      // Deleted:      showModuleNameSheet: false,
+      // Deleted:      showModuleTypeSheet: false,
       showOperationSheet: false,
 
       // 配置数据（转换为 { name: 'xxx' } 格式）
-      moduleNames: (moduleNames.moduleNames || []).map(name => ({ name })),
-      moduleTypes: (moduleTypes.moduleTypes || []).map(name => ({ name })),
+      // Deleted:      moduleNames: (moduleNames.moduleNames || []).map(name => ({ name })),
+      // Deleted:      moduleTypes: (moduleTypes.moduleTypes || []).map(name => ({ name })),
 
       // 操作类型
       operationActions: ['焊接', '测试', '装配', '焊接/装配', '焊接/测试', '装配/测试', '焊接/装配/测试'].map(text => ({ name: text })),
@@ -191,14 +201,14 @@ export default {
           }
       );
     },
-    onModuleNameSelect(item) {
-      this.moduleName = item.name;
-      this.showModuleNameSheet = false;
-    },
-    onModuleTypeSelect(item) {
-      this.moduleType = item.name;
-      this.showModuleTypeSheet = false;
-    },
+    // Deleted:    onModuleNameSelect(item) {
+    // Deleted:      this.moduleName = item.name;
+    // Deleted:      this.showModuleNameSheet = false;
+    // Deleted:    },
+    // Deleted:    onModuleTypeSelect(item) {
+    // Deleted:      this.moduleType = item.name;
+    // Deleted:      this.showModuleTypeSheet = false;
+    // Deleted:    },
     onOperationSelect(item) {
       this.selectedOperationType = item.name;
       this.showOperationSheet = false;

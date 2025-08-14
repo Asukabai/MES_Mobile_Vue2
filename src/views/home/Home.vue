@@ -203,7 +203,8 @@ export default {
         this.scanQRCode();
       }
       if (item.text === '批量扫码') {
-        this.scanQRCodeList();
+        // this.scanQRCodeList();
+        this.$toast.success('正在开发中 ！')
       }
       if (item.text === '联系人') {
         this.$toast.success('正在开发中 ！')
