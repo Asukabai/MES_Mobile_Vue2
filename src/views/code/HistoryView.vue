@@ -16,20 +16,9 @@
           <el-button  @click="resetForm">重置表单记录</el-button>
         </div>
         <div style="height: 5px;"></div>
-        <div class="button-row">
-          <el-select v-model="selectedCategory" placeholder="请选择分类" style="margin-left: 5px;">
-            <el-option
-                v-for="item in categories"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-            </el-option>
-          </el-select>
-          <el-button  @click="queryByCategory">分类加载记录</el-button>
-        </div>
       </div>
       <div  v-if="count !== 0" class="empty-message" >
-        该分类下的记录数量为：{{ count }} 条
+        该资产的操作记录数量为：{{ count }} 条
       </div>
       <!-- 添加虚线分隔 -->
       <div class="separator"></div>
@@ -40,20 +29,17 @@
       <div v-if="cardRecords.length === 0" class="empty-message">
         暂无记录数据，请上传数据后再查看。
       </div>
-      <!-- 显示最近的三条内容提示，条件为 cardRecords.length 不为空 且 selectedCategory 为空 -->
-      <div v-if="cardRecords.length > 0 && !selectedCategory" style="display: block; font-size: 12px; color: #888;" >
-        默认显示最近一条记录，若查看所有记录，可分类加载。
+      <!-- 显示所有内容的提示 -->
+      <div v-if="cardRecords.length > 0" style="display: block; font-size: 12px; color: #888; text-align: center; margin-top: 10px;">
+        以上为该资产的所有操作记录
       </div>
     </div>
   </div>
 </template>
 <script>
 import CardItem from '../../components/CardItem.vue'; // 引入 CardItem 组件
-import SensorBorderRequest from "../../utils/sensorBorder.js";
 import systemConfigure, {
   cachedProductId,
-  cachedProductPerson,
-  key_DingName,
   key_DingScannedResult
 } from "../../utils/Dingding.js";
 import SensorRequest from "@/utils/SensorRequest";
@@ -102,132 +88,76 @@ export default {
     },
     getAllCardRecordsWithImages() {
       const requestData = {
-        Asset_Code: this.boardID};
+        Asset_Code: this.boardID
+      };
       SensorRequest.GetAssetOperationInfoByAssetCodeFun(JSON.stringify(requestData), response => {
         if (systemConfigure.isDebugMode) {
-          console.log('Received response data: ' + JSON.stringify(response)); }
+          console.log('Received response data: ' + JSON.stringify(response));
+        }
         console.log('Received response data :', response); // 打印日志
         // alert('Received response data :'+ response); // 打印日志
-        let   JSON_response  = JSON.parse(response);
+        let JSON_response = JSON.parse(response);
         if (Array.isArray(JSON_response) && JSON_response.length > 0) {
-          this.cardRecords = JSON_response.map(item => this.parseData(item)).reverse();} else {
-          alert('Error fetching card records: Data is empty')
+          // 确保处理所有返回的数据
+          this.cardRecords = JSON_response.map(item => this.parseData(item)).reverse();
+          this.count = this.cardRecords.length; // 更新计数
+        } else {
+          // alert('Error fetching card records: Data is empty')
           console.error('Error fetching card records: Data is empty');
+          this.cardRecords = []; // 确保在没有数据时清空数组
+          this.count = 0;
         }
         // 数据加载完成后将 isLoading 设置为 false
         this.isLoading = false;
       }, error => {
         console.error('Error fetching card records:', error);
         this.isLoading = false;
-      });},
-    queryByCategory() {
-      const requestData = {
-        productId: this.boardID,
-        selectedCategory:this.selectedCategory};
-      if (this.selectedCategory) {
-        SensorBorderRequest.GetCategoryRecords(requestData, response => {
-          if (systemConfigure.isDebugMode) {
-            console.log('Received response data: ' + JSON.stringify(response)); }
-          console.log('Received response data :', response); // 打印日志
-          if (Array.isArray(response) && response.length > 0) {
-            // 提取 count 字段
-            this.count = response.length;
-            this.cardRecords = response.map(item => this.parseData(item)).reverse();
-            console.log("保存 count:"+response.length);
-            this.$message({
-              message: '分类加载成功 ！',
-              type: 'success',
-              duration: 2000, // 2秒后自动关闭
-              showClose: true // 显示关闭按钮
-            })
-          } else {
-            this.count = response.length;
-            this.cardRecords = []; // 设置为空数组
-            this.$message({
-              message: '此分类数据: Data is empty ！',
-              type: 'info',
-              duration: 2000, // 2秒后自动关闭
-              showClose: true // 显示关闭按钮
-            })}
-          // 数据加载完成后将 isLoading 设置为 false
-          this.isLoading = false;
-        }, error => {
-          console.error('Error fetching card records:', error);
-          this.$message({
-            message: error,
-            type: 'error',
-            duration: 2000, // 2秒后自动关闭
-            showClose: true // 显示关闭按钮
-          })
-          this.isLoading = false;})
-      } else {
-        this.$message({
-          message: '请先选择分类！',
-          type: 'info',
-          duration: 2000, // 2秒后自动关闭
-          showClose: true // 显示关闭按钮
-        })
-      }
-    },
-    queryByPerson() {
-      const storedProductPerson = sessionStorage.getItem(key_DingName) || cachedProductPerson;
-      const requestData = {
-        storedProductPerson:storedProductPerson};
-      SensorBorderRequest.GetPersonRecords(requestData, response => {
-            if (systemConfigure.isDebugMode) {
-              console.log('Received response data: ' + JSON.stringify(response)); }
-            console.log('Received response data :', response); // 打印日志
-            if (Array.isArray(response) && response.length > 0) {
-              // 提取 count 字段
-              this.count = response.length;
-              this.cardRecords = response.map(item => this.parseData(item)).reverse();
-              console.log("保存 count:"+response.length);
-              this.$message({
-                message: '查询本人记录成功 ！',
-                type: 'success',
-                duration: 2000, // 2秒后自动关闭
-                showClose: true // 显示关闭按钮
-              })
-            } else {
-              this.count = response.length;
-              this.cardRecords = []; // 设置为空数组
-              // 数据加载完成后将 isLoading 设置为 false
-              this.$message({
-                message: '本人表单记录为空: Data is empty ！',
-                type: 'info',
-                duration: 2000, // 2秒后自动关闭
-                showClose: true // 显示关闭按钮
-              });}
-            this.isLoading = false;
-          },
-          (error) => {
-            console.error(error);
-            this.$message({
-              message: error,
-              type: 'error'
-            });
-            this.isLoading = false;
-          });
+        this.cardRecords = []; // 出错时清空数组
+        this.count = 0;
+      });
     },
     parseData(data) {
-      return {
-        currentLocation: data.Operation_User.Person_Name, // record.currentLocation 对应的是 Person_Name
-        createTime: data.Ts_create, // record.createTime 对应的是 Ts_create
-        operation: data.Operation_Type, // 操作分类 record.operation 对应的是 Operation_Type
-        description: data.Operation_Description, // record.description 对应的是 Operation_Description
-        files: data.Operation_Evidence ? [ // record.files 文件对应的是 Operation_Evidence
-          {
-            id: 0,
-            fileUrl: data.Operation_Evidence,
-            type: 'image' // 默认为图片，可以根据实际需求调整
+      // 修复：正确解析数据格式，特别是Operation_Evidence部分
+      const files = [];
+      // 处理Operation_Evidence可能为null的情况
+      if (data.Operation_Evidence && Array.isArray(data.Operation_Evidence)) {
+        data.Operation_Evidence.forEach((evidence, index) => {
+          // 检查是否有实际的Base64数据
+          if (evidence.File_Base64 && evidence.File_Base64 !== "") {
+            // 根据文件名确定MIME类型，如果没有文件名则默认为image/jpeg
+            let mimeType = 'image/jpeg';
+            if (evidence.File_Name) {
+              if (evidence.File_Name.match(/\.(jpg|jpeg)$/i)) {
+                mimeType = 'image/jpeg';
+              } else if (evidence.File_Name.match(/\.png$/i)) {
+                mimeType = 'image/png';
+              } else if (evidence.File_Name.match(/\.gif$/i)) {
+                mimeType = 'image/gif';
+              } else if (evidence.File_Name.match(/\.(mp4|avi|mov)$/i)) {
+                mimeType = 'video/mp4';
+              }
+            }
+
+            files.push({
+              id: index,
+              fileUrl: evidence.File_Base64,
+              type: mimeType.includes('image') ? 'image' : 'video'
+            });
           }
-        ] : [] // 如果为 null，说明没有要解析的文件，就不用展示了
+        });
+      }
+
+      return {
+        currentLocation: data.Operation_User?.Person_Name || '', // record.currentLocation 对应的是 Person_Name
+        createTime: data.Ts_create || '', // record.createTime 对应的是 Ts_create
+        operation: data.Operation_Type || '', // 操作分类 record.operation 对应的是 Operation_Type
+        description: data.Operation_Description || '', // record.description 对应的是 Operation_Description
+        files: files // 正确解析文件数据
       };
     }
   }
 };
 </script>
-// ... existing code ...
 <style scoped>
 .empty-message {
   text-align: center;
@@ -309,4 +239,3 @@ div > div:not(.card-list):not(.lightbox) {
   box-sizing: border-box;
 }
 </style>
-

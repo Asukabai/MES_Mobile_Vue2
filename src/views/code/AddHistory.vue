@@ -68,18 +68,20 @@
             </el-select>
           </el-form-item>
           <el-form-item v-if="form.operation === '焊接'" label="* 焊接内容:">
-            <el-select
-                v-model="form.weldingContent" multiple style="width: 80%" placeholder="请选择焊接内容">
-              <el-option v-for="option in weldingOptions" :key="option.value" :label="option.label" :value="option.value">
-              </el-option>
-            </el-select>
+            <el-input
+                v-model="form.weldingContentText"
+                type="textarea"
+                style="width: 80%"
+                placeholder="请输入焊接内容，多个内容请用逗号分隔">
+            </el-input>
           </el-form-item>
           <el-form-item v-if="form.operation === '装配'" label="* 装配内容:">
-            <el-select
-                v-model="form.assembleContent" multiple style="width: 80%" placeholder="请选择装配内容">
-              <el-option v-for="option in assembleOptions" :key="option.value" :label="option.label" :value="option.value">
-              </el-option>
-            </el-select>
+            <el-input
+                v-model="form.assembleContentText"
+                type="textarea"
+                style="width: 80%"
+                placeholder="请输入装配内容，多个内容请用逗号分隔">
+            </el-input>
           </el-form-item>
           <el-form-item v-if="form.operation === '测试'" label="* 测试结果:">
             <el-radio-group v-model="form.testingContent">
@@ -118,7 +120,6 @@
 </template>
 
 <script>
-import SensorBorderRequest from "../../utils/sensorBorder.js";
 import SensorRequest from "../../utils/SensorRequest.js";
 import {
   key_DingName,
@@ -139,11 +140,13 @@ export default {
         productState:this.getProductState(),
         fileList: [],
         operation: '', // 添加操作种类
-        weldingContent: [], // 焊接内容
+        weldingContent: [], // 焊接内容（保留用于兼容性）
+        weldingContentText: '', // 焊接内容文本
         testingContent: '', // 测试结果
         failureReason: '', // 测试失败原因
         questReason: '', // 问题描述
-        assembleContent: [], // 装配描述
+        assembleContent: [], // 装配描述（保留用于兼容性）
+        assembleContentText: '', // 装配内容文本
         projectName: '', // 项目名称
         projectCode: '', // 项目编码
         moduleType: '', // 模块类型
@@ -222,26 +225,34 @@ export default {
         this.form.failureReason = '';
         this.form.questReason = '';
         this.form.assembleContent = [];
+        this.form.assembleContentText = '';
       } else if (operation === '测试') {
         this.form.weldingContent = [];
+        this.form.weldingContentText = '';
         this.form.questReason = '';
         this.form.assembleContent = [];
+        this.form.assembleContentText = '';
       } else if (operation === '装配') {
         this.form.weldingContent = [];
+        this.form.weldingContentText = '';
         this.form.testingContent = '';
         this.form.failureReason = '';
         this.form.questReason = '';
       } else if (operation === '问题描述') {
         this.form.weldingContent = [];
+        this.form.weldingContentText = '';
         this.form.testingContent = '';
         this.form.failureReason = '';
         this.form.assembleContent = [];
+        this.form.assembleContentText = '';
       }else if (operation === '其他') {
         this.form.weldingContent = [];
+        this.form.weldingContentText = '';
         this.form.testingContent = '';
         this.form.failureReason = '';
         this.form.questReason = '';
         this.form.assembleContent = [];
+        this.form.assembleContentText = '';
       }
     },
 
@@ -311,10 +322,12 @@ export default {
     },
     resetTestingFields() {
       this.form.weldingContent = '';
+      this.form.weldingContentText = '';
       this.form.testingContent = '';
       this.form.failureReason = '';
       this.form.questReason = '';
       this.form.assembleContent = '';
+      this.form.assembleContentText = '';
     },
     toBase64(file, callback) {
       console.log('开始转换文件为Base64编码');
@@ -335,76 +348,86 @@ export default {
         return;
       }
       this.loading = true; // 开始保存时显示loading图标
+
+      // 构造请求体
       const reqData = {
-        productId: this.form.productId,
-        currentLocation: this.form.currentLocation,
-        operation: this.form.operation, // 添加操作种类
-        fileList: this.form.fileList.length === 0 ? null : [], // 根据文件列表是否为空初始化 fileList
-        userIndex: this.getPersonIndex(),
-        weldingContent: this.form.weldingContent, // 焊接具体内容
-        testingContent: this.form.testingContent, // 测试具体内容
-        failureReason: this.form.failureReason, // 测试失败原因
-        questReason: this.form.questReason, // 问题描述
-        assembleContent: this.form.assembleContent,// 装配描述
-        isUsed: sessionStorage.getItem(key_DingResponseUsed) || cachedResponseUsed ,
-        isStored: sessionStorage.getItem(key_DingResponseStored) || cachedResponseStored,
-        belongContent:this.form.productBelong //归属项目
+        Asset_Code: this.form.productId,
+        Operation_Type: this.form.operation,
+        Operation_Description: this.getOperationDescription(),
+        Operation_User: {
+          Person_DingID: this.getPersonIndex() || "",
+          Person_Phone: "",
+          Person_Name: this.form.currentLocation || ""
+        },
+        Operation_Evidence: this.getOperationEvidence()
       };
 
-      // 如果 fileList 不为空，进行 Base64 转换
-      if (this.form.fileList.length > 0) {
-        const promises = this.form.fileList.map(file => {
-          return new Promise((resolve) => {
-            this.toBase64(file.file, base64 => {
-              reqData.fileList.push({
-                content: base64,
-                type: file.type,
-              });
-              resolve();
+      // 调用新的接口保存数据
+      SensorRequest.AssetOperationInfoAddFun(JSON.stringify(reqData), (response) => {
+        console.log('保存成功:', response);
+        this.$message.success('保存成功!');
+        setTimeout(() => {
+          this.resetTestingFields(); // 重置表单字段
+          this.$router.push("/sensor_ddingWork/Release/code/HistoryView");
+        }, 500); // 0.5 秒后跳转
+      }, (error) => {
+        console.error('保存失败:', error);
+        this.$message.error('保存失败！');
+        this.loading = false; // 保存完成后取消loading状态
+      });
+    },
+    getOperationDescription() {
+      let description = this.form.operation;
+
+      if (this.form.operation === '焊接' && this.form.weldingContentText) {
+        description += ": " + this.form.weldingContentText;
+      } else if (this.form.operation === '装配' && this.form.assembleContentText) {
+        description += ": " + this.form.assembleContentText;
+      } else if (this.form.operation === '测试') {
+        description += ": " + this.form.testingContent;
+        if (this.form.testingContent === '失败' && this.form.failureReason) {
+          description += " - " + this.form.failureReason;
+        }
+      } else if (this.form.operation === '问题描述' && this.form.questReason) {
+        description += ": " + this.form.questReason;
+      }
+
+      return description;
+    },
+    getOperationEvidence() {
+      // 如果没有上传文件，返回包含空字符串的对象
+      if (this.form.fileList.length === 0) {
+        return [{
+          File_Name: "",
+          File_Base64: "",
+          File_Md5: "",
+          Upload_Time: ""
+        }];
+      }
+
+      // 如果有上传文件，转换为Base64并构造证据对象
+      const evidenceList = [];
+
+      const promises = this.form.fileList.map((file, index) => {
+        return new Promise((resolve) => {
+          this.toBase64(file.file, base64 => {
+            evidenceList.push({
+              File_Name: file.file.name || `file_${index}`,
+              File_Base64: base64,
+              File_Md5: "",
+              Upload_Time: new Date().toISOString()
             });
+            resolve();
           });
         });
+      });
 
-        // 等待所有文件转换完成后再发送请求
-        Promise.all(promises)
-            .then(() => {
-              // 发送请求到后端
-              return SensorBorderRequest.SaveAllCardRecords(reqData);
-            })
-            .then(response => {
-              console.log('保存成功:', response);
-              this.$message.success('保存成功!');
-              setTimeout(() => {
-                this.resetTestingFields(); // 重置表单字段
-                this.$router.push("/sensor_ddingWork/Release/code/HistoryView");
-              }, 500); // 0.5 秒后跳转
-            })
-            .catch(error => {
-              console.error('保存失败:', error);
-              this.$message.error('保存失败！');
-            })
-            .finally(() => {
-              this.loading = false; // 保存完成后取消loading状态
-            });
-      } else {
-        // 如果 fileList 为空，直接发送请求
-        SensorBorderRequest.SaveAllCardRecords(reqData)
-            .then(response => {
-              console.log('保存成功:', response);
-              this.$message.success('保存成功!');
-              setTimeout(() => {
-                this.resetTestingFields(); // 重置表单字段
-                this.$router.push("/sensor_ddingWork/Release/code/HistoryView");
-              }, 500); // 0.5 秒后跳转
-            })
-            .catch(error => {
-              console.error('保存失败:', error);
-              this.$message.error('保存失败！');
-            })
-            .finally(() => {
-              this.loading = false; // 保存完成后取消loading状态
-            });
-      }
+      // 等待所有文件转换完成
+      Promise.all(promises).then(() => {
+        // 文件转换完成后，可以使用evidenceList
+      });
+
+      return evidenceList;
     },
     goBack() {
       this.$router.push({ path: '/sensor_ddingWork/Release/code/HistoryView' });

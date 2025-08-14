@@ -4,19 +4,19 @@
       <span>记录人 &nbsp;&nbsp; ：{{ record.currentLocation }}</span>
       <span>记录时间  ：{{ formattedTime }}</span></div>
     <div class="card-body">
-      <div v-if="Array.isArray(record.files)">
+      <div v-if="Array.isArray(record.files) && record.files.length > 0">
         <div class="card-image-grid">
           <template v-for="file in record.files">
-            <img v-if="file.type === 'image'"
+            <img v-if="file.type.includes('image')"
                  :key="file.id"
-                 :src="getFileObject(file.fileUrl, 'image/jpg')"
-                 @click="openImageLightbox(getFileObject(file.fileUrl, 'image/jpeg'))"
+                 :src="getFileObject(file.fileUrl, file.type)"
+                 @click="openImageLightbox(getFileObject(file.fileUrl, file.type))"
                  style="max-width: 100%; height: auto; object-fit: cover; cursor: pointer;">
-            <video v-else-if="file.type === 'video'"
+            <video v-else-if="file.type.includes('video')"
                    :key="file.id"
                    controls
                    style="max-width: 100%; height: auto; object-fit: contain;">
-                   <source :src="getFileObject(file.fileUrl, 'video/mp4')" type="video/mp4">
+              <source :src="getFileObject(file.fileUrl, file.type)" :type="file.type">
               Your browser does not support the video tag.
             </video>
           </template>
@@ -50,14 +50,18 @@ export default {
   },
   methods: {
     getFileObject(fileUrl, fileType) {
-      const byteCharacters = atob(fileUrl);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      // 如果fileUrl已经是base64数据，则直接使用
+      if (fileUrl.startsWith('data:')) {
+        return fileUrl;
       }
-      const byteArray = new Uint8Array(byteNumbers);
-      const blob = new Blob([byteArray], { type: fileType });
-      return URL.createObjectURL(blob);
+
+      // 如果是纯base64字符串，则构造完整的data URL
+      if (fileUrl && !fileUrl.startsWith('http') && !fileUrl.startsWith('data')) {
+        return `data:${fileType};base64,${fileUrl}`;
+      }
+
+      // 否则返回原始URL
+      return fileUrl;
     },
     getFileUrl(fileUrl) {
       return `${this.baseUrl}`+ fileUrl;},
@@ -85,7 +89,6 @@ export default {
       });
       document.body.appendChild(lightbox);}}};
 </script>
-// ... existing code ...
 <style scoped>
 .card-item {
   border: 1px solid #ccc;
@@ -219,5 +222,3 @@ export default {
   text-align: left; /* 左对齐 */
 }
 </style>
-
-

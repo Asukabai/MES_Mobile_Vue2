@@ -145,6 +145,12 @@ import * as ssDing from '../utils/Dingding.js';
               callSuccess(respData);
           }, callFail);
       },
+      // 资产操作信息添加
+      AssetOperationInfoAddFun(param, callSuccess, callFail) {
+          ssDing.PostDataUrl("AssetOperationInfoAddFun", param, true, respData => {
+              callSuccess(respData);
+          }, callFail);
+      },
       // 项目条形统计图数据
       GetAllProjectParticipantFun(param, callSuccess, callFail) {
           ssDing.PostDataUrl("GetAllProjectParticipantFun", param, true, respData => {
