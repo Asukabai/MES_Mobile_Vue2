@@ -71,6 +71,7 @@
                       icon="flag-o"
                       round
                       size="small"
+                      type="info"
                       :disabled="isTaskCompleted(item.Task_Status)"
                       @click="handleTaskButtonClick(item, '完成提交')"
                   >
@@ -80,6 +81,7 @@
                       icon="award-o"
                       round
                       size="small"
+                      type="info"
                       :disabled="isTaskCompleted(item.Task_Status)"
                       @click="handleTaskButtonClick(item, '进度提交')"
                   >
@@ -89,6 +91,7 @@
                       icon="eye-o"
                       round
                       size="small"
+                      type="info"
                       @click="goToTaskDetailLook(item)"
                   >
                     查看
@@ -135,6 +138,7 @@
                   <van-button
                       icon="eye-o"
                       round size="small"
+                      type="info"
                       @click="goToTaskDetailLook(item)">
                     查看
                   </van-button>
@@ -462,12 +466,11 @@ export default {
 
 .share-card {
   margin-bottom: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: 16px; /* 更加圆润 */
   overflow: hidden;
   background: linear-gradient(135deg, #ffffff, #f8f9fa); /* 渐变背景 */
   transition: transform 0.3s ease, box-shadow 0.3s ease; /* 添加过渡效果 */
-  background-image: url('../../assets/background-8.png');
+  box-shadow: 0 5px 10px rgba(69, 125, 222, 0.6); /* 改为淡蓝色阴影 */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

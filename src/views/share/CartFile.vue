@@ -32,12 +32,14 @@
                       icon="down"
                       round
                       size="small"
+                      type="info"
                       @click="handleDownload(item)"
                   >下载</van-button>
                   <van-button
                       icon="guide-o"
                       round
                       size="small"
+                      type="info"
                       @click="handlePreview(item)"
                   >预览</van-button>
                 </template>
@@ -84,12 +86,14 @@
                       icon="down"
                       round
                       size="small"
+                      type="info"
                       @click="handleDownload(item)"
                   >下载</van-button>
                   <van-button
                       icon="guide-o"
                       round
                       size="small"
+                      type="info"
                       @click="handlePreview(item)"
                   >预览</van-button>
                 </template>
@@ -335,7 +339,7 @@ export default {
   overflow: hidden;
   background: linear-gradient(135deg, #ffffff, #f8f9fa); /* 渐变背景 */
   transition: transform 0.3s ease, box-shadow 0.3s ease; /* 添加过渡效果 */
-  background-image: url('../../assets/background-8.png');
+  box-shadow: 0 5px 10px rgba(69, 125, 222, 0.6); /* 改为淡蓝色阴影 */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

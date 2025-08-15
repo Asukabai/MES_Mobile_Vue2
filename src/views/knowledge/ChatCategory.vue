@@ -222,14 +222,14 @@ export default {
 
 .custom-cell ::v-deep .van-cell__title {
   font-weight: bold;
-  font-size: 16px;
+  font-size: 14px;
   color: #333;
 }
 
 .custom-cell ::v-deep .van-cell__label {
   white-space: normal;
   color: #666;
-  font-size: 14px;
+  font-size: 13px;
   margin-top: 4px;
 }
 
