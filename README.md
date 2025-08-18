@@ -101,12 +101,13 @@ mes-dingtalk-miniapp/
 
 ## 技术实现 🔔
 
-| 技术栈       | 版本   | 用途说明               |
-|--------------|--------|-----------------------|
-| Vue          | 2.6.x  | 前端框架              |
-| Vant         | 2.12.x | 移动端UI组件库        |
-| ECharts      | 5.3.x  | 数据可视化            |
-| Axios        | 0.27.x | HTTP请求库           |
+| 技术栈       | 版本   | 用途说明            |
+|--------------|--------|---------------------|
+| Vue          | 2.6.x  | 前端框架             |
+| Vant         | 2.12.x | 移动端UI组件库       |
+| ECharts      | 5.3.x  | 数据可视化           |
+| Axios        | 0.27.x | HTTP请求库          |
+|dingtalk-jsapi| 3.1.x  | 钉钉API请求库       |
 
 ## 部署指南  🚫
 
@@ -126,4 +127,14 @@ mes-dingtalk-miniapp/
 7. 特色功能和兼容性说明
 8. 未来发展规划
 9. 贡献指南和许可证信息
+
+钉钉免登前端流程图：
+
+<img width="740" height="603" alt="image" src="https://github.com/user-attachments/assets/456dbeb4-d183-4b22-988c-2392686da7ed" />
+
+钉钉免登后端流程图：
+
+<img width="738" height="655" alt="image" src="https://github.com/user-attachments/assets/c0523661-2de2-431b-a205-5f4191a7608e" />
+
+
 
