@@ -186,6 +186,8 @@ export function PostDataUrl(postUrlName, data, isJson, callSuccess, callFail) {
 
 
 // 用于获取钉钉授权码
+// 在 GetDingCode 的成功回调中，info.code 被作为参数传递给 GetDingCode 的第一个回调函数参数
+// 然后这个 code 被作为参数传递给 PostData("Ding_LoginByCode", code, ...) 方法
 export function GetDingCode(callSuccess, callFail) {
   const corpId = 'ding103faa9c7d30c144' //晟思 - 钉钉企业id
   // const corpId = 'ding1fa39ac9b223238435c2f4657eb6378f' //山西 - 钉钉企业id  ding1fa39ac9b223238435c2f4657eb6378f
@@ -194,7 +196,7 @@ export function GetDingCode(callSuccess, callFail) {
       dd.runtime.permission.requestAuthCode({
         corpId: corpId,
         onSuccess: (info) => {
-          callSuccess(info.code)
+          callSuccess(info.code)  // 成功回调中获取code
         },
         onFail: (err) => {
           callFail(JSON.stringify(err))
@@ -220,7 +222,7 @@ export function setNewToken(newToken) {
 }
 
 
-// 用于获取钉钉用户令牌
+// 用于获取钉钉用户令牌 ———— 如果本地没有有效的令牌，则会调用GetDingCode获取授权码
 export function GetDingUserToken(callSuccess, callFail) {
   // 第一次登录时
   let userToken = localStorage.getItem(key_DingTokenJWT)
@@ -251,7 +253,13 @@ export function GetDingUserToken(callSuccess, callFail) {
     }
   }
   // Token 过期或者没有缓存中的用户信息，重新获取 Token
+  // 这个 code 是一个临时的一次性授权码，具有以下特点：
+  // 临时性：有效期很短（通常几分钟）
+  // 一次性：只能使用一次，使用后立即失效
+  // 安全性：用于换取用户的访问令牌（access_token）
+  // 后端服务器收到这个 code 后，会结合应用的 corpId 和 secret 向钉钉服务器请求换取用户的访问令牌和身份信息，从而完成免登过程。
   GetDingCode(
+      // 将code发送给后端 → 后端用code换取用户信息 → 返回JWT Token给前端
     (code) => { // Ding_LoginByCode   Dajun_LoginByCode
       PostData("Ding_LoginByCode", code, (newToken) => {
         // alert("22222")
