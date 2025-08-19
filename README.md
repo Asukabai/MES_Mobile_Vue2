@@ -75,19 +75,20 @@
 mes-dingtalk-miniapp/
 ├── public/                  # 静态资源
 ├── src/
-│   ├── api/                 # API接口
 │   ├── assets/              # 静态资源
 │   ├── components/          # 公共组件
 │   │   ├── TaskCard.vue     # 任务卡片组件
 │   │   ├── FileItem.vue     # 文件列表项组件
 │   │   ├── ProgressChart.vue # 进度图表组件
 │   │    └── ...              
-│   ├── pages/               # 页面组件
+│   ├── views/               # 页面组件
 │   │   ├── task/            # 任务相关页面
 │   │   ├── file/            # 文件相关页面
 │   │   ├── project/         # 项目相关页面
 │   │   ├── knowledge/       # 知识库页面
-│   │    └── scan/            # 扫码功能页面
+│   │   ├── login/           # 登录页面
+│   │   ├── user/            # 用户页面
+│   │   ├── summary/         # 统计页面
 │   ├── router/              # 路由配置
 │   ├── store/               # Vuex状态管理
 │   ├── utils/               # 工具函数
@@ -116,6 +117,7 @@ mes-dingtalk-miniapp/
    node >= 14.0
    npm >= 6.0
 
+<img width="591" height="349" alt="image" src="https://github.com/user-attachments/assets/15cb86df-d7d4-43a3-ab51-47b66f148fda" />
 
 这个README.md文件包含了项目的完整说明文档，包括：🔗
 1. 项目概述和技术栈介绍
