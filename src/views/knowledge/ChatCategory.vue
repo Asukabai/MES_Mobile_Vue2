@@ -15,7 +15,7 @@
         finished-text="没有更多了"
         @load="onLoad"
     >
-<!--      :title="post.Error_Name || post.Error_Code || '未知错误'"-->
+      <!--      :title="post.Error_Name || post.Error_Code || '未知错误'"-->
       <van-cell
           v-for="(post, index) in posts"
           :key="index"
@@ -49,6 +49,7 @@ export default {
       posts: [],
       loading: false,
       finished: false,
+      dataLoaded: false, // 新增：标记数据是否已加载完成
       searchParams: {
         Error_Name: "",
         Error_Code: "",
@@ -82,9 +83,16 @@ export default {
     onSearch() {
       this.posts = []
       this.finished = false
+      this.dataLoaded = false
       this.loadData()
     },
     onLoad() {
+      // 如果数据已经加载完成，不再重复加载
+      if (this.dataLoaded) {
+        this.finished = true
+        this.loading = false
+        return
+      }
       this.loadData()
     },
     loadData() {
@@ -108,27 +116,24 @@ export default {
               console.log("search_respData: "+respData)
               let search_respData =  JSON.parse(respData)
               this.loading = false
+              this.dataLoaded = true // 标记数据已加载
+              this.finished = true // 一次性加载所有数据，标记完成
+
               if (respData && Array.isArray(search_respData)) {
                 // 如果返回的是数组，直接赋值
-                if (this.posts.length === 0) {
-                  this.posts = search_respData
-                } else {
-                  this.posts = [...this.posts, ...search_respData]
-                }
-                // 假设每次返回10条数据，如果没有更多数据则finished设为true
-                this.finished = search_respData.length < 10
+                this.posts = search_respData
               } else if (respData) {
                 // 如果返回的是单个对象
                 this.posts = [search_respData]
-                this.finished = true
               } else {
                 // 没有数据返回
-                this.finished = true
+                this.posts = []
               }
             },
             (errorMsg) => {
               this.loading = false
               this.finished = true
+              this.dataLoaded = true
               console.error('获取数据失败:', errorMsg)
               // 可以添加错误提示
             }
@@ -144,27 +149,24 @@ export default {
               console.log("chat_respData: "+respData)
               let chat_respData =  JSON.parse(respData)
               this.loading = false
+              this.dataLoaded = true // 标记数据已加载
+              this.finished = true // 一次性加载所有数据，标记完成
+
               if (respData && Array.isArray(chat_respData)) {
                 // 如果返回的是数组，直接赋值
-                if (this.posts.length === 0) {
-                  this.posts = chat_respData
-                } else {
-                  this.posts = [...this.posts, ...chat_respData]
-                }
-                // 假设每次返回10条数据，如果没有更多数据则finished设为true
-                this.finished = chat_respData.length < 10
+                this.posts = chat_respData
               } else if (respData) {
                 // 如果返回的是单个对象
                 this.posts = [chat_respData]
-                this.finished = true
               } else {
                 // 没有数据返回
-                this.finished = true
+                this.posts = []
               }
             },
             (errorMsg) => {
               this.loading = false
               this.finished = true
+              this.dataLoaded = true
               console.error('获取数据失败:', errorMsg)
               // 可以添加错误提示
             }
