@@ -9,23 +9,25 @@
     />
 
     <!-- 错误列表 -->
-    <van-list
-        v-model="loading"
-        :finished="finished"
-        finished-text="没有更多了"
-        @load="onLoad"
-    >
-      <!--      :title="post.Error_Name || post.Error_Code || '未知错误'"-->
-      <van-cell
-          v-for="(post, index) in posts"
-          :key="index"
-          :title="`问题名称: ${post.Error_Name || post.Error_Code || '未知错误'}`"
-          :label="`类型: ${post.Error_Type || '未分类'}`"
-          is-link
-          @click="viewPostDetail(post)"
-          class="custom-cell"
-      />
-    </van-list>
+    <div class="list-container">
+      <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+      >
+        <!--      :title="post.Error_Name || post.Error_Code || '未知错误'"-->
+        <van-cell
+            v-for="(post, index) in posts"
+            :key="index"
+            :title="`问题名称: ${post.Error_Name || post.Error_Code || '未知错误'}`"
+            :label="`类型: ${post.Error_Type || '未分类'}`"
+            is-link
+            @click="viewPostDetail(post)"
+            class="custom-cell"
+        />
+      </van-list>
+    </div>
   </div>
 </template>
 
@@ -179,7 +181,11 @@ export default {
 
 <style scoped>
 .knowledge-base-page {
+  padding-top: 70px;
   padding-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
 .custom-search {
@@ -187,6 +193,17 @@ export default {
   background-color: #4c87ee;
   border-radius: 20px;
   margin: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+.list-container {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 0;
 }
 
 .custom-search ::v-deep .van-search__content {
