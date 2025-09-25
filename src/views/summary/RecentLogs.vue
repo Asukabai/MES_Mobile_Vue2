@@ -2,10 +2,10 @@
   <div class="recent-logs-page">
     <!-- 导航栏 -->
     <van-nav-bar>
-<!--      &lt;!&ndash; 标题插槽：加粗字体 &ndash;&gt;-->
-<!--      <template #title>-->
-<!--        <span class="nav-title">系统日志</span>-->
-<!--      </template>-->
+      <!--      &lt;!&ndash; 标题插槽：加粗字体 &ndash;&gt;-->
+      <!--      <template #title>-->
+      <!--        <span class="nav-title">系统日志</span>-->
+      <!--      </template>-->
 
       <!-- 排序图标 -->
       <template #left>
@@ -112,6 +112,7 @@ export default {
       SensorRequest.GetRecentLogs('', res => {
         try {
           const rawLogs = JSON.parse(res) || [];
+          console.log("rawLogs: "+rawLogs)
 
           // 解析每条日志
           const parsedLogs = rawLogs.map(logStr => {
@@ -139,7 +140,23 @@ export default {
             this.hasMore = false;
             this.finished = true;
           } else {
-            this.logs = [...this.logs, ...parsedLogs];
+            // 检查是否已存在相同日志，避免重复添加
+            const newLogs = parsedLogs.filter(newLog => {
+              return !this.logs.some(existingLog =>
+                  existingLog.time === newLog.time &&
+                  existingLog.user === newLog.user &&
+                  existingLog.action === newLog.action
+              );
+            });
+
+            // 只有当有新日志时才添加
+            if (newLogs.length > 0) {
+              this.logs = [...this.logs, ...newLogs];
+            } else {
+              // 如果没有新日志，说明已经加载完所有数据
+              this.hasMore = false;
+              this.finished = true;
+            }
           }
         } catch (e) {
           console.error('解析日志失败:', e);
