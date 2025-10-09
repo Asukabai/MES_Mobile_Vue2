@@ -37,8 +37,7 @@
   </div>
 </template>
 
-<style scoped>
-.home-container {
+<style scoped>.home-container {
   position: relative;
   min-height: 100vh;
   overflow: hidden;
@@ -71,38 +70,38 @@
   top: 150px;
   left: 50%;
   transform: translateX(-50%);
-  width: 100%;
+  width: 90%;
   max-width: 400px;
   z-index: 2;
   display: flex;
   flex-direction: column;
-  bottom: calc(40px + env(safe-area-inset-bottom, 0px)); /* 预留标签栏空间 */
+  bottom: calc(40px + env(safe-area-inset-bottom, 10px));
   overflow: hidden;
+  padding: 0 16px;
 }
 
 .card-content {
   flex: 1;
   overflow-y: auto;
-  padding: 0 16px 16px 16px; /* 添加内边距 */
-  /* 隐藏滚动条 */
-  scrollbar-width: none; /* Firefox */
+  padding: 0 16px 16px 16px;
+  scrollbar-width: none;
 }
 
 .card-content::-webkit-scrollbar {
-  display: none; /* Chrome Safari */
+  display: none;
 }
 
 /* 卡片区域 */
 .card-section {
-  margin: 20px auto 8px; /* 上下间距增大，居中显示 */
-  padding: 8px; /* 减少内边距 */
-  width: 90%; /* 使用父容器的宽度 */
+  margin: 20px auto 8px;
+  padding: 8px;
+  width: 100%;
   background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 1;
   position: relative;
-  min-height: fit-content; /* 确保卡片能完整显示 */
+  min-height: fit-content;
 }
 
 .card-section h2 {
@@ -118,6 +117,24 @@
   align-items: center;
   justify-content: center;
   padding: 10px 0;
+}
+
+/* 响应式调整 */
+@media (max-width: 375px) {
+  .card-wrapper {
+    top: 120px;
+    width: 85%;
+  }
+
+  .custom-grid-item {
+    padding: 8px 0;
+  }
+}
+
+@media (min-width: 414px) {
+  .card-wrapper {
+    width: 85%;
+  }
 }
 </style>
 <script>

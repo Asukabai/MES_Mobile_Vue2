@@ -3,7 +3,7 @@
     <div class="post-content" v-if="post">
       <van-cell-group>
         <van-cell title="问题名称" :value="post.Error_Name || '未提供'" />
-        <van-cell title="错误代码" :value="post.Error_Code || '未提供'" />
+<!--        <van-cell title="错误代码" :value="post.Error_Code || '未提供'" />-->
         <van-cell title="问题类型" :value="post.Error_Type || '未分类'" />
         <van-cell title="创建时间" :value="formatDate(post.Ts_create)" />
         <van-cell title="更新时间" :value="formatDate(post.Ts_edit)" />
