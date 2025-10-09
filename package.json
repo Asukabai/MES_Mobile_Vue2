@@ -15,6 +15,7 @@
     "@vue/composition-api": "^1.7.2",
     "axios": "^1.9.0",
     "core-js": "^3.8.3",
+    "dhtmlx-gantt": "^5.1.0",
     "dingtalk-jsapi": "^3.1.1",
     "echarts": "^5.6.0",
     "element-ui": "2.15.6",
