@@ -46,19 +46,21 @@
               <div v-for="(file, idx) in stage.TaskStage_Files" :key="idx" class="file-item">
                 <!-- 判断是否为图片 -->
                 <template v-if="isImage(file.File_Name)">
-                  <van-image
-                      width="80"
-                      height="80"
-                      :src="file.File_Base64"
-                      @click="previewImage(file.File_Base64)"
-                  />
+                  <div class="image-preview">
+                    <span class="file-name">{{ file.File_Name }}</span>
+                    <div class="file-actions">
+                      <van-button type="primary" size="mini" @click="previewFile(file)">预览</van-button>
+                      <van-button type="default" size="mini" @click="downloadFile(file)">下载</van-button>
+                    </div>
+                  </div>
                 </template>
                 <template v-else>
                   <div class="file-info">
                     <span class="file-name">{{ file.File_Name }}</span>
-<!--                    <div class="file-actions">-->
-<!--                      <van-button type="primary" size="mini" @click="downloadFile(file.File_Name,file.File_Base64)">下载</van-button>-->
-<!--                    </div>-->
+                    <div class="file-actions">
+                      <van-button type="primary" size="mini" @click="previewFile(file)">预览</van-button>
+                      <van-button type="default" size="mini" @click="downloadFile(file)">下载</van-button>
+                    </div>
                   </div>
                 </template>
                 <div class="upload-time">{{ file.Upload_Time_Formatted || '暂无时间' }}</div>
@@ -114,19 +116,21 @@
               <div v-for="(file, idx) in finalEvidenceList" :key="idx" class="file-item">
                 <!-- 判断是否为图片 -->
                 <template v-if="isImage(file.File_Name)">
-                  <van-image
-                      width="80"
-                      height="80"
-                      :src="file.File_Base64"
-                      @click="previewImage(file.File_Base64)"
-                  />
+                  <div class="image-preview">
+                    <span class="file-name">{{ file.File_Name }}</span>
+                    <div class="file-actions">
+                      <van-button type="primary" size="mini" @click="previewFile(file)">预览</van-button>
+                      <van-button type="default" size="mini" @click="downloadFile(file)">下载</van-button>
+                    </div>
+                  </div>
                 </template>
                 <template v-else>
                   <div class="file-info">
                     <span class="file-name">{{ file.File_Name }}</span>
-<!--                    <div class="file-actions">-->
-<!--                      <van-button type="primary" size="mini" @click="downloadFile(file.File_Name,file.File_Base64)">下载</van-button>-->
-<!--                    </div>-->
+                    <div class="file-actions">
+                      <van-button type="primary" size="mini" @click="previewFile(file)">预览</van-button>
+                      <van-button type="default" size="mini" @click="downloadFile(file)">下载</van-button>
+                    </div>
                   </div>
                 </template>
                 <div class="upload-time">{{ file.Upload_Time_Formatted || '暂无时间' }}</div>
@@ -136,7 +140,6 @@
         </van-cell-group>
       </div>
     </div>
-
 
     <!-- 空状态：当整个 stageList 为空时显示 -->
     <van-empty
@@ -149,12 +152,10 @@
   </div>
 </template>
 
-
 <script>
 import SensorRequest from "@/utils/SensorRequest";
 import noEvidenceImg from '@/assets/智能办公.png';
-import { ImagePreview } from "vant";
-import {downloadFileByBase64} from "@/utils/fileUtils";
+import { downloadFile, previewFile } from "@/utils/fileUtils";
 
 export default {
   name: "EvidenceDetail",
@@ -234,7 +235,9 @@ export default {
 
               this.stageList = stageFiles.map(stage => {
                 const formattedFiles = (Array.isArray(stage.TaskStage_Files) ? stage.TaskStage_Files : []).map(file => ({
-                  ...file,
+                  File_Name: file.File_Name,
+                  File_Md5: file.File_Md5,
+                  Upload_Time: file.Upload_Time,
                   Upload_Time_Formatted: this.formatDate(file.Upload_Time)
                 }))
 
@@ -264,13 +267,11 @@ export default {
           }
       )
     },
-    previewImage(base64) {
-      if (!base64) {
-        this.$toast("暂无图片可预览")
-        return
-      }
-
-      ImagePreview([base64])
+    previewFile(file) {
+      previewFile(file);
+    },
+    downloadFile(file) {
+      downloadFile(file);
     },
     formatDate(dateString) {
       const date = new Date(dateString)
@@ -279,14 +280,10 @@ export default {
     isImage(fileName) {
       const ext = fileName.split('.').pop().toLowerCase();
       return ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(ext);
-    },
-    downloadFile(fileName, fileBase64) {
-      downloadFileByBase64(fileName, fileBase64);
-    },
+    }
   }
 }
 </script>
-
 
 <style scoped>
 .evidence-detail-page {
@@ -326,7 +323,7 @@ export default {
   margin-right: 16px;
 }
 
-.file-info {
+.file-info, .image-preview {
   display: flex;
   flex-direction: column;
   align-items: center;
