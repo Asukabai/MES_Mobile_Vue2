@@ -161,28 +161,55 @@ export function PostDataUrl(postUrlName, data, isJson, callSuccess, callFail) {
       "content-type": dataType
     }
   })
-    .then(function (response) {
-      if (systemConfigure.isDebugMode) {
-        alert('responseJson: ' + JSON.stringify(response.data));
-      }
-      if (response.data.result == 1) {
-        // alert('responseJson  1 : ' + JSON.stringify(response.data.respData));
-        // alert('responseJson  2: ' + JSON.stringify(response.data.msg));
-        console.log('responseJson  1 : ' + JSON.stringify(response.data.respData));
-        callSuccess(response.data.respData)
+      .then(function (response) {
+        if (systemConfigure.isDebugMode) {
+          alert('responseJson: ' + JSON.stringify(response.data));
+        }
 
-      } else if (callFail) {
-        console.log(response.data);
-        callFail(response.data.msg)
-      }
-    })
-    .catch(function (error) {
-      console.log(error);
-      if (callFail) {
-        callFail(error)
-      }
-    });
+        // 定义错误码映射表
+        const errorCodeMap = {
+          0: "空响应",
+          1: "正常",
+          "-1": "其他错误",
+          "-100001": "未找到设备",
+          "-100002": "参数错误",
+          "-100003": "不支持该指令",
+          "-100004": "超时",
+          "-100005": "类型不符",
+          "-100007": "取消操作",
+          "-100008": "设备忙",
+          "-100009": "设备出错",
+          "-100102": "断线",
+          "-100100": "未找到文本",
+          "-100101": "未找到文件",
+          "-100201": "手动退出",
+          "-100202": "手动重启",
+          "-100701": "测试失败",
+          "-100302": "设置失败",
+          "2": "D90已拆除",
+          "-403": "没有接口权限，请联系管理员开通",
+          "-404": "未找到",
+          "-601": "未知错误"
+        };
+
+        if (response.data.result == 1) {
+          console.log('responseJson  1 : ' + JSON.stringify(response.data.respData));
+          callSuccess(response.data.respData)
+        } else if (callFail) {
+          // 根据错误码获取对应的错误信息
+          const errorMsg = errorCodeMap[response.data.result] || response.data.msg || "未知错误";
+          console.log(response.data);
+          callFail(errorMsg)
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+        if (callFail) {
+          callFail(error)
+        }
+      });
 }
+
 
 
 // 用于获取钉钉授权码
