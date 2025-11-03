@@ -232,7 +232,7 @@ export function GetDingCode(callSuccess, callFail) {
     })
   } else {
     //callFail("notInDingTalk")
-    router.push({path: '/sensor_ddingWork/Debug/login'})
+    router.push({path: '/sensor_ddingWork/Release/login'})
   }
 }
 
@@ -291,7 +291,7 @@ export function GetDingUserToken(callSuccess, callFail) {
       PostData("Ding_LoginByCode", code, (newToken) => {
         // alert("22222")
         let decodedToken = jwt_decode(newToken);
-        // console.log(decodedToken);
+        console.log(decodedToken);
         // alert("Token: "+newToken)
         // alert("decodedToken: "+decodedToken)
         let name = decodedToken.userName;

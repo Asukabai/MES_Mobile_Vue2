@@ -24,13 +24,13 @@ export async function downloadFile(file) {
 export async function previewFile(file) {
   console.log('预览文件:', file);
 
-  // 检查是否为移动端
-  const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|HarmonyOS|OpenHarmony/i.test(navigator.userAgent);
-
-  if (!isMobile) {
-    alert('暂不支持PC端预览 !');
-    return;
-  }
+  // // 检查是否为移动端
+  // const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|HarmonyOS|OpenHarmony/i.test(navigator.userAgent);
+  //
+  // if (!isMobile) {
+  //   alert('暂不支持PC端预览 !');
+  //   return;
+  // }
 
   // 获取文件后缀名
   const fileName = file.File_Name;
@@ -50,16 +50,34 @@ export async function previewFile(file) {
   }
 
   try {
-    // 获取临时预览URL
-    const url = await getTemporaryUrl(file.File_Name, file.File_Md5);
-    // 跳转到下载页面，并传递URL和文件名作为参数
-    await router.push({
-      path: '/sensor_ddingWork/Release/dd-preview',
-      query: {
-        fileUrl: url,
-        fileName: file.File_Name
-      }
-    });
+
+    // // 获取临时预览URL
+    // const url = await getTemporaryUrl(file.File_Name, file.File_Md5);
+    // // 跳转到下载页面，并传递URL和文件名作为参数
+    // await router.push({
+    //   path: '/sensor_ddingWork/Release/dd-preview',
+    //   query: {
+    //     fileUrl: url,
+    //     fileName: file.File_Name
+    //   }
+    // });
+
+// 生成自增ID（从0开始）
+    let autoIncrementId = 0;
+
+// 在 previewFile 函数中替换原来的 id 生成逻辑
+// 生成时间戳加自增ID的组合
+    const timestamp = Date.now();
+    const id = `${timestamp}_${autoIncrementId++}`;
+
+// 构造新的预览URL
+    const previewUrl =
+        `https://api-v2.sensor-smart.cn:29028/office/OfficeViewA?id=${id}&fileHash=${file.File_Md5}&fileType=${fileExt}&fileName=${encodeURIComponent(fileName)}`;
+    // 直接在当前窗口打开预览URL
+    window.location.href = previewUrl;
+
+    // // 在新窗口/标签页中打开预览URL
+    // window.open(previewUrl, '_blank');
   } catch (error) {
     console.error('预览文件失败:', error);
     alert('文件预览失败，请稍后重试'+error);

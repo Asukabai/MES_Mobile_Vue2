@@ -196,67 +196,67 @@ const router = new Router({
       meta: { title: '查看任务详情' }
     },
     {
-      path: "/sensor_ddingWork/Release/cardStorageOperate",
+      path: `${basePath}cardStorageOperate`,
       name: 'CardStorageOperate',
       component: () => import('@/views/code/CardStorageOperate.vue'),
       meta: { title: '卡片存储操作' }
     },
     {
-      path: "/sensor_ddingWork/Release/task/evidence-detail",
+      path: `${basePath}task/evidence-detail`,
       name: 'EvidenceDetail',
       component: () => import('@/views/task/EvidenceDetail.vue'),
       meta: { title: '证据详情' },
     },
     {
-      path: "/sensor_ddingWork/Release/code/codeList",
+      path: `${basePath}code/codeList`,
       name: 'CodeList',
       component: () => import('@/views/code/CodeList.vue'),
       meta: { title: '扫码记录日志时间列表' }
     },
     {
-      path: "/sensor_ddingWork/Release/code/config",
+      path: `${basePath}code/config`,
       name: 'ScanConfigPage',
       component: () => import('@/views/code/ScanConfigPage.vue'),
       meta: { title: '扫码配置' }
     },
     {
-      path: "/sensor_ddingWork/Release/code/configList",
+      path: `${basePath}code/configList`,
       name: 'ScanConfigList',
       component: () => import('@/views/code/ScanConfigList.vue'),
       meta: { title: '配置列表' }
     },
     {
-      path: "/sensor_ddingWork/Release/code/batch_scan_results",
+      path: `${basePath}code/batch_scan_results`,
       name: 'ScanConfigList',
       component: () => import('@/views/code/BatchScanResults.vue'),
       meta: { title: '批量扫码结果' }
     },
     {
-      path: "/sensor_ddingWork/Release/code/AddStored",
+      path: `${basePath}code/AddStored`,
       name: 'AddStored',
       component: () => import('@/views/code/AddStored.vue'),
       meta: { title: '晟思资产出入库表单' }
     },
     {
-      path: "/sensor_ddingWork/Release/code/AddHistory",
+      path: `${basePath}code/AddHistory`,
       name: 'AddHistory',
       component: () => import('@/views/code/AddHistory.vue'),
       meta: { title: '资产记录表单' }
     },
     {
-      path: "/sensor_ddingWork/Release/code/HistoryView",
+      path: `${basePath}code/HistoryView`,
       name: 'HistoryView',
       component: () => import('@/views/code/HistoryView.vue'),
       meta: { title: '资产记录详情' }
     },
     {
-      path: '/sensor_ddingWork/Release/progress-tracking',
+      path: `${basePath}progress-tracking`,
       name: 'ProgressTracking',
       component: () => import('@/views/project/ProgressTracking.vue'),
       meta: { title: '进度跟踪' }
     },
     {
-      path: '/sensor_ddingWork/Release/project-detail/:id',
+      path: `${basePath}project-detail/:id`,
       name: 'ProjectDetail',
       component: () => import('@/views/project/ProjectDetail.vue'),
       meta: { title: '项目详情' }

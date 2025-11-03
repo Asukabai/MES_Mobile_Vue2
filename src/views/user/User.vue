@@ -20,7 +20,8 @@
               <p v-if="!userInfo.name">正在加载用户信息...</p>
               <p v-else><strong>姓名：</strong>{{ userInfo.name }}</p>
               <p><strong>手机号：</strong>{{ userInfo.phone }}</p>
-              <p><strong>企业：</strong>陕西晟思智能测控有限公司 </p>
+<!--              <p><strong>企业：</strong>陕西晟思智能测控有限公司 </p>-->
+              <p><strong>企业：</strong>山西大钧自动化设备有限公司</p>
             </div>
           </div>
         </van-cell>
