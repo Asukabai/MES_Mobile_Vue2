@@ -38,6 +38,9 @@
         <van-cell title="缓存清理" is-link @click="handleInviteClick" />
         <van-cell title="推送通知" is-link @click="handlePushNotification" />
         <van-cell title="在线支持" is-link @click="handleOnlineSupport" />
+        <van-cell title="系统版本" :value="version"  />
+
+
       </van-cell-group>
     </div>
   </div>
@@ -68,7 +71,9 @@ export default {
       // 添加公司信息数据
       companyInfo: {
         name: ''
-      }
+      },
+      // 添加版本号
+      version: 'V0.1.1'
     };
   },
   mounted() {
