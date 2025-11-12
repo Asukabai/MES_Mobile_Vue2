@@ -1,25 +1,25 @@
 <template>
   <div>
     <!-- 固定标题 -->
-<!--    <van-nav-bar title="任务完成提交表单" fixed />-->
+    <!--    <van-nav-bar title="任务完成提交表单" fixed />-->
 
     <!-- 表单内容的卡片 -->
     <div class="card-container" style="margin-top: 0px; padding-bottom: 20px;">
       <!-- 任务信息 -->
-        <van-cell title="任务名称" :value="taskName" />
-        <van-cell title="项目编号" :value="projectCode" />
-        <van-cell title="任务描述">
-          <template #default>
-            <div class="task-description" v-if="taskDescriptionLines.length">
-              <p v-for="(line, index) in taskDescriptionLines" :key="index">{{ line }}</p>
-            </div>
-            <div v-else style="color: #999;">暂无描述</div>
-          </template>
-        </van-cell>
+      <van-cell title="任务名称" :value="taskName" />
+      <van-cell title="项目编号" :value="projectCode" />
+      <van-cell title="任务描述">
+        <template #default>
+          <div class="task-description" v-if="taskDescriptionLines.length">
+            <p v-for="(line, index) in taskDescriptionLines" :key="index">{{ line }}</p>
+          </div>
+          <div v-else style="color: #999;">暂无描述</div>
+        </template>
+      </van-cell>
       <!-- 图片上传区域 -->
       <van-cell title="上传凭证">
         <template #label>
-          <span class="upload-note">支持点击图标上传任何格式文件，但总大小不得超过20M，文件总数不得超过5个</span>
+          <span class="upload-note">支持点击图标上传任何格式文件，但总大小不得超过10M，文件总数不得超过5个</span>
         </template>
       </van-cell>
       <van-uploader
@@ -60,14 +60,14 @@
 
     <!-- 加载遮罩 -->
     <van-overlay :show="isSubmitting">
-      <div class="loading-box">正在处理图片，请稍候...</div>
+      <div class="loading-box">正在处理文件，请稍候...</div>
     </van-overlay>
   </div>
 </template>
 
-
 <script>
 import SensorRequest from "@/utils/SensorRequest";
+import uploadUtils from "@/utils/uploadUtils"; // 引入上传工具
 
 export default {
   data() {
@@ -76,10 +76,9 @@ export default {
       projectCode: this.$route.query.projectCode || '',
       taskId: this.$route.query.Id || '',
       taskDescription: this.$route.query.taskDescription || '',
-
-      fileList: [],         // van-uploader 文件列表
-      evidenceList: [],     // 存储处理后的证据数据
-      isSubmitting: false   // 是否正在提交中
+      fileList: [],
+      evidenceList: [],
+      isSubmitting: false
     };
   },
   computed: {
@@ -90,49 +89,14 @@ export default {
   methods: {
     onAfterRead(files) {
       console.log('【onAfterRead】开始处理文件:', files);
-
-      if (Array.isArray(files)) {
-        files.forEach(file => this.processSingleFile(file));
-        return;
-      }
-
-      this.processSingleFile(files);
-    },
-
-    processSingleFile(file) {
-      console.log('处理文件:', file);
-
-      if (!file || !file.file || !(file.file instanceof File)) {
-        console.warn('⚠️ 文件无效或不是 File 对象');
-        return;
-      }
-
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        const base64 = e.target.result;
-
-        // const md5 = this.generateSimpleMd5(base64);
-
-        this.evidenceList.push({
-          File_Name: file.file.name,
-          File_Base64: base64,
-          File_Md5: "",
-          Upload_Time: new Date().toISOString()
-        });
-
-        console.log('更新后的 evidenceList:', this.evidenceList);
-        this.$nextTick(() => {
-          console.log('🔄 数据已刷新');
-        });
-      };
-
-      reader.onerror = () => {
-        console.error('❌ 文件读取失败:', file.file.name);
-        this.$toast.fail(`"${file.file.name}" 读取失败`);
-      };
-
-      reader.readAsDataURL(file.file);
+      uploadUtils.processFiles(files, 20 * 1024 * 1024)
+          .then(list => {
+            this.evidenceList = list;
+            console.log('✅ 文件处理完成:', list);
+          })
+          .catch(error => {
+            this.$toast.fail(error.message);
+          });
     },
 
     async submitEvidence() {
@@ -142,23 +106,23 @@ export default {
       }
 
       if (this.fileList.length === 0) {
-        this.$toast.fail('请至少上传一张图片');
+        this.$toast.fail('请至少上传一个文件');
         return;
       }
 
       if (this.evidenceList.length < this.fileList.length) {
-        this.$toast('图片正在加载中，请稍等...');
+        this.$toast('正在加载中，请稍等...');
         try {
-          await this.waitForAllImagesLoaded();
+          await uploadUtils.waitForAllImagesLoaded(this.evidenceList, this.fileList);
         } catch (error) {
-          this.$toast.fail('图片加载失败，请重试');
+          this.$toast.fail('加载失败，请重试');
           this.isSubmitting = false;
           return;
         }
       }
 
       if (this.evidenceList.length === 0) {
-        this.$toast.fail('请至少上传一张图片');
+        this.$toast.fail('请至少上传一个文件');
         return;
       }
 
@@ -183,8 +147,7 @@ export default {
 
         console.info('✅ 提交成功');
         this.$toast.success('提交成功');
-        this.resetForm();
-        // 新增：提交成功后延迟 1 秒跳转
+        uploadUtils.resetForm(this.fileList, this.evidenceList);
         setTimeout(() => {
           this.$router.push('/task');
         }, 1000);
@@ -196,40 +159,13 @@ export default {
       }
     },
 
-    waitForAllImagesLoaded(timeout = 5000) {
-      return new Promise((resolve, reject) => {
-        const startTime = Date.now();
-        const interval = setInterval(() => {
-          if (this.evidenceList.length >= this.fileList.length) {
-            clearInterval(interval);
-            resolve();
-          }
-
-          if (Date.now() - startTime > timeout) {
-            clearInterval(interval);
-            reject(new Error('等待图片加载超时'));
-          }
-        }, 200);
-      });
-    },
-
-    resetForm() {
+    cancelAndGoBack() {
       if (this.isSubmitting) {
         this.$toast('请勿操作，当前正在提交中');
         return;
       }
-
-      this.evidenceList = [];
-      this.fileList = [];
-    },
-    cancelAndGoBack() { // 新增方法：取消并返回到上一页
-      if (this.isSubmitting) {
-        this.$toast('请勿操作，当前正在提交中');
-        return;
-      }
-
-      this.resetForm(); // 调用原有重置表单逻辑
-      this.$router.go(-1); // 返回到上一页
+      uploadUtils.resetForm(this.fileList, this.evidenceList);
+      this.$router.go(-1);
     },
 
     generateSimpleMd5(str) {
@@ -269,4 +205,3 @@ export default {
   border: 1px solid #e0e0e0;
 }
 </style>
-

@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 标题 -->
-<!--    <van-nav-bar title="任务过程提交表单" fixed />-->
+    <!--    <van-nav-bar title="任务过程提交表单" fixed />-->
     <!-- 所有表单内容的卡片 -->
     <div class="card-container" style="margin-top: 0px; padding-bottom: 20px;">
       <van-cell title="任务名称" :value="taskName" />
@@ -24,7 +24,8 @@
                 :min="-10"
                 :max="90"
                 :step="10"
-                @change="onProgressChange"              style="transition: all 0.3s ease;"
+                @change="onProgressChange"
+                style="transition: all 0.3s ease;"
             />
             <div class="slider-ticks">
               <span v-for="tick in 10" :key="tick" :style="{ left: `${(tick - 1) * 10}%` }"></span>
@@ -72,7 +73,7 @@
     </div>
 
     <!-- 提交按钮组 -->
-    <div style="padding: 15px; display: flex;  gap: 25px; justify-content: center; margin-top: 5px;">
+    <div style="padding: 15px; display: flex; gap: 25px; justify-content: center; margin-top: 5px;">
       <van-button
           type="info"
           style="width: 40%; font-size: 14px; padding: 8px 20px; margin-right: 5px;"
@@ -92,7 +93,6 @@
       </van-button>
     </div>
 
-
     <!-- 加载遮罩 -->
     <van-overlay :show="isSubmitting">
       <div class="loading-box">正在处理中，请稍候...</div>
@@ -107,6 +107,8 @@ import {
   key_DingUserIndex,
   key_DingUserPhone
 } from "@/utils/Dingding";
+import uploadUtils from "@/utils/uploadUtils"; // 引入上传工具
+
 function getLocalUserInfo() {
   const name = localStorage.getItem(key_DingName);
   const phone = localStorage.getItem(key_DingUserPhone);
@@ -118,20 +120,19 @@ function getLocalUserInfo() {
     dingID: dingID || ''
   };
 }
-export default {
 
+export default {
   data() {
     return {
       taskName: this.$route.query.taskName || '',
       projectCode: this.$route.query.projectCode || '',
       taskId: this.$route.query.Id || '',
       taskDescription: this.$route.query.taskDescription || '',
-
-      taskProgress: 0,     // 默认任务进度为 0%
-      taskRemark: '',      // 默认备注为空
-      fileList: [],         // van-uploader 文件列表
-      evidenceList: [],     // 存储处理后的证据数据
-      isSubmitting: false   // 是否正在提交中
+      taskProgress: 0,
+      taskRemark: '',
+      fileList: [],
+      evidenceList: [],
+      isSubmitting: false
     };
   },
   computed: {
@@ -147,86 +148,18 @@ export default {
 
     onProgressChange(value) {
       console.log('当前任务进度:', value + '%');
-      // 可以在这里做额外处理，例如触发自动保存等
     },
-    // onAfterRead(files) {
-    //   console.log('【onAfterRead】开始处理文件:', files);
-    //
-    //   if (Array.isArray(files)) {
-    //     files.forEach(file => this.processSingleFile(file));
-    //     return;
-    //   }
-    //
-    //   this.processSingleFile(files);
-    // },
 
     onAfterRead(files) {
       console.log('【onAfterRead】开始处理文件:', files);
-
-      const MAX_TOTAL_SIZE = 20 * 1024 * 1024; // 20MB
-      let currentTotalSize = this.fileList.reduce((total, file) => total + (file.file.size || 0), 0);
-
-      if (Array.isArray(files)) {
-        files.forEach(file => this.validateAndProcessFile(file, currentTotalSize, MAX_TOTAL_SIZE));
-        return;
-      }
-      this.validateAndProcessFile(files, currentTotalSize, MAX_TOTAL_SIZE);
-    },
-
-    validateAndProcessFile(file, currentTotalSize, maxTotalSize) {
-      if (!file || !file.file || !(file.file instanceof File)) {
-        console.warn('⚠️ 文件无效或不是 File 对象');
-        return;
-      }
-      // 检查单个文件大小是否超过限制
-      if (file.file.size > maxTotalSize) {
-        this.$toast.fail(`"${file.file.name}" 文件过大，总大小不能超过20MB`);
-        return;
-      }
-      // 检查总大小是否超过限制
-      if (currentTotalSize + file.file.size > maxTotalSize) {
-        this.$toast.fail('总文件大小不能超过20MB');
-        return;
-      }
-      // 处理文件
-      this.processSingleFile(file);
-    },
-
-
-    processSingleFile(file) {
-      console.log('处理文件:', file);
-
-      if (!file || !file.file || !(file.file instanceof File)) {
-        console.warn('⚠️ 文件无效或不是 File 对象');
-        return;
-      }
-
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        const base64 = e.target.result;
-
-        const md5 = this.generateSimpleMd5(base64);
-
-        this.evidenceList.push({
-          File_Name: file.file.name,
-          File_Base64: base64,
-          File_Md5: md5,
-          Upload_Time: new Date().toISOString()
-        });
-
-        console.log('更新后的 evidenceList:', this.evidenceList);
-        this.$nextTick(() => {
-          console.log('🔄 数据已刷新');
-        });
-      };
-
-      reader.onerror = () => {
-        console.error('❌ 文件读取失败:', file.file.name);
-        this.$toast.fail(`"${file.file.name}" 读取失败`);
-      };
-
-      reader.readAsDataURL(file.file);
+      uploadUtils.processFiles(files, 20 * 1024 * 1024)
+          .then(list => {
+            this.evidenceList = list;
+            console.log('✅ 文件处理完成:', list);
+          })
+          .catch(error => {
+            this.$toast.fail(error.message);
+          });
     },
 
     async submitEvidence() {
@@ -243,7 +176,7 @@ export default {
       if (this.evidenceList.length < this.fileList.length) {
         this.$toast('正在加载中，请稍等...');
         try {
-          await this.waitForAllImagesLoaded();
+          await uploadUtils.waitForAllImagesLoaded(this.evidenceList, this.fileList);
         } catch (error) {
           this.$toast.fail('加载失败，请重试');
           this.isSubmitting = false;
@@ -256,7 +189,6 @@ export default {
         return;
       }
 
-      // 校验：任务进度必须大于 0%
       if (this.taskProgress <= 0) {
         this.$toast.fail('进度不能为0%，请滑动进度条后提交');
         return;
@@ -264,7 +196,6 @@ export default {
 
       this.isSubmitting = true;
       const userInfo = getLocalUserInfo();
-      // 模拟从缓存中读取的用户信息
       const creatorFromCache = {
         Person_Phone: userInfo.phone,
         Person_Name: userInfo.name,
@@ -272,7 +203,6 @@ export default {
         Person_Department: null
       };
 
-      // 构造新的 payload 结构
       const payload = {
         Id: this.taskId,
         Task_StageFile: [
@@ -282,15 +212,13 @@ export default {
             TaskStage_Files: this.evidenceList.map(e => ({
               File_Name: e.File_Name,
               File_Md5: "",
-              File_Base64: e.File_Base64, // 如果接口允许为空可设为 ''
+              File_Base64: e.File_Base64,
               Upload_Time: e.Upload_Time
             })),
             StageFile_Creator: creatorFromCache
           }
         ]
       };
-
-      console.log('📤 提交数据:', payload);
 
       try {
         await new Promise((resolve, reject) => {
@@ -300,56 +228,25 @@ export default {
               (error) => reject(new Error(error.message))
           );
         });
-
-        console.info('✅ 提交成功');
         this.$toast.success('提交成功');
-        this.resetForm();
-        // 新增：提交成功后延迟 1 秒跳转
+        uploadUtils.resetForm(this.fileList, this.evidenceList);
         setTimeout(() => {
           this.$router.push('/task');
         }, 1000);
       } catch (error) {
-        console.error('❌ 提交失败:', error.message);
         this.$toast.fail('提交失败：' + error.message);
       } finally {
         this.isSubmitting = false;
       }
     },
 
-    waitForAllImagesLoaded(timeout = 5000) {
-      return new Promise((resolve, reject) => {
-        const startTime = Date.now();
-        const interval = setInterval(() => {
-          if (this.evidenceList.length >= this.fileList.length) {
-            clearInterval(interval);
-            resolve();
-          }
-
-          if (Date.now() - startTime > timeout) {
-            clearInterval(interval);
-            reject(new Error('等待文件加载超时'));
-          }
-        }, 200);
-      });
-    },
-
-    resetForm() {
+    cancelAndGoBack() {
       if (this.isSubmitting) {
         this.$toast('请勿操作，当前正在提交中');
         return;
       }
-
-      this.evidenceList = [];
-      this.fileList = [];
-    },
-    cancelAndGoBack() { // 新增方法：取消并返回到上一页
-      if (this.isSubmitting) {
-        this.$toast('请勿操作，当前正在提交中');
-        return;
-      }
-
-      this.resetForm(); // 调用原有重置表单逻辑
-      this.$router.go(-1); // 返回到上一页
+      uploadUtils.resetForm(this.fileList, this.evidenceList);
+      this.$router.go(-1);
     },
 
     generateSimpleMd5(str) {
@@ -363,7 +260,8 @@ export default {
 };
 </script>
 
-<style scoped>.card-container {
+<style scoped>
+.card-container {
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
