@@ -1,5 +1,4 @@
 import * as dd from 'dingtalk-jsapi'
-import router from '../router'
 import axios from 'axios'
 import jwt_decode from 'jwt-decode';
 
@@ -57,7 +56,34 @@ export function updateCachedResponseUsed(responseUsed) {
   console.log("cachedResponseUsed 是： ",cachedResponseUsed)
 }
 
+// 获取当前部门信息的通用函数
+export function getCurrentDepartment() {
+  const department = localStorage.getItem('department') || 'xian';
+  console.log('从 localStorage 获取的部门信息:', department); // 调试日志
+  return department;
+}
 
+// 根据部门获取对应的 corpId
+export function getCorpIdByDepartment(department) {
+  console.log('调用根据部门获取对应的 corpId,部门号是：', department); // 调试日志
+  const corpIds = {
+    'xian': 'ding103faa9c7d30c144', // 晟思 - 钉钉企业id
+    'taiyuan': 'ding1fa39ac9b223238435c2f4657eb6378f' // 山西 - 钉钉企业id
+  };
+
+  return corpIds[department] || corpIds['xian']; // 默认使用晟思的 corpId
+}
+
+// 获取登录方法名
+export function getLoginMethodByDepartment(department) {
+  console.log('调用获取登录方法名,部门号是：', department); // 调试日志
+  return department === 'taiyuan' ? 'Dajun_LoginByCode' : 'Ding_LoginByCode';
+}
+// 获取验证码方法名
+export function getLoginCodeByDepartment(department) {
+  console.log('调用获取验证码方法名,部门号是：', department); // 调试日志
+  return department === 'taiyuan' ? 'Dajun_GetMFACode' : 'Ding_GetMFACode';
+}
 
 // 定义了两个变量，分别用于存储请求ID和目标URL，默认值分别为1和null。
 let reqID = 1
@@ -216,8 +242,10 @@ export function PostDataUrl(postUrlName, data, isJson, callSuccess, callFail) {
 // 在 GetDingCode 的成功回调中，info.code 被作为参数传递给 GetDingCode 的第一个回调函数参数
 // 然后这个 code 被作为参数传递给 PostData("Ding_LoginByCode", code, ...) 方法
 export function GetDingCode(callSuccess, callFail) {
-  const corpId = 'ding103faa9c7d30c144' //晟思 - 钉钉企业id
-  // const corpId = 'ding1fa39ac9b223238435c2f4657eb6378f' //山西 - 钉钉企业id  ding1fa39ac9b223238435c2f4657eb6378f
+  const department = getCurrentDepartment();
+  console.log('用于获取钉钉授权码 - 获取到的部门信息:', department); // 调试日志
+  const corpId = getCorpIdByDepartment(department);
+  console.log('用于获取钉钉授权码 - 对应的 corpId:', corpId); // 调试日志
   if (dd.env.platform !== 'notInDingTalk') {
     dd.ready(() => {
       dd.runtime.permission.requestAuthCode({
@@ -231,8 +259,9 @@ export function GetDingCode(callSuccess, callFail) {
       })
     })
   } else {
-    //callFail("notInDingTalk")
-    router.push({path: '/sensor_ddingWork/Release/login'})
+    callFail("notInDingTalk")
+    // 不在钉钉环境，跳转到登录页
+    // router.push('/login'); // 直接跳转，不再拼接部门路径
   }
 }
 
@@ -288,7 +317,13 @@ export function GetDingUserToken(callSuccess, callFail) {
   GetDingCode(
       // 将code发送给后端 → 后端用code换取用户信息 → 返回JWT Token给前端
     (code) => { // Ding_LoginByCode   Dajun_LoginByCode
-      PostData("Ding_LoginByCode", code, (newToken) => {
+
+      // 获取当前部门对应的登录方法
+      const department = getCurrentDepartment();
+      console.log('Token_获取到的部门信息:', department); // 调试日志
+      const loginMethod = getLoginMethodByDepartment(department);
+      console.log('Token_对应的登录方法:', loginMethod); // 调试日志
+      PostData(loginMethod, code, (newToken) => {
         // alert("22222")
         let decodedToken = jwt_decode(newToken);
         console.log(decodedToken);

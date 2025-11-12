@@ -1,19 +1,5 @@
 <template>
   <div class="task-page page-container">
-    <!-- 页面标题 -->
-    <!--    <van-nav-bar-->
-    <!--        title="任务"-->
-    <!--        @click-left="handleSearchClick"-->
-    <!--        @click-right="handleAddClick"-->
-    <!--    >-->
-    <!--      <template #left>-->
-    <!--        <van-icon name="filter-o" size="18" />-->
-    <!--      </template>-->
-    <!--      <template #right>-->
-    <!--        <van-icon name="apps-o" size="18" />-->
-    <!--      </template>-->
-    <!--    </van-nav-bar>-->
-
     <!-- 过滤器按钮 -->
     <div v-if="showFilters" class="filter-buttons">
       <van-button
@@ -151,11 +137,10 @@
     </van-tabs>
   </div>
 </template>
-
 <script>
 import SensorRequest from '@/utils/SensorRequest';
 import { Toast } from 'vant';
-import { key_DingUserPhone } from '@/utils/Dingding';
+import { key_DingUserPhone} from '@/utils/Dingding';
 
 function getLocalUserInfo() {
   const phone = localStorage.getItem(key_DingUserPhone);
@@ -181,7 +166,6 @@ export default {
       responsibleLoading: false,
       responsibleFinished: false,
       responsibleRefreshing: false,
-
       sortByDate: 'desc', // 排序方式：'asc' 正序, 'desc' 逆序
       showFilters: false, // 是否显示过滤器
       activeFilters: [] // 激活的过滤器
@@ -223,13 +207,7 @@ export default {
           return dateB - dateA;
         }
       });
-
       this.participatedList = participatedList;
-
-      // 我负责的任务也可以类似处理，根据需求决定是否添加排序和过滤
-      // let responsibleList = [...this.responsibleListOriginal];
-      // ...
-      // this.responsibleList = responsibleList;
     },
 
     // 切换过滤器显示
@@ -393,7 +371,7 @@ export default {
         taskDescription: taskDescription
       };
       this.$router.push({
-        path: '/sensor_ddingWork/Release/task-detail-last',
+        path: '/task-detail-last',
         query: query
       });
     },    // 跳转到任务提交页面
@@ -413,7 +391,7 @@ export default {
         taskDescription: taskDescription
       };
       this.$router.push({
-        path: '/sensor_ddingWork/Release/task-detail-progress',
+        path: '/task-detail-progress',
         query: query
       });
     },
@@ -422,7 +400,7 @@ export default {
       console.log("跳转到任务详情页面:", item);
 
       this.$router.push({
-        path: '/sensor_ddingWork/Release/task-detail-look',
+        path: '/task-detail-look',
         query: {
           taskId: item.ID_TaskInfo,
           taskData: encodeURIComponent(JSON.stringify(item)) // 新增：传递完整对象

@@ -110,7 +110,14 @@
 </template>
 <script>
 import SensorBorderRequest from "../../utils/sensorBorder.js";
-import {key_DingName,key_DingScannedResult,key_DingUserIndex,cachedProductId,cachedProductPerson,cachedPersonIndex} from "@/utils/Dingding.js";
+import {
+  key_DingName,
+  key_DingScannedResult,
+  key_DingUserIndex,
+  cachedProductId,
+  cachedProductPerson,
+  cachedPersonIndex,
+} from "@/utils/Dingding.js";
 export default {
   data() {
     return {
@@ -251,6 +258,9 @@ export default {
               setTimeout(() => {
                 this.resetTestingFields(); // 重置表单字段
                 this.$router.push("/ddinguia/web/history");
+                // const department = getCurrentDepartment();
+                // const basePath = getBasePathByDepartment (department);
+                // router.push({path: `${basePath}/code/configList`});// 跳转回扫码页面
               }, 500); // 0.5 秒后跳转
             })
             .catch(error => {

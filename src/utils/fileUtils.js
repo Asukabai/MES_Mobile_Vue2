@@ -9,7 +9,7 @@ export async function downloadFile(file) {
     const url = await getTemporaryUrl(file.File_Name, file.File_Md5);
     // 跳转到预览页面，并传递URL和文件名作为参数
     await router.push({
-      path: '/sensor_ddingWork/Release/download',
+      path: '/download',
       query: {
         fileUrl: url,
         fileName: file.File_Name
@@ -32,9 +32,23 @@ export async function previewFile(file) {
   //   return;
   // }
 
+  // 在 previewFile 函数中添加文档类型映射
+  const documentTypeMap = {
+    'doc': 'word',
+    'docx': 'word',
+    'xls': 'spreadsheet',
+    'xlsx': 'spreadsheet',
+    'ppt': 'presentation',
+    'pptx': 'presentation',
+    'pdf': 'pdf',
+    'txt': 'text'
+  };
+
   // 获取文件后缀名
   const fileName = file.File_Name;
+// 获取文档类型
   const fileExt = fileName.split('.').pop().toLowerCase();
+  const documentType = documentTypeMap[fileExt] || 'word'; // 默认使用 word 类型
 
   // 定义不支持预览的文件类型
   const unsupportedExtensions = [
@@ -71,8 +85,11 @@ export async function previewFile(file) {
     const id = `${timestamp}_${autoIncrementId++}`;
 
 // 构造新的预览URL
+//     const previewUrl =
+//         `https://api-v2.sensor-smart.cn:29028/office/OfficeViewA?id=${id}&fileHash=${file.File_Md5}&fileType=${fileExt}&fileName=${encodeURIComponent(fileName)}`;
+    // 构造新的预览URL - 使用 OfficeViewB 接口
     const previewUrl =
-        `https://api-v2.sensor-smart.cn:29028/office/OfficeViewA?id=${id}&fileHash=${file.File_Md5}&fileType=${fileExt}&fileName=${encodeURIComponent(fileName)}`;
+        `https://api-v2.sensor-smart.cn:29028/office/OfficeViewB/${id}/${encodeURIComponent(fileName)}/${file.File_Md5}/${documentType}`;
     // 直接在当前窗口打开预览URL
     window.location.href = previewUrl;
 
@@ -120,49 +137,6 @@ function getTemporaryUrl(fileName, fileMd5) {
     );
   });
 }
-
-// export function downloadFileByBase64(fileName, fileBase64) {
-//   // 提取纯 Base64 数据部分
-//   const pureBase64 = extractPureBase64(fileBase64);
-//
-//   // 验证是否为有效的 Base64 字符串
-//   if (!isBase64Valid(pureBase64)) {
-//     console.error('无效的 Base64 数据:', fileBase64);
-//     alert('文件下载失败：数据格式不正确');
-//     return;
-//   }
-//
-//   const byteCharacters = atob(pureBase64);
-//   const byteNumbers = new Array(byteCharacters.length);
-//   for (let i = 0; i < byteCharacters.length; i++) {
-//     byteNumbers[i] = byteCharacters.charCodeAt(i);
-//   }
-//   const byteArray = new Uint8Array(byteNumbers);
-//   const blob = new Blob([byteArray], { type: 'application/octet-stream' });
-//
-//   const link = document.createElement('a');
-//   link.href = URL.createObjectURL(blob);
-//   link.download = fileName;
-//   document.body.appendChild(link);
-//   link.click();
-//   document.body.removeChild(link);
-// }
-//
-// // 辅助函数：验证 Base64 字符串
-// function isBase64Valid(str) {
-//   try {
-//     return btoa(atob(str)) === str;
-//   } catch (e) {
-//     return false;
-//   }
-// }
-//
-// // 辅助函数：提取纯 Base64 数据部分
-// function extractPureBase64(base64String) {
-//   const base64PrefixRegex = /^data:[^;]+;base64,/;
-//   return base64String.replace(base64PrefixRegex, '');
-// }
-
 
 export function downloadFileByBase64(fileName, fileBase64) {
   // 提取纯 Base64 数据部分

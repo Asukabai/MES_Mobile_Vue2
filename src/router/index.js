@@ -17,254 +17,261 @@ import PostDetail from "@/views/knowledge/PostDetail.vue";
 
 Vue.use(Router)
 
-// 获取全局路径前缀
-const basePath = process.env.VUE_APP_BASE_PATH
+
+const basePath = `/sensor/ddingWork/`
 
 const router = new Router({
   mode: 'history',
+  base: basePath,
   routes: [
     {
-      path: basePath,
-      redirect: `${basePath}login`
+      path: '/',
+      redirect: '/login'
     },
+    //
+    //
+    // {
+    //   path: '/:department',
+    //   redirect: { name: 'Login' }
+    // },
     {
-      path: `${basePath}login`,
-      name: 'Login',
-      component: Login,
-      meta: { title: '登录' }
-    },
-    {
-      path: `${basePath}home`,
+      path: '/home',
       name: 'Home',
       component: Home,
       meta: { title: '首页' }
     },
     {
-      path: `${basePath}chat_category`,
+      path: '/chat_category',
       name: 'ChatCategory',
       component: ChatCategory,
       meta: { title: '知识库' }
     },
     {
-      path: `${basePath}create_post`,
+      path: '/create_post',
       name: 'CreatePost',
       component: CreatePost,
       meta: { title: '创建帖子' }
     },
-    // {
-    //   path: `${basePath}post-detail/:id`,
-    //   name: 'PostDetail',
-    //   component: PostDetail,
-    //   meta: { title: '详情信息' }
-    // },
     {
-      path: `${basePath}post-detail`,
+      path: '/post-detail',
       name: 'PostDetail',
       component: PostDetail,
       meta: { title: '详情信息' }
     },
     {
-      path: `${basePath}cart`,
+      path: '/cart',
       name: 'CartFile',
       component: CartFile,
       meta: { title: '文件分享' }
     },
     {
-      path: `${basePath}user`,
+      path: '/user',
       name: 'User',
       component: User,
       meta: { title: '用户中心' }
     },
     {
-      path: `${basePath}task`,
+      path: '/task',
       name: 'Task',
       component: Task,
       meta: { title: '任务管理' }
     },
     {
-      path: `${basePath}index`,
+      path: '/index',
       name: 'IndexView',
       component: IndexView,
-      meta: { title: '首页111' }
+      meta: { title: '首页' }
     },
     {
-      path: `${basePath}preview`,
+      path: '/preview',
       name: 'FilePreview',
       component: () => import('@/views/share/FilePreview.vue'),
       meta: { title: '文件预览' }
     },
     {
-      path: `${basePath}dd-preview`,
+      path: '/dd-preview',
       name: 'DingtalkFilePreview',
       component: () => import('@/views/share/DingtalkFilePreview.vue'),
       meta: { title: '钉钉文件预览' }
     },
     {
-      path: `${basePath}download`,
+      path: '/download',
       name: 'FileDownload',
       component: () => import('@/views/share/FileDownload.vue'),
       meta: { title: '文件下载' }
     },
     {
-      path: `${basePath}profile`,
+      path: '/profile',
       name: 'Profile',
       component: () => import('@/views/user/Profile.vue'),
       meta: { title: '个人资料' }
     },
     {
-      path: `${basePath}project-code`,
+      path: '/project-code',
       name: 'ProjectCode',
       component: () => import('@/views/project/ProjectCode.vue'),
       meta: { title: '项目编码' }
     },
     {
-      path: `${basePath}code-recode`,
+      path: '/code-recode',
       name: 'CodeRecode',
       component: () => import('@/views/share/CodeRecode.vue'),
       meta: { title: '编码记录' }
     },
     {
-      path: `${basePath}notice-detail`,
+      path: '/notice-detail',
       name: 'NoticeDetail',
       component: () => import('../components/NoticeDetail.vue'),
       meta: { title: '公告详情', showTabBar: false }
     },
     {
-      path: `${basePath}task-record`,
+      path: '/task-record',
       name: 'taskRecord',
       component: () => import('../views/task/taskRecord.vue'),
       meta: { title: '任务记录' }
     },
     {
-      path: `${basePath}statistical-report`,
+      path: '/statistical-report',
       name: 'StatisticalReport',
       component: StatisticalReport,
       meta: { title: '统计报表' }
     },
     {
-      path: `${basePath}upload-summary`,
+      path: '/upload-summary',
       name: 'UploadSummary',
       component: UploadSummary,
       meta: { title: '上传文件信息汇总' }
     },
     {
-      path: `${basePath}file-type-stats`,
+      path: '/file-type-stats',
       name: 'FileTypeStats',
       component: () => import('@/views/summary/FileTypeStats.vue'),
       meta: { title: '文件类型统计' }
     },
     {
-      path: `${basePath}recent-logs`,
+      path: '/recent-logs',
       name: 'RecentLogs',
       component: () => import('@/views/summary/RecentLogs.vue'),
       meta: { title: '系统日志' }
     },
     {
-      path: `${basePath}project-manage`,
+      path: '/project-manage',
       name: 'projectManage',
       component: () => import('@/views/project/projectManage.vue'),
       meta: { title: '项目列表' }
     },
     {
-      path: `${basePath}task-manage`,
+      path: '/task-manage',
       name: 'taskManage',
       component: () => import('@/views/task/taskManage.vue'),
       meta: { title: '任务日历' }
     },
     {
-      path: `${basePath}task-detail`,
+      path: '/task-detail',
       name: 'TaskDetail',
       component: () => import('@/views/task/taskDetail.vue'),
       meta: { title: '任务详情' }
     },
     {
-      path: `${basePath}task-detail-last`,
+      path: '/task-detail-last',
       name: 'TaskDetailLast',
       component: () => import('@/views/task/taskDetailLast.vue'),
       meta: { title: '任务完成提交表单' }
     },
     {
-      path: `${basePath}task-detail-progress`,
+      path: '/task-detail-progress',
       name: 'TaskDetailProgress',
       component: () => import('@/views/task/taskDetailProgress.vue'),
       meta: { title: '任务进度提交表单' }
     },
     {
-      path: `${basePath}task-detail-look`,
+      path: '/task-detail-look',
       name: 'TaskDetailLook',
       component: () => import('@/views/task/taskDetailLook.vue'),
       meta: { title: '查看任务详情' }
     },
     {
-      path: `${basePath}cardStorageOperate`,
+      path: '/cardStorageOperate',
       name: 'CardStorageOperate',
       component: () => import('@/views/code/CardStorageOperate.vue'),
       meta: { title: '卡片存储操作' }
     },
     {
-      path: `${basePath}task/evidence-detail`,
+      path: '/task/evidence-detail',
       name: 'EvidenceDetail',
       component: () => import('@/views/task/EvidenceDetail.vue'),
       meta: { title: '证据详情' },
     },
     {
-      path: `${basePath}code/codeList`,
+      path: '/code/codeList',
       name: 'CodeList',
       component: () => import('@/views/code/CodeList.vue'),
       meta: { title: '扫码记录日志时间列表' }
     },
     {
-      path: `${basePath}code/config`,
+      path: '/code/config',
       name: 'ScanConfigPage',
       component: () => import('@/views/code/ScanConfigPage.vue'),
       meta: { title: '扫码配置' }
     },
     {
-      path: `${basePath}code/configList`,
+      path: '/code/configList',
       name: 'ScanConfigList',
       component: () => import('@/views/code/ScanConfigList.vue'),
       meta: { title: '配置列表' }
     },
     {
-      path: `${basePath}code/batch_scan_results`,
+      path: '/code/batch_scan_results',
       name: 'ScanConfigList',
       component: () => import('@/views/code/BatchScanResults.vue'),
       meta: { title: '批量扫码结果' }
     },
     {
-      path: `${basePath}code/AddStored`,
+      path: '/code/AddStored',
       name: 'AddStored',
       component: () => import('@/views/code/AddStored.vue'),
       meta: { title: '晟思资产出入库表单' }
     },
     {
-      path: `${basePath}code/AddHistory`,
+      path: '/code/AddHistory',
       name: 'AddHistory',
       component: () => import('@/views/code/AddHistory.vue'),
       meta: { title: '资产记录表单' }
     },
     {
-      path: `${basePath}code/HistoryView`,
+      path: '/code/HistoryView',
       name: 'HistoryView',
       component: () => import('@/views/code/HistoryView.vue'),
       meta: { title: '资产记录详情' }
     },
     {
-      path: `${basePath}progress-tracking`,
+      path: '/progress-tracking',
       name: 'ProgressTracking',
       component: () => import('@/views/project/ProgressTracking.vue'),
       meta: { title: '进度跟踪' }
     },
     {
-      path: `${basePath}project-detail/:id`,
+      path: '/project-detail/:id',
       name: 'ProjectDetail',
       component: () => import('@/views/project/ProjectDetail.vue'),
       meta: { title: '项目详情' }
     },
     // 捕获非法路径，重定向到登录页
     {
+      path: '/:department',
+      name: 'Login',
+      component: Login,
+      meta: { title: '登录' }
+    },
+    {
+      path: '/:department/:type',
+      name: 'Login',
+      component: Login,
+      meta: { title: '登录' }
+    },
+    {
       path: '*',
-      redirect: `${basePath}login`
+      redirect: '/login'
     }
   ]
 })

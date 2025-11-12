@@ -36,8 +36,6 @@ export default {
   },
   data() {
     return {
-      // 基础路径和当前激活的 tab 索引
-      basePath: '/sensor_ddingWork/Release/',
       active: 0,
       isIOS: false,
 
@@ -68,7 +66,7 @@ export default {
   },
   computed: {
     tabbars() {
-      const base = this.basePath;
+      const base = '/'; // 因为路由已经在 basePath 中处理了基础路径
       return [
         {
           title: '知识库',

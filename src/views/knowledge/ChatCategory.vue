@@ -71,12 +71,12 @@ export default {
   },
   methods: {
     goToCreatePost() {
-      this.$router.push('/sensor_ddingWork/Release/create_post') // 跳转到创建页面
+      this.$router.push('/create_post') // 跳转到创建页面
     },
     viewPostDetail(post) {
       // 传递整个post对象到详情页
       this.$router.push({
-        path: `/sensor_ddingWork/Release/post-detail`,
+        path: `/post-detail`,
         query: {
           data: JSON.stringify(post)
         }

@@ -186,7 +186,7 @@ export default {
         this.resetForm();
         // 新增：提交成功后延迟 1 秒跳转
         setTimeout(() => {
-          this.$router.push('/sensor_ddingWork/Release/task');
+          this.$router.push('/task');
         }, 1000);
       } catch (error) {
         console.error('❌ 提交失败:', error.message);

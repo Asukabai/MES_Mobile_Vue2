@@ -26,8 +26,6 @@
           </div>
         </van-cell>
       </van-cell-group>
-
-
       <!-- 移除了原来的单个文件单元格，改为更详细的文件信息展示-->
 
       <van-cell-group style="margin-top: 10px;" v-if="post.Error_Solution && post.Error_Solution.length > 0">

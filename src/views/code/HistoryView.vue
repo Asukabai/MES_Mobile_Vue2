@@ -74,7 +74,7 @@ export default {
       return sessionStorage.getItem(key_DingScannedResult) || cachedProductId; // 返回存储的产品 ID 或者 cachedProductId
     },
     goBackQR() {
-      this.$router.push({path:"/sensor_ddingWork/Release/home"})},
+      this.$router.push({path:"/home"})},
 
     resetForm(){
       this.count = 0; // 正确重置 count

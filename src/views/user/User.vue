@@ -20,8 +20,8 @@
               <p v-if="!userInfo.name">正在加载用户信息...</p>
               <p v-else><strong>姓名：</strong>{{ userInfo.name }}</p>
               <p><strong>手机号：</strong>{{ userInfo.phone }}</p>
-<!--              <p><strong>企业：</strong>陕西晟思智能测控有限公司 </p>-->
-              <p><strong>企业：</strong>山西大钧自动化设备有限公司</p>
+              <!-- 修改企业信息显示逻辑 -->
+              <p><strong>企业：</strong>{{ companyInfo.name }}</p>
             </div>
           </div>
         </van-cell>
@@ -34,12 +34,10 @@
 
       <!-- 其他功能入口 -->
       <van-cell-group style="margin-top: 15px;">
-        <van-cell title="个人资料" is-link @click="$router.push('/sensor_ddingWork/Release/profile')" />
+<!--        <van-cell title="个人资料" is-link @click="$router.push('/sensor_ddingWork/Release/profile')" />-->
         <van-cell title="缓存清理" is-link @click="handleInviteClick" />
         <van-cell title="推送通知" is-link @click="handlePushNotification" />
         <van-cell title="在线支持" is-link @click="handleOnlineSupport" />
-        <!--      <van-cell title="问题反馈" is-link @click="handleFeedback" />-->
-        <!--      <van-cell title="设置" is-link @click="handleSettings" />-->
       </van-cell-group>
     </div>
   </div>
@@ -50,6 +48,7 @@ import * as dd from 'dingtalk-jsapi'
 // import { Cell, CellGroup, Image,Toast } from 'vant'
 import { Cell, CellGroup, Toast } from 'vant'
 import VerificationCode from "@/components/VerificationCode.vue";
+import {getCurrentDepartment} from "@/utils/Dingding";
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "MyUser",
@@ -65,12 +64,18 @@ export default {
         name: '',
         phone: ''
       },
-      isIOS: false
+      isIOS: false,
+      // 添加公司信息数据
+      companyInfo: {
+        name: ''
+      }
     };
   },
   mounted() {
     this.loadUserInfo();
     this.detectIOS();
+    // 加载公司信息
+    this.loadCompanyInfo();
   },
   methods: {
     detectIOS() {
@@ -86,6 +91,16 @@ export default {
         name: name || '未知用户',
         phone: phone || '未绑定手机号'
       };
+    },
+    // 新增方法：加载公司信息
+    loadCompanyInfo() {
+      const department = getCurrentDepartment();
+      const companyNames = {
+        'xian': '陕西晟思智能测控有限公司',
+        'taiyuan': '山西大钧自动化设备有限公司'
+      };
+
+      this.companyInfo.name = companyNames[department] || companyNames['xian'];
     },
     handleInviteClick() {
       this.$dialog.confirm({
@@ -138,9 +153,6 @@ export default {
     handleFeedback() {
       Toast.success('感谢您的反馈！');
     },
-    handleSettings() {
-      this.$router.push('/sensor_ddingWork/Release/settings'); // 跳转到设置页面
-    }
   }
 };
 </script>

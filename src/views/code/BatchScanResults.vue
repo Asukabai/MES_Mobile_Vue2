@@ -28,6 +28,7 @@ import {
   updateCachedResponseUsed
 } from "@/utils/Dingding";
 
+
 export default {
   data() {
     return {
@@ -43,7 +44,7 @@ export default {
   methods: {
     clearAndRescan() {
       this.results = []; // 清空结果列表
-      this.$router.push('/sensor_ddingWork/Release/home'); // 跳转回扫码页面
+      this.$router.push('/home'); // 跳转回扫码页面
     },
     navigateToForm() {
       if (this.results.length > 0) {
@@ -76,13 +77,13 @@ export default {
                   if (response[0].isStored === '已入库' && response[0].isUsed === '已领用') {
                     // 跳转到资产操作页面
                     this.$router.push({
-                      path: '/sensor_ddingWork/Release/code/add_history_storedBatch', // 目标页面的路径
+                      path: '/code/add_history_storedBatch', // 目标页面的路径
                       query: { results: JSON.stringify(this.results) } // 传递 results 数据
                     });
                   } else {
                     // 跳转到出入库登记页面
                     this.$router.push({
-                      path: '/sensor_ddingWork/Release/code/add_history_batch', // 目标页面的路径
+                      path: '/code/add_history_batch', // 目标页面的路径
                       query: { results: JSON.stringify(this.results) } // 传递 results 数据
                     });
                   }

@@ -128,7 +128,10 @@ import {
   cachedProductId,
   cachedProductPerson,
   cachedPersonIndex,
-  key_DingResponseStored, key_DingResponseUsed, cachedResponseStored, cachedResponseUsed
+  key_DingResponseStored,
+  key_DingResponseUsed,
+  cachedResponseStored,
+  cachedResponseUsed,
 } from "@/utils/Dingding.js";
 
 export default {
@@ -368,7 +371,7 @@ export default {
         this.$message.success('保存成功!');
         setTimeout(() => {
           this.resetTestingFields(); // 重置表单字段
-          this.$router.push("/sensor_ddingWork/Release/code/HistoryView");
+          this.$router.push("/code/HistoryView");
         }, 500); // 0.5 秒后跳转
       }, (error) => {
         console.error('保存失败:', error);
@@ -430,10 +433,10 @@ export default {
       return evidenceList;
     },
     goBack() {
-      this.$router.push({ path: '/sensor_ddingWork/Release/code/HistoryView' });
+      this.$router.push({ path: '/code/HistoryView' });
     },
     goBack1() {
-      this.$router.push({ path: '/sensor_ddingWork/Release/home' });
+      this.$router.push({ path: '/home' });
     },
   },
 };

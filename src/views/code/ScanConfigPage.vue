@@ -68,10 +68,9 @@
 </template>
 
 <script>
-// import moduleNames from '@/assets/config/moduleNames.json';
-// import moduleTypes from '@/assets/config/moduleTypes.json';
 import * as dd from 'dingtalk-jsapi'
 import SensorRequest from "@/utils/SensorRequest";
+
 export default {
   name: 'ScanConfigPage',
   data() {
@@ -191,7 +190,7 @@ export default {
             // alert('提交成功:'+ response);
             this.$toast.success('配置提交成功 ！');
             setTimeout(() => {
-              this.$router.push('/sensor_ddingWork/Release/code/configList');
+              this.$router.push('/code/configList');
             }, 1000);
           },
           (error) => {
@@ -201,20 +200,12 @@ export default {
           }
       );
     },
-    // Deleted:    onModuleNameSelect(item) {
-    // Deleted:      this.moduleName = item.name;
-    // Deleted:      this.showModuleNameSheet = false;
-    // Deleted:    },
-    // Deleted:    onModuleTypeSelect(item) {
-    // Deleted:      this.moduleType = item.name;
-    // Deleted:      this.showModuleTypeSheet = false;
-    // Deleted:    },
     onOperationSelect(item) {
       this.selectedOperationType = item.name;
       this.showOperationSheet = false;
     },
     goToConfigList() {
-      this.$router.push('/sensor_ddingWork/Release/code/configList');
+      this.$router.push('/code/configList');
     },
   },
 };

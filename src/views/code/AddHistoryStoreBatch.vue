@@ -97,7 +97,7 @@ import {
   cachedProductPerson,
   cachedPersonIndex,
   key_DingResponseStored, key_DingResponseUsed, cachedResponseStored, cachedResponseUsed
-} from "../../utils/Dingding.js";
+} from "@/utils/Dingding";
 
 export default {
   data() {

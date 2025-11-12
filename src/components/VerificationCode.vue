@@ -23,7 +23,11 @@
 </template>
 
 <script>
-import { key_DingTokenJWT } from '@/utils/Dingding'
+import {
+  getCurrentDepartment,
+  getLoginCodeByDepartment,
+  key_DingTokenJWT
+} from '@/utils/Dingding'
 import SensorRequest from '@/utils/SensorRequest'
 import { Toast } from 'vant'
 
@@ -61,7 +65,13 @@ export default {
 
       // 发起请求
       const token = localStorage.getItem(key_DingTokenJWT)
+      // 获取当前部门和对应的登录方法
+      const department = getCurrentDepartment()
+      console.log('调用获取验证码的方法,部门是：', department); // 调试日志
+      const loginMethod = getLoginCodeByDepartment(department)
+      console.log('调用获取验证码的方法,方法名是：', loginMethod); // 调试日志
       SensorRequest.GetDDingCode(
+          loginMethod, // 传入登录方法作为参数
           token,
           (response) => {
             console.log("验证码："+response)

@@ -2,7 +2,6 @@
   <div>
     <!-- 标题 -->
 <!--    <van-nav-bar title="任务过程提交表单" fixed />-->
-
     <!-- 所有表单内容的卡片 -->
     <div class="card-container" style="margin-top: 0px; padding-bottom: 20px;">
       <van-cell title="任务名称" :value="taskName" />
@@ -15,7 +14,6 @@
           <div v-else style="color: #999;">暂无描述</div>
         </template>
       </van-cell>
-
       <!--滑块的最大值为 90%-->
       <van-cell title="任务进度"></van-cell>
       <van-cell :border="false" style="padding: 0 16px;">
@@ -54,7 +52,7 @@
 
       <van-cell title="上传凭证">
         <template #label>
-          <span class="upload-note">支持点击图标上传任何格式文件，但总大小不得超过20M，文件总数不得超过5个</span>
+          <span class="upload-note">支持点击图标上传任何格式文件，但总大小不得超过10M，文件总数不得超过5个</span>
         </template>
       </van-cell>
       <van-uploader
@@ -104,7 +102,11 @@
 
 <script>
 import SensorRequest from "@/utils/SensorRequest";
-import {key_DingName, key_DingUserIndex, key_DingUserPhone} from "@/utils/Dingding";
+import {
+  key_DingName,
+  key_DingUserIndex,
+  key_DingUserPhone
+} from "@/utils/Dingding";
 function getLocalUserInfo() {
   const name = localStorage.getItem(key_DingName);
   const phone = localStorage.getItem(key_DingUserPhone);
@@ -304,7 +306,7 @@ export default {
         this.resetForm();
         // 新增：提交成功后延迟 1 秒跳转
         setTimeout(() => {
-          this.$router.push('/sensor_ddingWork/Release/task');
+          this.$router.push('/task');
         }, 1000);
       } catch (error) {
         console.error('❌ 提交失败:', error.message);

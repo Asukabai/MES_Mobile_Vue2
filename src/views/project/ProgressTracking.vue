@@ -65,7 +65,7 @@ export default {
     return {
       taskProgressData: [], // 清空假数据
       isExpanded: false,
-      负责人Data: [], // 清空假数据
+      superintendentData: [], // 清空负责人数据假数据
       dashboardData: [
         { label: '进行率', value: 75 },
         { label: '完成率', value: 25 },
@@ -98,7 +98,7 @@ export default {
     },
     goToProjectDetail(item) {
       this.$router.push({
-        path: `/sensor_ddingWork/Release/project-detail/${item.id}`,
+        path: `/project-detail/${item.id}`,
         query: { name: item.name }
       });
     },
@@ -163,7 +163,7 @@ export default {
         // 检查返回的数据是否为数组
         if (Array.isArray(JSON_respData)) {
           // 处理数据，CountString 中的四个值分别代表：其他、进行中、已完成、延期
-          this.负责人Data = JSON_respData.map(item => ({
+          this.superintendentData = JSON_respData.map(item => ({
             owner: item.PersonName,
             other: item.CountString[0],
             inProgress: item.CountString[1],
@@ -223,7 +223,7 @@ export default {
       if (!chartDom) return;
 
       // 使用新的数据结构
-      const owners = this.负责人Data.map(item => item.owner);
+      const owners = this.superintendentData.map(item => item.owner);
       
       // 获取容器宽度，适配屏幕
       const containerWidth = this.$refs.barChartContainer.clientWidth;
@@ -239,10 +239,10 @@ export default {
       this.charts.push(myChart);
 
       // 根据新数据结构提取各类状态数据
-      const onTimeData = this.负责人Data.map(item => item.onTime);
-      const delayedData = this.负责人Data.map(item => item.delayed);
-      const inProgressData = this.负责人Data.map(item => item.inProgress);
-      const otherData = this.负责人Data.map(item => item.other);
+      const onTimeData = this.superintendentData.map(item => item.onTime);
+      const delayedData = this.superintendentData.map(item => item.delayed);
+      const inProgressData = this.superintendentData.map(item => item.inProgress);
+      const otherData = this.superintendentData.map(item => item.other);
 
       const option = {
         tooltip: {

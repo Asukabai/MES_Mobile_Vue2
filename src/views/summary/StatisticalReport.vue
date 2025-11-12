@@ -67,18 +67,18 @@
       <van-cell
           title="上传文件信息汇总"
           is-link
-          @click="$router.push('/sensor_ddingWork/Release/upload-summary')"
+          @click="$router.push('/upload-summary')"
       />
       <van-cell
           title="下载文件信息汇总"
           is-link
-          @click="$router.push('/sensor_ddingWork/Release/upload-summary')"
+          @click="$router.push('/upload-summary')"
       />
     </van-cell-group>
 
     <!-- 日志信息 -->
     <van-cell-group title="最近日志">
-      <van-cell title="查看最近日志" is-link @click="$router.push('/sensor_ddingWork/Release/recent-logs')" />
+      <van-cell title="查看最近日志" is-link @click="$router.push('/recent-logs')" />
     </van-cell-group>
 
     <!-- 在线人数 -->
