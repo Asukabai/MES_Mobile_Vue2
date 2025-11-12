@@ -32,17 +32,81 @@ export async function previewFile(file) {
   //   return;
   // }
 
-  // 在 previewFile 函数中添加文档类型映射
+// 在 previewFile 函数中添加文档类型映射  text, spreadsheet and presentation values are deprecated since version 6.1. Please use new values instead.
   const documentTypeMap = {
     'doc': 'word',
     'docx': 'word',
-    'xls': 'spreadsheet',
-    'xlsx': 'spreadsheet',
-    'ppt': 'presentation',
-    'pptx': 'presentation',
+    'docm': 'word',
+    'dot': 'word',
+    'dotm': 'word',
+    'dotx': 'word',
+    'epub': 'word',
+    'fb2': 'word',
+    'fodt': 'word',
+    'htm': 'word',
+    'html': 'word',
+    'md': 'word',
+    'hwp': 'word',
+    'hwpx': 'word',
+    'mht': 'word',
+    'mhtml': 'word',
+    'odt': 'word',
+    'ott': 'word',
+    'pages': 'word',
+    'rtf': 'word',
+    'stw': 'word',
+    'sxw': 'word',
+    'txt': 'word',
+    'wps': 'word',
+    'wpt': 'word',
+
+    'csv': 'cell',
+    'et': 'cell',
+    'ett': 'cell',
+    'fods': 'cell',
+    'numbers': 'cell',
+    'ods': 'cell',
+    'ots': 'cell',
+    'sxc': 'cell',
+    'xls': 'cell',
+    'xlsb': 'cell',
+    'xlsm': 'cell',
+    'xlsx': 'cell',
+    'xlt': 'cell',
+    'xltx': 'cell',
+    'xml': 'cell',
+
+    'dps': 'slide',
+    'dpt': 'slide',
+    'fodp': 'slide',
+    'key': 'slide',
+    'odg': 'slide',
+    'odp': 'slide',
+    'otp': 'slide',
+    'pot': 'slide',
+    'potm': 'slide',
+    'potx': 'slide',
+    'pps': 'slide',
+    'ppsm': 'slide',
+    'ppsx': 'slide',
+    'ppt': 'slide',
+    'pptm': 'slide',
+    'pptx': 'slide',
+    'sxi': 'slide',
+
+    'djvu': 'pdf',
+    'oxps': 'pdf',
     'pdf': 'pdf',
-    'txt': 'text'
+    'xps': 'pdf',
+
+    'vsdm': 'diagram',
+    'vsdx': 'diagram',
+    'vssm': 'diagram',
+    'vssx': 'diagram',
+    'vstm': 'diagram',
+    'vstx': 'diagram'
   };
+
 
   // 获取文件后缀名
   const fileName = file.File_Name;
