@@ -49,6 +49,7 @@
 
 <script>
 import SensorRequest from '@/utils/SensorRequest.js';
+import {departmentPrefix} from "@/utils/Dingding";
 
 export default {
   data() {
@@ -167,7 +168,7 @@ export default {
         this.resetForm();
         // 新增：提交成功后延迟 1 秒跳转
         setTimeout(() => {
-          this.$router.push('/task-manage');
+          this.$router.push(`/${departmentPrefix}/task-manage`);
         }, 1000);
       } catch (error) {
         console.error('❌ 提交失败:', error.message);

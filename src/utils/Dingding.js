@@ -36,6 +36,9 @@ export let cachedPersonIndex = 333; // 默认值
 export let cachedResponseUsed = "未领用1"; // 默认值
 export let cachedResponseStored = "未入库1"; // 默认值
 
+// 调用获取部门信息
+export const departmentPrefix = getCurrentDepartment()
+
 export function updateCachedProductId(newId) {
   cachedProductId = newId;
 }

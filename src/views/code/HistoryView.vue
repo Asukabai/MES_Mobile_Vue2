@@ -39,7 +39,7 @@
 <script>
 import CardItem from '../../components/CardItem.vue'; // 引入 CardItem 组件
 import systemConfigure, {
-  cachedProductId,
+  cachedProductId, departmentPrefix,
   key_DingScannedResult
 } from "../../utils/Dingding.js";
 import SensorRequest from "@/utils/SensorRequest";
@@ -74,7 +74,8 @@ export default {
       return sessionStorage.getItem(key_DingScannedResult) || cachedProductId; // 返回存储的产品 ID 或者 cachedProductId
     },
     goBackQR() {
-      this.$router.push({path:"/home"})},
+      this.$router.push(`/${departmentPrefix}/index`)
+    },
 
     resetForm(){
       this.count = 0; // 正确重置 count

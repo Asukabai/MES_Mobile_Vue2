@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import { departmentPrefix } from '@/utils/Dingding.js'
 export default {
   props: {
     showRouterView: {
@@ -66,7 +67,7 @@ export default {
   },
   computed: {
     tabbars() {
-      const base = '/'; // 因为路由已经在 basePath 中处理了基础路径
+      const base = `/${departmentPrefix}/`; // 添加部门前缀到基础路径
       return [
         {
           title: '知识库',
@@ -82,7 +83,7 @@ export default {
         },
         {
           title: '工作台',
-          path: base + 'home',
+          path: base + 'index',
           iconActive: this.icons.home.active,
           iconInactive: this.icons.home.inactive
         },

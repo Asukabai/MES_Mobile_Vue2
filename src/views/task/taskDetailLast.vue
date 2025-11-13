@@ -67,7 +67,8 @@
 
 <script>
 import SensorRequest from "@/utils/SensorRequest";
-import uploadUtils from "@/utils/uploadUtils"; // 引入上传工具
+import uploadUtils from "@/utils/uploadUtils";
+import {departmentPrefix} from "@/utils/Dingding"; // 引入上传工具
 
 export default {
   data() {
@@ -149,7 +150,7 @@ export default {
         this.$toast.success('提交成功');
         uploadUtils.resetForm(this.fileList, this.evidenceList);
         setTimeout(() => {
-          this.$router.push('/task');
+          this.$router.push(`/${departmentPrefix}/task`);
         }, 1000);
       } catch (error) {
         console.error('❌ 提交失败:', error.message);

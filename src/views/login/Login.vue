@@ -1,11 +1,14 @@
 <template>
-  <div>
+  <div v-if="isDingDingEnv">
     <h4>欢迎进入工作助手 ！</h4>
+  </div>
+  <div v-else>
+    <p>请使用钉钉打开此应用</p>
   </div>
 </template>
 
 <script>
-import { GetDingUserToken } from '@/utils/Dingding'
+import { GetDingUserToken,departmentPrefix } from '@/utils/Dingding'
 
 export default {
   name: 'LoginPage',
@@ -32,25 +35,15 @@ export default {
         this.ddFun()
       } else {
         // 非钉钉环境下根据路由参数判断跳转路径
-        const type = this.$route.params.type
-
-        let targetPath = `/home`
-        if (type === 'task') {
-          targetPath = `/task`
-        } else if (type === 'share' || type === 'cart') {
-          targetPath = `/cart`
-        }
-
-        setTimeout(() => {
-          this.$router.push(targetPath)
-        }, 2000)
+        alert('请使用钉钉，打开小程序使用');
+        // 设置标志位阻止页面渲染主要内容
+        this.isDingDingEnv = false;
       }
     },
     ddFun() {
       const isTestMode = false
       // 从路由参数中获取部门和类型信息
       const type = this.$route.params.type
-
       if (isTestMode) {
         const reqData = {
           ProcessBOM_DrawID: null,
@@ -60,12 +53,12 @@ export default {
         }
 
         // 根据路由参数确定目标路径
-        let targetPath = `/home`
+        let targetPath = `/${departmentPrefix}/index`
         if (type === 'task') {
-          targetPath = `/task`
+          targetPath = `/${departmentPrefix}/task`
         }
-        if (type === 'share' || type === 'cart') {
-          targetPath = `/cart`
+        if (type === 'share') {
+          targetPath = `/${departmentPrefix}/cart`
         }
 
         // 避免重复导航
@@ -84,12 +77,12 @@ export default {
               localStorage.setItem('sensor_DingTokenJWT', token)
 
               // 根据路由参数确定目标路径
-              let targetPath = `/home`
+              let targetPath = `/${departmentPrefix}/index`
               if (type === 'task') {
-                targetPath = `/task`
+                targetPath = `/${departmentPrefix}/task`
               }
-              if (type === 'share' || type === 'cart') {
-                targetPath = `/cart`
+              if (type === 'share' ) {
+                targetPath = `/${departmentPrefix}/cart`
               }
 
               // 避免重复导航

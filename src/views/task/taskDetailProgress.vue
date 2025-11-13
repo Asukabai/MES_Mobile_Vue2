@@ -103,6 +103,7 @@
 <script>
 import SensorRequest from "@/utils/SensorRequest";
 import {
+  departmentPrefix,
   key_DingName,
   key_DingUserIndex,
   key_DingUserPhone
@@ -231,7 +232,7 @@ export default {
         this.$toast.success('提交成功');
         uploadUtils.resetForm(this.fileList, this.evidenceList);
         setTimeout(() => {
-          this.$router.push('/task');
+          this.$router.push(`/${departmentPrefix}/task`);
         }, 1000);
       } catch (error) {
         this.$toast.fail('提交失败：' + error.message);

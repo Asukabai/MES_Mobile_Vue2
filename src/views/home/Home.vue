@@ -141,6 +141,7 @@
 import * as dd from 'dingtalk-jsapi'
 import SensorRequest from "@/utils/SensorRequest";
 import {
+  departmentPrefix,
   key_DingScannedResult,
   updateCachedProductId
 } from "@/utils/Dingding";
@@ -198,25 +199,25 @@ export default {
     handleGridClick(item) {
 
       if (item.text === '项目编码') {
-        this.$router.push(`/project-code`)
+        this.$router.push(`/${departmentPrefix}/project-code`)
       }
       if (item.text === '扫码记录') {
-        this.$router.push(`/code/codeList`)
+        this.$router.push(`/${departmentPrefix}/code/codeList`)
       }
       if (item.text === '问题反馈') {
         this.$toast.success('感谢您的反馈')
       }
       if (item.text === '文件统计') {
-        this.$router.push(`/statistical-report`)
+        this.$router.push(`/${departmentPrefix}/statistical-report`)
       }
       if (item.text === '进度跟踪') {
-        this.$router.push(`/progress-tracking`)
+        this.$router.push(`/${departmentPrefix}/progress-tracking`)
       }
       if (item.text === '项目列表') {
-        this.$router.push(`/project-manage`)
+        this.$router.push(`/${departmentPrefix}/project-manage`)
       }
       if (item.text === '任务日历') {
-        this.$router.push(`/task-manage`)
+        this.$router.push(`/${departmentPrefix}/task-manage`)
       }
       if (item.text === '单板扫码') {
         this.scanQRCode();
@@ -229,7 +230,7 @@ export default {
         this.$toast.success('正在开发中 ！')
       }
       if (item.text === '扫码配置') {
-        this.$router.push(`/code/config`)
+        this.$router.push(`/${departmentPrefix}/code/config`)
       }
       if (item.text === '扫码看板') {
         this.$toast.success('正在开发中 ！')
@@ -265,7 +266,7 @@ export default {
                 if (respone_Object.Project_Code === '' && respone_Object.Project_Name === ''){
                   // this.$router.push("/sensor_ddingWork/Release/code/AddStored");
                   this.$router.push({
-                    path: "/code/AddStored",
+                    path: `/${departmentPrefix}/code/AddStored`,
                     query: {
                       Module_Name: respone_Object.Module_Name,
                       Module_Type: respone_Object.Module_Type
@@ -274,7 +275,7 @@ export default {
                 }else{
                   // this.$router.push("/sensor_ddingWork/Release/code/AddHistory");
                   this.$router.push({
-                    path: "/code/AddHistory",
+                    path: `/${departmentPrefix}/code/AddHistory`,
                     query: {
                       Module_Name: respone_Object.Module_Name,
                       Module_Type: respone_Object.Module_Type
@@ -429,7 +430,7 @@ export default {
     },
     navigateToResultsPage(scannedResults) {
       this.$router.push({
-        path: '/code/batch_scan_results',
+        path: `/${departmentPrefix}/code/batch_scan_results`,
         query: { scannedResults: JSON.stringify(scannedResults) }
       });
     },

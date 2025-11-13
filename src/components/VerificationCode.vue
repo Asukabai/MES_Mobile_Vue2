@@ -76,7 +76,16 @@ export default {
           (response) => {
             console.log("验证码："+response)
             try {
-              this.ddingCode = response || '未知码'
+
+              // 修改判断逻辑，区分空字符串和其它假值
+              if (response === null || response === undefined) {
+                this.ddingCode = '请退出小程序，重新获取'
+              } else if (response === '') {
+                this.ddingCode = '信息过期，请退出重新登录'
+              } else {
+                this.ddingCode = response
+              }
+              if (this.ddingCode !== '请退出小程序，重新获取' && this.ddingCode !== '信息过期，请退出重新登录') {
               // 开始隐藏倒计时
               this.countdownTime = 30
               this.countdownVisible = true
@@ -92,7 +101,12 @@ export default {
                   clearInterval(this.hideInterval)
                 }
               }, 1000)
-            } catch (e) {
+            }else{
+              // 对于错误情况，隐藏倒计时显示
+              this.countdownVisible = false
+            }
+            }
+              catch (e) {
               this.ddingCode = '解析失败'
               console.error('响应内容无法解析为JSON', response)
             }

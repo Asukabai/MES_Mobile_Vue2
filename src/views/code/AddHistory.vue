@@ -131,7 +131,7 @@ import {
   key_DingResponseStored,
   key_DingResponseUsed,
   cachedResponseStored,
-  cachedResponseUsed,
+  cachedResponseUsed, departmentPrefix,
 } from "@/utils/Dingding.js";
 
 export default {
@@ -371,7 +371,7 @@ export default {
         this.$message.success('保存成功!');
         setTimeout(() => {
           this.resetTestingFields(); // 重置表单字段
-          this.$router.push("/code/HistoryView");
+          this.$router.push(`/${departmentPrefix}/code/HistoryView`)
         }, 500); // 0.5 秒后跳转
       }, (error) => {
         console.error('保存失败:', error);
@@ -429,14 +429,13 @@ export default {
       Promise.all(promises).then(() => {
         // 文件转换完成后，可以使用evidenceList
       });
-
       return evidenceList;
     },
     goBack() {
-      this.$router.push({ path: '/code/HistoryView' });
+      this.$router.push(`/${departmentPrefix}/code/HistoryView`);
     },
     goBack1() {
-      this.$router.push({ path: '/home' });
+      this.$router.push(`/${departmentPrefix}/index`);
     },
   },
 };

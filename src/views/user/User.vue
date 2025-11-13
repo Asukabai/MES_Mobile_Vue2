@@ -34,27 +34,30 @@
 
       <!-- 其他功能入口 -->
       <van-cell-group style="margin-top: 15px;">
-<!--        <van-cell title="个人资料" is-link @click="$router.push('/sensor_ddingWork/Release/profile')" />-->
+        <van-cell title="个人资料" is-link @click="$router.push(`/${departmentPrefix}/profile`)" />
         <van-cell title="缓存清理" is-link @click="handleInviteClick" />
         <van-cell title="推送通知" is-link @click="handlePushNotification" />
         <van-cell title="在线支持" is-link @click="handleOnlineSupport" />
         <van-cell title="系统版本" :value="version"  />
-
-
       </van-cell-group>
+
     </div>
   </div>
 </template>
 
 <script>
 import * as dd from 'dingtalk-jsapi'
-// import { Cell, CellGroup, Image,Toast } from 'vant'
 import { Cell, CellGroup, Toast } from 'vant'
 import VerificationCode from "@/components/VerificationCode.vue";
-import {getCurrentDepartment} from "@/utils/Dingding";
+import {getCurrentDepartment,departmentPrefix} from "@/utils/Dingding";
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "MyUser",
+  computed: {
+    departmentPrefix() {
+      return departmentPrefix
+    }
+  },
   components: {
     VerificationCode,
     VanCell: Cell,

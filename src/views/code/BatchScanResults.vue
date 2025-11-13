@@ -22,6 +22,7 @@
 <script>
 import SensorBorderRequest from "../../utils/sensorBorder";
 import {
+  departmentPrefix,
   key_DingResponseStored,
   key_DingResponseUsed,
   updateCachedResponseStored,
@@ -44,7 +45,7 @@ export default {
   methods: {
     clearAndRescan() {
       this.results = []; // 清空结果列表
-      this.$router.push('/home'); // 跳转回扫码页面
+      this.$router.push(`/${departmentPrefix}/index`); // 跳转回扫码页面
     },
     navigateToForm() {
       if (this.results.length > 0) {

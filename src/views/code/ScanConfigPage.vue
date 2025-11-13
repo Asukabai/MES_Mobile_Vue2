@@ -70,6 +70,7 @@
 <script>
 import * as dd from 'dingtalk-jsapi'
 import SensorRequest from "@/utils/SensorRequest";
+import {departmentPrefix} from "@/utils/Dingding";
 
 export default {
   name: 'ScanConfigPage',
@@ -190,7 +191,7 @@ export default {
             // alert('提交成功:'+ response);
             this.$toast.success('配置提交成功 ！');
             setTimeout(() => {
-              this.$router.push('/code/configList');
+              this.$router.push(`/${departmentPrefix}/code/configList`);
             }, 1000);
           },
           (error) => {
@@ -205,7 +206,7 @@ export default {
       this.showOperationSheet = false;
     },
     goToConfigList() {
-      this.$router.push('/code/configList');
+      this.$router.push(`/${departmentPrefix}/code/configList`);
     },
   },
 };

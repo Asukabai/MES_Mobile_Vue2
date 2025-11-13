@@ -77,7 +77,7 @@
 <script>
 import CustomCalendar from '@/components/CustomCalendar.vue';
 import SensorRequest from "@/utils/SensorRequest";
-import { key_DingUserPhone} from "@/utils/Dingding";
+import {departmentPrefix, key_DingUserPhone} from "@/utils/Dingding";
 
 
 function getLocalUserInfo() {
@@ -317,7 +317,7 @@ export default {
       });
     },
     goToTaskDetail() {
-      this.$router.push('/task');
+      this.$router.push(`/${departmentPrefix}/task`);
     },
 
     formatDate(date) {

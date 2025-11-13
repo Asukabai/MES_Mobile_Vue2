@@ -1,6 +1,6 @@
 import SensorRequest from './SensorRequest';
 import router from "@/router";
-
+import { departmentPrefix } from '@/utils/Dingding.js'
 // 文件工具
 export async function downloadFile(file) {
   console.log('下载文件:', file);
@@ -9,7 +9,7 @@ export async function downloadFile(file) {
     const url = await getTemporaryUrl(file.File_Name, file.File_Md5);
     // 跳转到预览页面，并传递URL和文件名作为参数
     await router.push({
-      path: '/download',
+      path: `/${departmentPrefix}/download`,
       query: {
         fileUrl: url,
         fileName: file.File_Name

@@ -38,6 +38,7 @@
 <script>
 import { List, Cell, Search } from 'vant'
 import SensorRequest from '@/utils/SensorRequest.js'
+import { departmentPrefix } from '@/utils/Dingding.js'
 
 export default {
   name: 'KnowledgeBasePage',
@@ -70,13 +71,10 @@ export default {
     this.loadData()
   },
   methods: {
-    goToCreatePost() {
-      this.$router.push('/create_post') // 跳转到创建页面
-    },
     viewPostDetail(post) {
       // 传递整个post对象到详情页
       this.$router.push({
-        path: `/post-detail`,
+        path: `/${departmentPrefix}/post-detail`,
         query: {
           data: JSON.stringify(post)
         }

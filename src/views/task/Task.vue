@@ -140,7 +140,7 @@
 <script>
 import SensorRequest from '@/utils/SensorRequest';
 import { Toast } from 'vant';
-import { key_DingUserPhone} from '@/utils/Dingding';
+import {departmentPrefix, key_DingUserPhone} from '@/utils/Dingding';
 
 function getLocalUserInfo() {
   const phone = localStorage.getItem(key_DingUserPhone);
@@ -371,7 +371,7 @@ export default {
         taskDescription: taskDescription
       };
       this.$router.push({
-        path: '/task-detail-last',
+        path: `/${departmentPrefix}/task-detail-last`,
         query: query
       });
     },    // 跳转到任务提交页面
@@ -391,7 +391,7 @@ export default {
         taskDescription: taskDescription
       };
       this.$router.push({
-        path: '/task-detail-progress',
+        path: `/${departmentPrefix}/task-detail-progress`,
         query: query
       });
     },
@@ -400,7 +400,7 @@ export default {
       console.log("跳转到任务详情页面:", item);
 
       this.$router.push({
-        path: '/task-detail-look',
+        path: `/${departmentPrefix}/task-detail-look`,
         query: {
           taskId: item.ID_TaskInfo,
           taskData: encodeURIComponent(JSON.stringify(item)) // 新增：传递完整对象
