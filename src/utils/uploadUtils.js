@@ -40,7 +40,7 @@ export default {
     },
 
     /**
-     * 批量处理多个文件
+     * 批量处理多个文件（Base64方式）
      * @param {Array|Object} files - van-uploader 的 after-read 回调参数
      * @param {number} maxTotalSize - 总大小限制（字节）
      * @returns {Promise<Array>} 返回处理后的证据列表
@@ -65,6 +65,67 @@ export default {
 
             try {
                 const result = await this.processSingleFile(file);
+                if (result) {
+                    processedList.push(result);
+                    currentTotalSize += file.file.size;
+                }
+            } catch (error) {
+                console.error('处理文件时出错:', error);
+                throw error;
+            }
+        }
+
+        return processedList;
+    },
+
+    /**
+     * 处理单个文件为二进制格式
+     * @param {Object} file - van-uploader 的 file 对象
+     * @returns {Promise<Object>} 返回包含 File_Name, File_Blob, File_Md5, Upload_Time 的对象
+     */
+    async processSingleFileBinary(file) {
+        if (!file || !file.file || !(file.file instanceof File)) {
+            console.warn('⚠️ 文件无效或不是 File 对象');
+            return null;
+        }
+
+        // 生成文件MD5（这里简化处理，实际可使用更复杂的算法）
+        const md5 = this.generateSimpleMd5(file.file.name + file.file.size);
+
+        return {
+            File_Name: file.file.name,
+            File_Blob: file.file, // 保持原始Blob对象用于二进制上传
+            File_Md5: md5,
+            Upload_Time: new Date().toISOString()
+        };
+    },
+
+    /**
+     * 批量处理多个文件（二进制方式）
+     * @param {Array|Object} files - van-uploader 的 after-read 回调参数
+     * @param {number} maxTotalSize - 总大小限制（字节）
+     * @returns {Promise<Array>} 返回处理后的证据列表
+     */
+    async processFilesBinary(files, maxTotalSize = 20 * 1024 * 1024) {
+        if (!files) return [];
+
+        const fileList = Array.isArray(files) ? files : [files];
+        const processedList = [];
+        let currentTotalSize = 0;
+
+        for (const file of fileList) {
+            // 校验单个文件大小
+            if (file.file.size > maxTotalSize) {
+                throw new Error(`"${file.file.name}" 文件过大，总大小不能超过 ${maxTotalSize / (1024 * 1024)}MB`);
+            }
+
+            // 检查总大小是否超限
+            if (currentTotalSize + file.file.size > maxTotalSize) {
+                throw new Error('总文件大小不能超过 ' + (maxTotalSize / (1024 * 1024)) + 'MB');
+            }
+
+            try {
+                const result = await this.processSingleFileBinary(file);
                 if (result) {
                     processedList.push(result);
                     currentTotalSize += file.file.size;

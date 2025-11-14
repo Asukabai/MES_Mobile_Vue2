@@ -153,7 +153,8 @@ export default {
 
     onAfterRead(files) {
       console.log('【onAfterRead】开始处理文件:', files);
-      uploadUtils.processFiles(files, 20 * 1024 * 1024)
+      // 修改为使用二进制方式处理文件
+      uploadUtils.processFilesBinary(files, 20 * 1024 * 1024)
           .then(list => {
             this.evidenceList = list;
             console.log('✅ 文件处理完成:', list);
@@ -213,7 +214,9 @@ export default {
             TaskStage_Files: this.evidenceList.map(e => ({
               File_Name: e.File_Name,
               File_Md5: "",
-              File_Base64: e.File_Base64,
+              File_Base64: e.File_Base64 || "multipart/form-data", // 支持Base64和二进制
+              // 添加二进制文件数据（如果存在）
+              File_Blob: e.File_Blob || null,
               Upload_Time: e.Upload_Time
             })),
             StageFile_Creator: creatorFromCache
